@@ -1,2 +1,2 @@
 # RCodes
-This repo is devoted to R programs. As I'm new to this language, you will probably found nothing useful here. Unless you are looking for very simple exercises...
+Fault pattern identification and classification in integrated circuits production. This repo is devoted to R programs we develope for our bachelor's thesis.
