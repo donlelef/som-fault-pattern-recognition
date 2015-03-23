@@ -10,11 +10,11 @@ close all
 clc
 
 % Initializing variables for gussian plot
-ray = 50;
-pixelNumber = 100;
+ray = 30;
+pixelNumber = 2*ray;
 maximumFaultProbability = 0.1;
 
-x1 = linspace(-10,10,2*ray);
+x1 = linspace(-10,10,pixelNumber);
 x2 = x1;
 
 mean = [0,0];

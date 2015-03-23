@@ -10,7 +10,7 @@ function faultMap = fillSquareGrid(probabilityFunction, pixelNumber, maxFaultPro
     for i=1:pixelNumber
         for j=1:pixelNumber
         
-            if ((rand*(maxZ/maxFaultProbability) < probabilityFunction(i,j)))
+            if ((rand) < maxFaultProbability*probabilityFunction(i,j)/maxZ)
                 faultMap(i,j) = 1;
             else
                 faultMap(i,j) = 0;
