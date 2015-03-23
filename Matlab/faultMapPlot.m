@@ -51,7 +51,7 @@ for (i=1:length(x1))
     end
 end
 
-faultNumber = length(find(faultMap));
+faultNumber = length(find(faultMap==1));
 
 % Plotting fault map
 figure(2)
