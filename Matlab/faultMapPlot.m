@@ -11,6 +11,8 @@ clc
 
 % Initializing variables for gussian plot
 ray = 50;
+pixelNumber = 100;
+maximumFaultProbability = 0.1;
 
 x1 = linspace(-10,10,2*ray);
 x2 = x1;
@@ -33,7 +35,8 @@ title('Probability density function')
 
 % Filling sqare matrix with simbolic values. Fault are deloyed according to
 % the probabilit function.
-faultMap = fillSquareGrid(Z, 100, 0.1);
+faultMap = fillSquareGrid(Z, pixelNumber, maximumFaultProbability);
+faultMap = createCircularGrid(faultMap, ray);
 faultNumber = length(find(faultMap==1));
 
 % Plotting fault map
