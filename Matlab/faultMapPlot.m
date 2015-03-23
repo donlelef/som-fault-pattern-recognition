@@ -33,28 +33,10 @@ title('Probability density function')
 
 % Filling sqare matrix with simbolic values. Fault are deloyed according to
 % the probabilit function.
-maxZ = max(max(Z));
-faultNumber = 0;
-
-for (i=1:length(x1))
-    for (j=1:length(x2))
-        
-        if ((rand*(maxZ*10) < Z(i,j)) && ((i-ray)^2+(j-ray)^2 <= ray^2))
-            faultMap(i,j) = 1;
-        else
-            if ((i-ray)^2+(j-ray)^2 > ray^2)
-                faultMap(i,j) = -1;
-            else
-            faultMap(i,j) = 0;
-            end
-        end
-    end
-end
-
+faultMap = fillSquareGrid(Z, 100, 0.1);
 faultNumber = length(find(faultMap==1));
 
 % Plotting fault map
 figure(2)
 pcolor(faultMap)
 title('Fault map')
-
