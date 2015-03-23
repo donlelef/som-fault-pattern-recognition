@@ -1,6 +1,6 @@
 % This script cumputes a bidimensional gaussian distribution and plots it.
-% This probability function is assumed to represent the probability a fault
-% happens on the chip in the coordinates (x1, x2).
+% This probability function is assumed to represent the probability of a fault
+% to happen on the chip in the coordinates (x1, x2).
 % After that, a map is created where random faults are simulated. The value
 % 0 in the map means 'no fault' and 1 means 'fault', whereas -1 indicates 
 % the points out of the circular wafer
