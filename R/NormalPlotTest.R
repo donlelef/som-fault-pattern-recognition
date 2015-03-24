@@ -1,0 +1,1 @@
+plot(dmvnorm(mean=c(0,0), sigma=diag(1,1)))
