@@ -3,7 +3,7 @@
 % to happen on the chip in the coordinates (x1, x2).
 % After that, a map is created where random faults are simulated. The value
 % 0 in the map means 'no fault' and 1 means 'fault', whereas -1 indicates 
-% the points out of the circular wafer
+% the points out of the circular wafer.
 
 clear all
 close all
