@@ -5,13 +5,14 @@
 library(mvtnorm) #Needed for dmvnorm()
 
 # Initiale parameters
+ray = 50
 mu = c(0, 0)
 sigma = matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
 maximumFaultProbability = 0.2
 
 #Calcuate f(x) for a large number of possible values for x1 and x2
-x1 = seq(from = -5, to = 5, length.out = 100)
-x2 = seq(from = -5, to = 5, length.out = 100)
+x1 = seq(from = -5, to = 5, length.out = 2*ray)
+x2 = seq(from = -5, to = 5, length.out = 2*ray)
 grid = expand.grid(x1, x2) #Creates all possible combinations - like meshgrid
 densityVector = dmvnorm(x = grid, mean = mu, sigma = sigma, log = FALSE)
 
@@ -50,9 +51,22 @@ for (i in 1:length(x1)){
   }
 }
 
+# Creates a circular grid from a square one by inserting the value -1 in
+# every pixel which is not whitin the circle of ray "ray".
+
+for (i in 1:nrow(faultMap)){
+  for (j in 1:ncol(faultMap)){
+    if ((i-ray)^2 + (j-ray)^2 > ray^2)
+      faultMap[i,j]=-1;
+  }
+}
+
+
+
 # Compute the fault number
 faultNumber = length(faultMap[faultMap==1])
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
-image2D(x = 1:nrow(faultMap), y = 1:ncol(faultMap), z = faultMap, border = "black") 
+image2D(x = 1:nrow(faultMap), y = 1:ncol(faultMap), z = faultMap, border = "black", 
+        grid(nx=nrow(faultMap), ny = ncol(faultMap)))
