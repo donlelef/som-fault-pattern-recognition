@@ -6,7 +6,7 @@ x <- seq(-4, 4, length=100);
 # Normal distribution
 distribution <- dnorm(x);
 
-# Linear plot of the distribution
+# Linear plot of the distribution ("type" option binds continuous line)
 plot(distribution, type = 'l');
 
 
@@ -15,6 +15,7 @@ plot(distribution, type = 'l');
 
 library(rgl)  #Needed for 3D plot
 library(mvtnorm) #Needed for dmvnorm()
+library(plot3D) #Needed for contour2D()
 
 # Initializing parameters
 mu = c(0, 0)
@@ -45,6 +46,16 @@ persp3d(x = x1, y = x2, z = fx, col = "green", xlab = "x1",
 #persp3d(x = c(10, 20), y = c(15,25), z = matrix(data = c(0.12, 0.12, 0.12, 0.12), nrow = 2, ncol = 2),
 #   col = "red", add = TRUE)
 
+#3D plot with surf3D()
+grid = mesh(x1, x2)
+X = grid$x
+Y = grid$y
+surf3D(x = X, y = Y, z = fx, phi = 30, theta = 45, bty = "b2", 
+       lighting = TRUE, xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
+       main = "Bivariate Normal Distribution", sub = bquote(bold(mu[1])==.(mu[1])~
+       ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
+       ", "~sigma[xy]==.(sigma[2,1]))) 
+
 # Standard 3D plot - not using additional packages
 persp(x = x1, y = x2, z = fx, main = "Bivariate Normal Distribution",
       sub = bquote(bold(mu[1])==.(mu[1])~", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~
@@ -56,8 +67,10 @@ persp(x = x1, y = x2, z = fx, main = "Bivariate Normal Distribution",
 
 # Contour plot - purposely made x and y-axes the same length so that one can judge variability
 par(pty = "s")
-contour(x = x1, y = x2, z = fx, main = "Multivariate normal contour plot", xlab = expression(x[1]),
-        ylab = expression(x[2]), xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)))
-# panel.first = grid() does not work quite right so use abline()
+contour2D(x = x1, y = x2, z = fx, xlab = expression(x[1]), ylab = expression(x[2]), 
+        xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
+        main = "Bivariate Normal Distribution", sub = bquote(bold(mu[1])==.(mu[1])~
+        ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
+        ", "~sigma[xy]==.(sigma[2,1])))
 abline(h = seq(from = min(x1), to = max(x1), by = 1), lty = "dotted", col = "lightgray")
 abline(v = seq(from = min(x2), to = max(x2), by = 1), lty = "dotted", col = "lightgray")
