@@ -63,12 +63,10 @@ persp(x = x1, y = x2, z = fx, main = "Bivariate Normal Distribution",
       col="orchid2", theta = 55, phi = 30, r = 40, d = 0.1, expand = 0.5,
       ltheta = 90, lphi = 180, shade = 0.4, ticktype = "detailed", nticks=5)
 
-
-
 # Contour plot - purposely made x and y-axes the same length so that one can judge variability
 par(pty = "s")
 contour2D(x = x1, y = x2, z = fx, xlab = expression(x[1]), ylab = expression(x[2]), 
-        xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
+        xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)), 
         main = "Bivariate Normal Distribution", sub = bquote(bold(mu[1])==.(mu[1])~
         ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
         ", "~sigma[xy]==.(sigma[2,1])))
