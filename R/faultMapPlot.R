@@ -2,7 +2,8 @@
 
 
 # Import required libraries
-library(mvtnorm) #Needed for dmvnorm()
+library(mvtnorm)  # Needed for dmvnorm()
+library(plot3D)   # Needed for mesh()
 
 # Initiale parameters
 ray = 50
@@ -68,5 +69,9 @@ faultNumber = length(faultMap[faultMap==1])
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
-image2D(x = 1:nrow(faultMap), y = 1:ncol(faultMap), z = faultMap, border = "black", 
-        grid(nx=nrow(faultMap), ny = ncol(faultMap)))
+image2D
+        (
+        x = 1:nrow(faultMap), y = 1:ncol(faultMap), z = faultMap, border = "black", 
+        grid(nx=nrow(faultMap), ny = ncol(faultMap)),
+        colkey = FALSE # No color key legend will be added 
+        )
