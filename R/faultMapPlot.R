@@ -1,11 +1,15 @@
-# Porting of FaultMapPlot from Matlab to R
-
+# This script cumputes a bidimensional gaussian distribution and plots it.
+# This probability function is assumed to represent the probability of a fault
+# to happen on the chip in the coordinates (x1, x2).
+# After that, a map is created where random faults are simulated. The value
+# 0 in the map means 'no fault' and 1 means 'fault', whereas -1 indicates 
+# the points out of the circular wafer.
 
 # Import required libraries
 library(mvtnorm)  # Needed for dmvnorm()
 library(plot3D)   # Needed for mesh()
 
-# Initiale parameters
+# Initial parameters
 ray = 50
 mu = c(0, 0)
 sigma = matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
@@ -14,7 +18,7 @@ maximumFaultProbability = 0.2
 #Calcuate f(x) for a large number of possible values for x1 and x2
 x1 = seq(from = -5, to = 5, length.out = 2*ray)
 x2 = seq(from = -5, to = 5, length.out = 2*ray)
-grid = expand.grid(x1, x2) #Creates all possible combinations - like meshgrid
+grid = expand.grid(x1, x2) #Creates all possible combinations
 densityVector = dmvnorm(x = grid, mean = mu, sigma = sigma, log = FALSE)
 
 #Arrange values in the following form:
@@ -27,7 +31,7 @@ densityVector = dmvnorm(x = grid, mean = mu, sigma = sigma, log = FALSE)
 Z = matrix(data = densityVector, nrow = length(x1), ncol = length(x2), byrow = FALSE)
 
 #3D plot with surf3D()
-grid = mesh(x1, x2)
+grid = mesh(x1, x2) # Like meshgrid
 X = grid$x
 Y = grid$y
 surf3D(x = X, y = Y, z = Z,  
@@ -57,7 +61,7 @@ for (i in 1:length(x1)){
 
 for (i in 1:nrow(faultMap)){
   for (j in 1:ncol(faultMap)){
-    if ((i-ray)^2 + (j-ray)^2 > ray^2)
+    if ((i-ray)^2 + (j-ray)^2 >= ray^2)
       faultMap[i,j]=-1;
   }
 }
@@ -69,9 +73,8 @@ faultNumber = length(faultMap[faultMap==1])
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
-image2D
-        (
+image2D(
         x = 1:nrow(faultMap), y = 1:ncol(faultMap), z = faultMap, border = "black", 
-        grid(nx=nrow(faultMap), ny = ncol(faultMap)),
+        grid(nx=nrow(faultMap)), ny = ncol(faultMap),
         colkey = FALSE # No color key legend will be added 
         )
