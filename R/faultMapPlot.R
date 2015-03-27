@@ -48,10 +48,10 @@ faultMap = matrix(data = 0, nrow = length(x1), ncol = length(x2))
 for (i in 1:length(x1)){
   for (j in 1:length(x2)){
    if (runif(n = 1, min = 0, max = 1) < (Z[i,j]/max(Z))*maximumFaultProbability){
-    faultMap[i,j] = 1 
+    faultMap[i,j] = TRUE 
    }
     else{
-      faultMap[i,j] = 0
+      faultMap[i,j] = FALSE
     } 
   }
 }
@@ -62,11 +62,9 @@ for (i in 1:length(x1)){
 for (i in 1:nrow(faultMap)){
   for (j in 1:ncol(faultMap)){
     if ((i-ray)^2 + (j-ray)^2 >= ray^2)
-      faultMap[i,j]=-1;
+      faultMap[i,j]=NA;
   }
 }
-
-
 
 # Compute the fault number
 faultNumber = length(faultMap[faultMap==1])
@@ -76,5 +74,5 @@ par(pty = "s") # Force a square plot
 image2D(
         x = 1:nrow(faultMap), y = 1:ncol(faultMap), z = faultMap, border = "black", 
         grid(nx=nrow(faultMap)), ny = ncol(faultMap),
-        colkey = FALSE # No color key legend will be added 
-        )
+        colkey = FALSE, NAcol = "white",  col = heat.colors(2)
+        ) # Colkey = FALSE: no color key legend will be added
