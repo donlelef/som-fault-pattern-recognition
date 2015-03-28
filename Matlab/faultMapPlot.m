@@ -11,14 +11,13 @@ clc
 
 % Initializing variables for gussian plot
 ray = 30;
-pixelNumber = 2*ray;
-maximumFaultProbability = 1;
+maximumFaultProbability = 0.5;
 
-x1 = linspace(-10,10,pixelNumber);
+x1 = 0:1:2*ray;
 x2 = x1;
 
-mean = [0,0];
-normalizedVariance = [0.5, 0; 0, 0.1];
+mean = [ray,ray];
+normalizedVariance = [1, 0; 0, 1];
 variance = ray.*normalizedVariance;
 
 [X1,X2] = meshgrid(x1,x2);
@@ -35,7 +34,7 @@ title('Probability density function')
 
 % Filling sqare matrix with simbolic values. Fault are deloyed according to
 % the probabilit function.
-faultMap = fillSquareGrid(Z, pixelNumber, maximumFaultProbability);
+faultMap = fillSquareGrid(Z, 2*ray, maximumFaultProbability);
 faultMap = createCircularGrid(faultMap, ray);
 faultNumber = length(find(faultMap==1));
 
@@ -43,3 +42,35 @@ faultNumber = length(find(faultMap==1));
 figure(2)
 pcolor(faultMap)
 title('Fault map')
+
+% KDE
+% call the routine, which has been saved in the current directory 
+[i, j] = find(faultMap==1);
+[bandwidth,density,X,Y]=kde2d([i,j], 64);
+% plot the data and the density estimate
+figure(3)
+hold on
+contour3(X,Y,density,10); 
+plot(i,j,'r.','MarkerSize',5)
+title('Extimated density contours')
+figure(4)
+surf(X,Y,density);
+title('Extimated function')
+
+figure(5)
+subplot(2,2,1)
+surf(X1,X2,Z)
+title('Probability density function')
+subplot(2,2,2)
+pcolor(faultMap)
+title('Fault map')
+subplot(2,2,3)
+hold on
+contour3(X,Y,density,10); 
+plot(i,j,'r.','MarkerSize',5)
+title('Extimated density contours')
+subplot(2,2,4)
+surf(X,Y,density);
+xlim([0, 2*ray]);
+ylim([0, 2*ray]);
+title('Extimated function')
