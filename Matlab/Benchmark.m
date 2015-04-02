@@ -16,10 +16,10 @@ testPerPattern = 5;
 patterns = 1; % TO BE IMPROVED other pattern needed
 testNumber = testPerPattern * patterns;
 
-for h = 1:length(maximimumFaultProbabilities);
-    maximumFaultProbability = maximimumFaultProbabilities(h);
+for i = 1:length(maximimumFaultProbabilities)
+    maximumFaultProbability = maximimumFaultProbabilities(i);
     totalError = 0;
-    for k = 1:testNumber
+    for j = 1:testNumber
         % Computing multivariate normal probability density function
         varX = 1;
         varY = 1;
@@ -29,27 +29,31 @@ for h = 1:length(maximimumFaultProbabilities);
         % the probabilit function.
         faultMap = fillSquareGrid(Z, 2*ray, maximumFaultProbability);
         faultMap = createCircularGrid(faultMap, ray);
-        faultNumber = length(find(faultMap==1));
+        faultNumber(j) = length(find(faultMap==1));
         
         % KDE
         % call the routine, which has been saved in the current directory
-        [j, i] = find(faultMap==1); % find seach elements by columns
-        [bandwidth,extimatedDensity,X,Y] = kde2d([i,j], 64);
+        [faultX, faultY] = find(faultMap==1); % find seach elements by columns
+        [bandwidth,extimatedDensity,X,Y] = kde2d([faultY,faultX], 64);
         
         % BENCHMARK
         % Computing and saving the average square error, ie the difference
         % between the value of the extimeted function and the value of the real
         % one.
-        mean = [ray, ray]; % TO BE FIXED: duplicate code
+        mu = [ray, ray]; % TO BE FIXED: duplicate code
         sigma = [varX, 0; 0, varY];
-        trueDensity = mvnpdf([X(:), Y(:)], mean, sigma);
+        trueDensity = mvnpdf([X(:), Y(:)], mu, sigma);
         trueDensity = reshape(trueDensity, length(X), length(Y));
         errorMatrix = (trueDensity - extimatedDensity).^2;
-        error = sum(sum(errorMatrix));
-        totalError = totalError + error;
+        errors(j) = sum(sum(errorMatrix));
     end
-    meanError(h) = totalError/testNumber;
+    meanError(i,1) = mean(errors);
+    meanFaults(i,1) = mean(faultNumber);
 end
+curve = fit(meanFaults, meanError, 'poly5', 'Normalize', 'on');
 figure(1)
-plot(maximimumFaultProbabilities, meanError)
-title('Error vs maximumFaultProbability')
+hold on
+scatter(meanFaults, meanError, 'x')
+plot(curve)
+title('Mean error vs fault number')
+legend('Simulated data', '5th degree fitting')
