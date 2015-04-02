@@ -17,7 +17,7 @@ function [bandwidth,density,X,Y]=kde2d(data,n,MIN_XY,MAX_XY)
 %                the format is:
 %                MIN_XY=[lower_Xlim,lower_Ylim]
 %                MAX_XY=[upper_Xlim,upper_Ylim].
-%                The dafault limits are computed as:
+%                The default limits are computed as:
 %                MAX=max(data,[],1); MIN=min(data,[],1); Range=MAX-MIN;
 %                MAX_XY=MAX+Range/4; MIN_XY=MIN-Range/4;
 % OUTPUT: bandwidth - a row vector with the two optimal
@@ -91,7 +91,7 @@ if N<=size(data,2)
     error('data has to be an N by 2 array where each row represents a two dimensional observation')
 end
 transformed_data=(data-repmat(MIN_XY,N,1))./repmat(scaling,N,1);
-%bin the data uniformly using regular grid;
+% bin the data uniformly using regular grid;
 initial_data=ndhist(transformed_data,n);
 % discrete cosine transform of initial data
 a= dct2d(initial_data);

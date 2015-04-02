@@ -17,7 +17,7 @@ x1 = 0:1:2*ray;
 x2 = x1;
 
 mean = [ray,ray];
-normalizedVariance = [1, 0; 0, 5];
+normalizedVariance = [1, 0; 0, 1];
 variance = ray.*normalizedVariance;
 
 [X1,X2] = meshgrid(x1,x2);
