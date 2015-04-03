@@ -1,4 +1,4 @@
-% This script cumputes a bidimensional gaussian distribution and plots it.
+% This script cumputes a bidimensional parabolic distribution and plots it.
 % This probability function is assumed to represent the probability of a fault
 % to happen on the chip in the coordinates (x1, x2).
 % After that, a map is created where random faults are simulated. The value
@@ -9,14 +9,13 @@ clear all
 close all
 clc
 
-% Initializing variables for gussian plot
+% Initializing variables for plot of the paraboloid
 ray = 30;
-maximumFaultProbability = 0.5;
-varX = 1;
-varY = 1;
+maximumFaultProbability = 0.1;
+coefficient = 10;
 
 % Computing and plotting multivariate normal probability density function
-Z = GaussianDensity(ray, varX, varY);
+Z = parabolicIntensity(ray, coefficient);
 
 figure(1)
 surf(Z)

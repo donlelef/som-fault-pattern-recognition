@@ -6,6 +6,7 @@ function faultMap = fillSquareGrid(probabilityFunction, pixelNumber, maxFaultPro
     
     maxZ = max(max(probabilityFunction));
     faultMap = zeros(pixelNumber, pixelNumber);
+    rng = 'default';
 
     for i=1:pixelNumber
         for j=1:pixelNumber

@@ -1,8 +1,9 @@
 function Z = GaussianDensity(ray, varX, varY)
-%GAUSSIANDENSITY return a gaussian desity matrix with specified variance
+% GAUSSIANDENSITY return a gaussian desity matrix with specified variance
+% and mean in [ray, ray]. 
 
 % Initializing variables for gussian plot
-x1 = 0:1:2*ray;
+x1 = 1:1:2*ray;
 x2 = x1;
 
 mean = [ray,ray];
