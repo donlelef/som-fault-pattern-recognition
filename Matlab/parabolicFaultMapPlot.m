@@ -1,4 +1,4 @@
-% This script cumputes a bidimensional parabolic distribution and plots it.
+% This script computes a bidimensional parabolic distribution and plots it.
 % This probability function is assumed to represent the probability of a fault
 % to happen on the chip in the coordinates (x1, x2).
 % After that, a map is created where random faults are simulated. The value
@@ -12,7 +12,7 @@ clc
 % Initializing variables for plot of the paraboloid
 ray = 30;
 maximumFaultProbability = 0.1;
-coefficient = 10;
+coefficient = 2/(pi*ray^4);
 
 % Computing and plotting multivariate normal probability density function
 Z = parabolicIntensity(ray, coefficient);
@@ -30,7 +30,7 @@ faultNumber = length(find(faultMap==1));
 % Plotting fault map
 figure(2)
 pcolor(faultMap)
-title('Fault map')
+title(['Fault map with ', num2str(faultNumber), ' faults'])
 
 % KDE
 % call the routine, which has been saved in the current directory
@@ -56,7 +56,7 @@ subplot(2,2,2)
 pcolor(faultMap)
 xlabel('x');
 ylabel('y');
-title('Fault map')
+title(['Fault map with ', num2str(faultNumber), ' faults'])
 subplot(2,2,3)
 hold on
 contour3(X,Y,density,10); 
