@@ -2,10 +2,7 @@
 % Please edit documentation in R/fillRectangularMap.R
 \name{fillRectangularMap}
 \alias{fillRectangularMap}
-\title{Fills a grid whith two values according to the probabilityFuncion
-The higher is the value probabilityFunction takes in a cetrain point,the
-higher is the probability that pixel is set to faultValue. The probabilityFuncion
-is rescaled so that its maximum value is equal to maxFaultProbability.}
+\title{Create a rectangular fault grid}
 \usage{
 fillRectangularMap(probabilityFunction, maxFaultProbability,
   faultValue = TRUE, notFaultValue = FALSE)

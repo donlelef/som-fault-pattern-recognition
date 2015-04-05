@@ -12,26 +12,27 @@ library(KDEBenchmark)
 
 # Initial parameters
 ray = 50
-mu = c(0, 0)
-sigma = matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
+mu = c(ray, ray)
+sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
 maximumFaultProbability = 0.2
 
-#Calcuate f(x) for a large number of possible values for x1 and x2
-x1 = seq(from = -5, to = 5, length.out = 2*ray)
-x2 = seq(from = -5, to = 5, length.out = 2*ray)
-grid = expand.grid(x1, x2) #Creates all possible combinations
-densityVector = dmvnorm(x = grid, mean = mu, sigma = sigma, log = FALSE)
+# Calcuate f(x) for a large number of possible values for x1 and x2
+x1 = seq(from = 0, to = 2*ray, length.out = 2*ray)
+x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
+Z = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)
 
-#Arrange values in the following form:
-#         x2
-#         -5   -4.9 -4.8
-#x1 -5    f(x) f(x) f(x)
-#   -4.9  f(x) f(x) f(x)
-#   -4.8  f(x) f(x) f(x)
-#   ...
-Z = matrix(data = densityVector, nrow = length(x1), ncol = length(x2), byrow = FALSE)
+# Fill a simulated wafer with good and bad chips according to the just computed density.
+faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability)
+faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray)
 
-#3D plot with surf3D()
+# Compute the fault number
+faultNumber = faultNumber(faultMap = faultMap, faultValue = TRUE)
+
+# Perform the KDE
+faultIndex = which(faultMap == 1, arr.ind = TRUE)
+estimation = bkde2D(faultIndex, bandwidth = 3.5, range.x = list(c(0,2*ray), c(0,2*ray)))
+
+# 3D plot of the fault probability density with surf3D()
 grid = mesh(x1, x2) # Like meshgrid
 X = grid$x
 Y = grid$y
@@ -42,13 +43,6 @@ surf3D(x = X, y = Y, z = Z,
                                                               ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
                                                               ", "~sigma[xy]==.(sigma[2,1])))
 
-
-faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability)
-faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray)
-
-# Compute the fault number
-faultNumber = length(faultMap[(faultMap == TRUE)]) - length(faultMap[is.na(faultMap)])
-
 # Plot the fault map
 par(pty = "s") # Force a square plot
 image2D(
@@ -56,3 +50,13 @@ image2D(
   grid(nx=nrow(faultMap)), ny = ncol(faultMap),
   colkey = FALSE, NAcol = "white",  col = heat.colors(2)
 ) # Colkey = FALSE: no color key legend will be added
+
+# Plot the extimated function
+grid = mesh(estimation$x1, estimation$x2)
+surf3D(x = grid$x, y = grid$y, z = estimation$fhat,
+       c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
+       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
+       main = "Extimated function", sub = bquote(bold(mu[1])==.(mu[1])~
+                                                   ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
+                                                   ", "~sigma[xy]==.(sigma[2,1])))
+

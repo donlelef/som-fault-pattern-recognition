@@ -2,8 +2,7 @@
 % Please edit documentation in R/bindCircularMap.R
 \name{bindCircularMap}
 \alias{bindCircularMap}
-\title{Creates a circular grid from a square one by inserting the value outValue in
-every pixel which is not whitin the circle of given ray.}
+\title{Create a circular fault grid}
 \usage{
 bindCircularMap(rectangularMap, ray, outValue = NA)
 }

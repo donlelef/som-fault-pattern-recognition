@@ -25,7 +25,7 @@ paraboloid = function(x,y){
 Z = outer(x,y,"paraboloid")
 
 #3D plot with surf3D()
-surf3D(x = grid$x, y = grid$y,  z = z,  
+surf3D(x = grid$x, y = grid$y,  z = Z,  
        xlim = c(min(x),max(x)), ylim = c(min(y), max(y)),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
        main = "Normalized parabolic distribution")
@@ -47,7 +47,7 @@ image2D(
 
 # KDE
 faultIndex = which(faultMap == 1, arr.ind = TRUE)
-estimation = bkde2D(faultIndex, bandwidth = 20)
+estimation = bkde2D(faultIndex, bandwidth = 8)
 grid = mesh(estimation$x1, estimation$x2)
 surf3D(x = grid$x, y = grid$y, z = estimation$fhat,
        xlim = c(min(estimation$x1),max(estimation$x1)), ylim = c(min(estimation$x2), max(estimation$x2)),
