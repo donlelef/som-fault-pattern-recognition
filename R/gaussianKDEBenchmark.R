@@ -5,6 +5,7 @@
 # the KDE algorithm ranges in the interval [1, 10].
 
 # Import required libraries
+library(stats) # Needer for lm
 library(KernSmooth) # Needed for KDE
 library(KDEBenchmark) 
 library(plot3D) # Needed to plot the results with scatter2D function
@@ -15,7 +16,7 @@ ray = 50
 mu = c(ray, ray)
 sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
 maximumFaultProbability = 0.5
-bandwidth = seq(from = 1, to = 10, by = 0.2)
+bandwidth = seq(from = 1, to = 10, length.out = 50)
 error = rep_len(x = 0, length.out = length(bandwidth))
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
@@ -23,6 +24,7 @@ x1 = seq(from = 0, to = 2*ray, length.out = 2*ray)
 x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
 Z = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)
 
+# Repeat the simulation for several values of bandwidth
 for (i in 1 : length(bandwidth)){
   
   # Fill a simulated wafer with good and bad chips according to the just computed density.
@@ -39,5 +41,32 @@ for (i in 1 : length(bandwidth)){
 }
 
 # Plot the results
-scatter2D(x = bandwidth, y = error)
+scatter2D(x = bandwidth, y = error, pch = 4, main = "Average square error vs bandwidth",
+          sub = bquote("Number of simulation:"~.(length(bandwidth))), xlab = "bandwidth",
+          ylab = "error")
+
+# Identify polynomial model
+maximumGrade = 8 
+for(i in 1 : maximumGrade){
+  fit = lm(error~poly(bandwidth, i))
+  par(new = TRUE) # plot in the same graphic window
+  plot(x = bandwidth, y = predict(fit, data.frame(x = bandwidth)), 
+       type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab ="", axes = FALSE)
+}
+
+# Find the best model using AIC
+polyfit = function(i) x = AIC(lm(error~poly(bandwidth,i)))
+best = as.integer(optimize( polyfit,interval = c(1,maximumGrade), maximum = FALSE)$minimum)
+
+# Plot only the best model
+fit = lm(error~poly(bandwidth, best))
+par(new = FALSE) # create a new plot
+scatter2D(x = bandwidth, y = error, pch = 4, main = "Average square error vs bandwidth",
+          sub = bquote("Number of simulation:"~.(length(bandwidth))~"   Best grade:"~.(best)), xlab = "bandwidth",
+          ylab = "error")
+par(new = TRUE) # plot in the same graphic window
+plot(x = bandwidth, y = predict(fit, data.frame(x = bandwidth)), 
+     type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab ="", axes = FALSE)
+
+# Compute the best bandwidth value
 

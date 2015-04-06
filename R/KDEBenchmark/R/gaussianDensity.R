@@ -1,7 +1,8 @@
 #' Computes a bivariate gaussian probability density and return the result
 #' in the form of a matrix.
 #' 
-#' @title Gaussian Density
+#' @title Return a bivariate gaussian density
+#' @import mvtnorm
 #' @param x1: sampling points on the x axes
 #' @param x2: sampling points on the x axes
 #' @param mu: a vector containing the mean of the gaussian density

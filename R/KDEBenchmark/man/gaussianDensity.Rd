@@ -2,7 +2,7 @@
 % Please edit documentation in R/gaussianDensity.R
 \name{gaussianDensity}
 \alias{gaussianDensity}
-\title{Gaussian Density}
+\title{return a bivariate gaussian density}
 \usage{
 gaussianDensity(x1, x2, mu, sigma)
 }
