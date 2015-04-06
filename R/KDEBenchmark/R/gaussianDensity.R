@@ -8,7 +8,11 @@
 #' @param signma: a matrix containing the variance of the gaussian density
 #' @return a matrix containing the values of the density.
 
+
 gaussianDensity = function (x1, x2, mu, sigma) {
+  # Import
+  library("mvtnorm") # Needed for dmvnorm()
+  
   grid = expand.grid(x1, x2) #Creates all possible combinations
   densityVector = dmvnorm(x = grid, mean = mu, sigma = sigma, log = FALSE)
   
