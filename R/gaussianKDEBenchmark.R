@@ -16,7 +16,7 @@ ray = 50
 mu = c(ray, ray)
 sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
 maximumFaultProbability = 0.5
-bandwidth = seq(from = 1, to = 10, length.out = 50)
+bandwidth = seq(from = 1, to = 10, length.out = 10)
 error = rep_len(x = 0, length.out = length(bandwidth))
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
@@ -46,27 +46,29 @@ scatter2D(x = bandwidth, y = error, pch = 4, main = "Average square error vs ban
           ylab = "error")
 
 # Identify polynomial model
-maximumGrade = 8 
+maximumGrade = 8
+newData = seq(from = 1, to = 10, length.out = 250)
 for(i in 1 : maximumGrade){
   fit = lm(error~poly(bandwidth, i))
   par(new = TRUE) # plot in the same graphic window
-  plot(x = bandwidth, y = predict(fit, data.frame(x = bandwidth)), 
+  plot(x = newData, y = predict(fit, data.frame(bandwidth = newData)), 
        type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab ="", axes = FALSE)
 }
 
 # Find the best model using AIC
 polyfit = function(i) x = AIC(lm(error~poly(bandwidth,i)))
-best = as.integer(optimize( polyfit,interval = c(1,maximumGrade), maximum = FALSE)$minimum)
+best = as.integer(optimize(f = polyfit, interval = c(1,maximumGrade), maximum = FALSE)$minimum)
 
-# Plot only the best model
-fit = lm(error~poly(bandwidth, best))
+# Consider only the best model and find the best bandwidth - 
+# ie. the one which causes the minimun error 
+bestFit = lm(error~poly(bandwidth, best))
+modelValues = function(i) x = predict(bestFit, newdata = data.frame(bandwidth = i))
+bestBandwidth = optimize(f = modelValues,interval = c(1,max(bandwidth)), maximum = FALSE)$minimum
 par(new = FALSE) # create a new plot
 scatter2D(x = bandwidth, y = error, pch = 4, main = "Average square error vs bandwidth",
-          sub = bquote("Number of simulation:"~.(length(bandwidth))~"   Best grade:"~.(best)), xlab = "bandwidth",
-          ylab = "error")
+          sub = bquote("Number of simulation:"~.(length(bandwidth))~"   Best grade:"~.(best)~"   Best bandwidth:"~.(bestBandwidth)),
+          xlab = "bandwidth", ylab = "error")
 par(new = TRUE) # plot in the same graphic window
-plot(x = bandwidth, y = predict(fit, data.frame(x = bandwidth)), 
+plot(x = newData, y = predict(bestFit, newdata =  data.frame(bandwidth = newData)), 
      type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab ="", axes = FALSE)
-
-# Compute the best bandwidth value
 
