@@ -9,6 +9,7 @@
 library(mvtnorm)  # Needed for dmvnorm()
 library(plot3D)   # Needed for mesh()
 library(KDEBenchmark) 
+library(KernSmooth) # Needed for KDE
 
 # Initial parameters
 ray = 50

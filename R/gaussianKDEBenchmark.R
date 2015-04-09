@@ -10,13 +10,18 @@ library(KernSmooth) # Needed for KDE
 library(KDEBenchmark) 
 library(plot3D) # Needed to plot the results with scatter2D function
 
-
-# Initial parameters
+# Definition of execution parameters
 ray = 50
-mu = c(ray, ray)
-sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
+sigma1 = 1
+sigma2 = 1
+N_BAND = 50
 maximumFaultProbability = 0.5
-bandwidth = seq(from = 1, to = 10, length.out = 10)
+
+
+# Initializations
+mu = c(ray, ray)
+sigma = ray*diag(x = c(sigma1, sigma2))
+bandwidth = seq(from = 1, to = 10, length.out = N_BAND)
 error = rep_len(x = 0, length.out = length(bandwidth))
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
