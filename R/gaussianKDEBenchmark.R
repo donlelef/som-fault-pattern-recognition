@@ -5,18 +5,17 @@
 # the KDE algorithm ranges in the interval [1, 10].
 
 # Import required libraries
-library(stats) # Needer for lm
+library(stats) # Needed for lm
 library(KernSmooth) # Needed for KDE
-library(KDEBenchmark) 
 library(plot3D) # Needed to plot the results with scatter2D function
+library(KDEBenchmark) 
 
 # Definition of execution parameters
 ray = 50
 sigma1 = 1
 sigma2 = 1
-N_BAND = 50
-maximumFaultProbability = 0.5
-
+N_BAND = 10
+maximumFaultProbability = 0.1
 
 # Initializations
 mu = c(ray, ray)
@@ -27,7 +26,7 @@ error = rep_len(x = 0, length.out = length(bandwidth))
 # Calcuate f(x) for a large number of possible values for x1 and x2
 x1 = seq(from = 0, to = 2*ray, length.out = 2*ray)
 x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
-Z = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)
+Z = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)$pdf
 
 # Repeat the simulation for several values of bandwidth
 for (i in 1 : length(bandwidth)){
@@ -41,7 +40,7 @@ for (i in 1 : length(bandwidth)){
   estimation = bkde2D(x = faultIndex, bandwidth = bandwidth[i],  range.x = list(c(0,2*ray), c(0,2*ray)))
   
   # Benchmark
-  trueFunction = gaussianDensity(x1 = estimation$x1, x2 = estimation$x2, mu = mu, sigma = sigma)
+  trueFunction = gaussianDensity(x1 = estimation$x1, x2 = estimation$x2, mu = mu, sigma = sigma)$pdf
   error[i] = sum((trueFunction - estimation$fhat)^2)
 }
 
@@ -57,7 +56,7 @@ for(i in 1 : maximumGrade){
   fit = lm(error~poly(bandwidth, i))
   par(new = TRUE) # plot in the same graphic window
   plot(x = newData, y = predict(fit, data.frame(bandwidth = newData)), 
-       type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab ="", axes = FALSE)
+       type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab = "", axes = FALSE)
 }
 
 # Find the best model using AIC
@@ -77,3 +76,4 @@ par(new = TRUE) # plot in the same graphic window
 plot(x = newData, y = predict(bestFit, newdata =  data.frame(bandwidth = newData)), 
      type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab ="", axes = FALSE)
 
+# TODO: extract method on the second part of the script

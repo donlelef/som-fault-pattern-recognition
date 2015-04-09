@@ -12,37 +12,33 @@ library(KDEBenchmark)
 
 # Initial parameters
 ray = 30
-mu = c(ray, ray)
 maximumFaultProbability = 0.1
+coefficient = 1
 
 #Calcuate f(x) for a large number of possible values for x1 and x2
-x = seq(from = -5, to = 5, length.out = 2*ray)
-y = seq(from = -5, to = 5, length.out = 2*ray)
-grid = mesh(x,y)
-paraboloid = function(x,y){
-  2/(pi*ray^4)*(x^2+y^2)
-}
-Z = outer(x,y,"paraboloid")
+list = parabolicDensity(coefficient = coefficient, ray = ray)
+Z = list$pdf
+grid = list$grid
 
 #3D plot with surf3D()
 surf3D(x = grid$x, y = grid$y,  z = Z,  
-       xlim = c(min(x),max(x)), ylim = c(min(y), max(y)),
+       xlim = c(0,2*ray), ylim = c(0, 2*ray),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
        main = "Normalized parabolic distribution")
 
 # Fill the fault map
 faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
-faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = 0)
+faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = NA)
 
 # Compute the fault number
-faultNumber = length(faultMap[(faultMap == 1)]) - length(faultMap[is.na(faultMap)])
+faultNumber = faultNumber(faultMap = faultMap, faultValue = 1)
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
 image2D(
   x = 1:nrow(faultMap), y = 1:ncol(faultMap), z = faultMap, border = "black", 
   grid(nx=nrow(faultMap)), ny = ncol(faultMap),
-  colkey = FALSE, NAcol = "white",  col = heat.colors(2)
+  colkey = FALSE, NAcol = "white",  col = heat.colors(2), sub = bquote("faults = "~.(faultNumber))
 ) # Colkey = FALSE: no color key legend will be added
 
 # KDE

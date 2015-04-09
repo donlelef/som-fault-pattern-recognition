@@ -2,7 +2,7 @@
 % Please edit documentation in R/faultNumber.R
 \name{faultNumber}
 \alias{faultNumber}
-\title{find total amount of faults}
+\title{Find total amount of faults}
 \usage{
 faultNumber(faultMap, faultValue)
 }

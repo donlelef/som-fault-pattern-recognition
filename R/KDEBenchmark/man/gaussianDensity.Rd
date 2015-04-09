@@ -2,7 +2,7 @@
 % Please edit documentation in R/gaussianDensity.R
 \name{gaussianDensity}
 \alias{gaussianDensity}
-\title{return a bivariate gaussian density}
+\title{Return a bivariate gaussian density}
 \usage{
 gaussianDensity(x1, x2, mu, sigma)
 }
@@ -13,13 +13,15 @@ gaussianDensity(x1, x2, mu, sigma)
 
 \item{mu:}{a vector containing the mean of the gaussian density}
 
-\item{signma:}{a matrix containing the variance of the gaussian density}
+\item{sigma:}{a matrix containing the variance of the gaussian density}
 }
 \value{
-a matrix containing the values of the density.
+a list with 2 elemets: the values of the probability function "pdf" and the
+grid "grid" where it has been computed.
 }
 \description{
-Computes a bivariate gaussian probability density and return the result
-in the form of a matrix.
+Computes a bivariate gaussian probability density and return a list containing
+the grid used to compute the probability and a matrix with the values of the
+probability function.
 }
 

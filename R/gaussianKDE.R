@@ -8,19 +8,21 @@
 # Import required libraries
 library(mvtnorm)  # Needed for dmvnorm()
 library(plot3D)   # Needed for mesh()
+library(KernSmooth) # Needed for bkde2D
 library(KDEBenchmark) 
-library(KernSmooth) # Needed for KDE
 
 # Initial parameters
 ray = 50
 mu = c(ray, ray)
 sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
-maximumFaultProbability = 0.2
+maximumFaultProbability = 0.1
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
 x1 = seq(from = 0, to = 2*ray, length.out = 2*ray)
 x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
-Z = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)
+list = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)
+Z = list$pdf
+grid = list$grid
 
 # Fill a simulated wafer with good and bad chips according to the just computed density.
 faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability)
@@ -31,13 +33,10 @@ faultNumber = faultNumber(faultMap = faultMap, faultValue = TRUE)
 
 # Perform the KDE
 faultIndex = which(faultMap == 1, arr.ind = TRUE)
-estimation = bkde2D(faultIndex, bandwidth = 3.5, range.x = list(c(0,2*ray), c(0,2*ray)))
+estimation = bkde2D(faultIndex, bandwidth = 5, range.x = list(c(0,2*ray), c(0,2*ray)))
 
 # 3D plot of the fault probability density with surf3D()
-grid = mesh(x1, x2) # Like meshgrid
-X = grid$x
-Y = grid$y
-surf3D(x = X, y = Y, z = Z,  
+surf3D(x = grid$x, y = grid$y, z = Z,  
        xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
        main = "Bivariate Normal Distribution", sub = bquote(bold(mu[1])==.(mu[1])~
@@ -49,7 +48,7 @@ par(pty = "s") # Force a square plot
 image2D(
   x = 1:nrow(faultMap), y = 1:ncol(faultMap), z = faultMap, border = "black", 
   grid(nx=nrow(faultMap)), ny = ncol(faultMap),
-  colkey = FALSE, NAcol = "white",  col = heat.colors(2)
+  colkey = FALSE, NAcol = "white",  col = heat.colors(2), sub = bquote("faults = "~.(faultNumber))
 ) # Colkey = FALSE: no color key legend will be added
 
 # Plot the extimated function
