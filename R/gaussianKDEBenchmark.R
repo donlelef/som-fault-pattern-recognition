@@ -14,7 +14,7 @@ library(KDEBenchmark)
 ray = 50
 sigma1 = 1
 sigma2 = 1
-N_BAND = 10
+N_BAND = 50
 maximumFaultProbability = 0.1
 
 # Initializations
