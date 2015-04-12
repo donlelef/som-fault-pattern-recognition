@@ -26,21 +26,21 @@ error = rep_len(x = 0, length.out = length(bandwidth))
 # Calcuate f(x) for a large number of possible values for x1 and x2
 x1 = seq(from = 0, to = 2*ray, length.out = 2*ray)
 x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
-Z = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)$pdf
+trueFunction = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)$pdf
+# trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
 
 # Repeat the simulation for several values of bandwidth
 for (i in 1 : length(bandwidth)){
   
   # Fill a simulated wafer with good and bad chips according to the just computed density.
-  faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
+  faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
   faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = -1)
   
   # KDE
   faultIndex = which(faultMap == 1, arr.ind = TRUE)
-  estimation = bkde2D(x = faultIndex, bandwidth = bandwidth[i],  range.x = list(c(0,2*ray), c(0,2*ray)))
+  estimation = bkde2D(x = faultIndex, bandwidth = bandwidth[i],  range.x = list(c(0,2*ray), c(0,2*ray)), gridsize = c(nrow(trueFunction),ncol(trueFunction)))
   
   # Benchmark
-  trueFunction = gaussianDensity(x1 = estimation$x1, x2 = estimation$x2, mu = mu, sigma = sigma)$pdf
   error[i] = sum((trueFunction - estimation$fhat)^2)
 }
 
