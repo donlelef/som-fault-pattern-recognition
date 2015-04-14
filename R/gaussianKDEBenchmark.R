@@ -45,8 +45,10 @@ for (i in 1 : length(bandwidth)){
 }
 
 # Plot the results
-scatter2D(x = bandwidth, y = error, pch = 4, main = "Average square error vs bandwidth",
-          sub = bquote("Number of simulation:"~.(length(bandwidth))), xlab = "bandwidth",
+scatter2D(x = bandwidth, y = error, pch = 4, 
+          xlim = c(min(bandwidth),max(bandwidth)), ylim = c(0, max(error)),
+          main = "Average square error vs bandwidth",
+          sub = bquote("Number of simulations:"~.(length(bandwidth))), xlab = "bandwidth",
           ylab = "error")
 
 # Identify polynomial model
@@ -55,7 +57,8 @@ newData = seq(from = 1, to = 10, length.out = 250)
 for(i in 1 : maximumGrade){
   fit = lm(error~poly(bandwidth, i))
   par(new = TRUE) # plot in the same graphic window
-  plot(x = newData, y = predict(fit, data.frame(bandwidth = newData)), 
+  plot(x = newData, y = predict(fit, data.frame(bandwidth = newData)),
+       xlim = c(min(bandwidth),max(bandwidth)), ylim = c(0, max(error)),
        type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab = "", axes = FALSE)
 }
 
