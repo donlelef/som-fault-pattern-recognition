@@ -20,27 +20,27 @@ maximumFaultProbability = 0.1
 # Initializations
 mu = c(ray, ray)
 sigma = ray*diag(x = c(sigma1, sigma2))
-bandwidth = seq(from = 1, to = 10, length.out = N_BAND)
+bandwidth = seq(from = 1.5, to = 9, length.out = N_BAND)
 error = rep_len(x = 0, length.out = length(bandwidth))
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
 x1 = seq(from = 0, to = 2*ray, length.out = 2*ray)
 x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
-trueFunction = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)$pdf
-# trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
+Z = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)$pdf
 
 # Repeat the simulation for several values of bandwidth
 for (i in 1 : length(bandwidth)){
   
   # Fill a simulated wafer with good and bad chips according to the just computed density.
-  faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
+  faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
   faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = -1)
   
   # KDE
   faultIndex = which(faultMap == 1, arr.ind = TRUE)
-  estimation = bkde2D(x = faultIndex, bandwidth = bandwidth[i],  range.x = list(c(0,2*ray), c(0,2*ray)), gridsize = c(nrow(trueFunction),ncol(trueFunction)))
+  estimation = bkde2D(x = faultIndex, bandwidth = bandwidth[i],  range.x = list(c(0,2*ray), c(0,2*ray)))
   
   # Benchmark
+  trueFunction = gaussianDensity(x1 = estimation$x1, x2 = estimation$x2, mu = mu, sigma = sigma)$pdf
   error[i] = sum((trueFunction - estimation$fhat)^2)
 }
 
@@ -69,11 +69,15 @@ bestFit = lm(error~poly(bandwidth, best))
 modelValues = function(i) x = predict(bestFit, newdata = data.frame(bandwidth = i))
 bestBandwidth = optimize(f = modelValues,interval = c(1,max(bandwidth)), maximum = FALSE)$minimum
 par(new = FALSE) # create a new plot
-scatter2D(x = bandwidth, y = error, pch = 4, main = "Average square error vs bandwidth",
-          sub = bquote("Number of simulation:"~.(length(bandwidth))~"   Best grade:"~.(best)~"   Best bandwidth:"~.(bestBandwidth)),
+scatter2D(x = bandwidth, y = error, pch = 4, 
+          xlim = c(min(bandwidth),max(bandwidth)), ylim = c(0, max(error)),
+          main = "Average square error vs bandwidth",
+          sub = bquote("Simulations:"~.(length(bandwidth))~
+                         "  Best grade:"~.(best)~"   Best bandwidth:"~.(bestBandwidth)),
           xlab = "bandwidth", ylab = "error")
 par(new = TRUE) # plot in the same graphic window
-plot(x = newData, y = predict(bestFit, newdata =  data.frame(bandwidth = newData)), 
+plot(x = newData, y = predict(bestFit, newdata =  data.frame(bandwidth = newData)),
+     xlim = c(min(bandwidth),max(bandwidth)), ylim = c(0, max(error)),
      type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab ="", axes = FALSE)
 
 # TODO: extract method on the second part of the script
