@@ -16,34 +16,45 @@ coefficient = 2/(pi*ray^4);
 
 % Computing and plotting multivariate normal probability density function
 Z = parabolicIntensity(ray, coefficient);
+Z = createCircularGrid(Z, ray, NaN);
 
 figure(1)
 surf(Z)
+xlim([0, 2*ray]);
+ylim([0, 2*ray]);
 title('Probability density function')
 
 % Filling sqare matrix with simbolic values. Fault are deloyed according to
 % the probabilit function.
 faultMap = fillSquareGrid(Z, 2*ray, maximumFaultProbability);
-faultMap = createCircularGrid(faultMap, ray);
+faultMap = createCircularGrid(faultMap, ray, -1);
 faultNumber = length(find(faultMap==1));
 
 % Plotting fault map
 figure(2)
 pcolor(faultMap)
+xlim([0, 2*ray]);
+ylim([0, 2*ray]);
 title(['Fault map with ', num2str(faultNumber), ' faults'])
 
 % KDE
 % call the routine, which has been saved in the current directory
 [j, i] = find(faultMap==1); % find seachs elements by columns
 [bandwidth,density,X,Y]=kde2d([i,j], 64);
+% diameter = find(X(1,:)>60)-find(X(1,:)<0); % NOT working
+
 % plot the data and the density estimate
 figure(3)
 hold on
 contour3(X,Y,density,10); 
 plot(i,j,'r.','MarkerSize',5);
+xlim([0, 2*ray]);
+ylim([0, 2*ray]);
 title('Extimated density contours')
 figure(4)
 surf(X,Y,density);
+xlim([0, 2*ray]);
+ylim([0, 2*ray]);
 title('Extimated function')
 
 figure(5)

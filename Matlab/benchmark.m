@@ -32,7 +32,7 @@ for i = 1:length(maximimumFaultProbabilities)
         % Filling sqare matrix with simbolic values. Fault are deployed according to
         % the probability function.
         faultMap = fillSquareGrid(Z, 2*ray, maximumFaultProbability);
-        faultMap = createCircularGrid(faultMap, ray);
+        faultMap = createCircularGrid(faultMap, ray, -1);
         faultNumber(j,1) = length(find(faultMap==1));
         
         % KDE
