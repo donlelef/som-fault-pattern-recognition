@@ -24,7 +24,7 @@ for i = 1:length(maximimumFaultProbabilities)
     maximumFaultProbability = maximimumFaultProbabilities(i);
     for j = 1:testsNumber
         % GAUSSIAN DENSITY
-        % Computing multivariate normal probability density function
+        % Computing multivariate gaussian probability density function
         varX = 1;
         varY = 1;
         Z = GaussianDensity(ray, varX, varY);
