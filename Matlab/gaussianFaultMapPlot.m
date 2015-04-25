@@ -17,7 +17,7 @@ varY = 1;
 
 % Computing and plotting multivariate normal probability density function
 Z = GaussianDensity(ray, varX, varY);
-Z = createCircularGrid(Z, ray, 0);
+Z = createCircularGrid(Z, ray, NaN);
 
 figure(1)
 surf(Z)

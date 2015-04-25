@@ -48,18 +48,18 @@ for i = 1:length(maximimumFaultProbabilities)
         sigma = [varX, 0; 0, varY];
         trueDensity = mvnpdf([X(:), Y(:)], mu, sigma);
         trueDensity = reshape(trueDensity, length(X), length(Y));
-        errorMatrix = (trueDensity - extimatedDensity).^2;
-        error(j,1) = sum(sum(errorMatrix))/numel(errorMatrix);
+        [errorMatrix, errorEvaluationNumber] = computeErrorInCircularGrid(extimatedDensity, trueDensity, X(1,:), Y(:,1), ray);
+        error(j,1) = sum(sum(errorMatrix))/errorEvaluationNumber;
         
         % PARABOLIC DENSITY
         % Computing parabolic probability density function
         coefficient = 2/(pi*ray^4);
         Z = parabolicIntensity(ray, coefficient);
         
-        % Filling sqare matrix with simbolic values. Fault are deployed according to
+        % Filling square matrix with simbolic values. Fault are deployed according to
         % the probability function.
         faultMap = fillSquareGrid(Z, 2*ray, maximumFaultProbability);
-        faultMap = createCircularGrid(faultMap, ray);
+        faultMap = createCircularGrid(faultMap, ray, -1);
         faultNumber(j,2) = length(find(faultMap==1));
         
         % KDE
@@ -71,9 +71,9 @@ for i = 1:length(maximimumFaultProbabilities)
         % Computing and saving the average square error, ie the difference
         % between the value of the extimeted function and the value of the real
         % one.
-        trueDensity = coefficient.*(X.^2+Y.^2);
-        errorMatrix = (trueDensity - extimatedDensity).^2;
-        error(j,2) = sum(sum(errorMatrix))/numel(errorMatrix);
+        trueDensity = coefficient.*((X-ray).^2+(Y-ray).^2);
+        [errorMatrix, errorEvaluationNumber] = computeErrorInCircularGrid(extimatedDensity, trueDensity, X(1,:), Y(:,1), ray);
+        error(j,2) = sum(sum(errorMatrix))/errorEvaluationNumber;
     end
     meanError(i,1) = mean(error(:,1));
     meanFaults(i,1) = mean(faultNumber(:,1));
@@ -82,21 +82,53 @@ for i = 1:length(maximimumFaultProbabilities)
     
 end
 
+% Extracting the square root of the errors
+% mean
+%
 
-GaussianCurve = fit(meanFaults(:,1), meanError(:,1), 'poly5', 'Normalize', 'on');
-ParabolicCurve = fit(meanFaults(:,2), meanError(:,2), 'poly5', 'Normalize', 'on');
+GaussianCurve = fit(meanFaults(:,1), meanError(:,1), 'exp2', 'Normalize', 'on');
+ParabolicCurve = fit(meanFaults(:,2), meanError(:,2), 'exp2', 'Normalize', 'on');
 
 figure(1)
 subplot(2,1,1)
 hold on
 scatter(meanFaults(:,1), meanError(:,1), 'x')
 plot(GaussianCurve)
+xlim([0, max(meanFaults(:,1)) + 10]);
+xlabel('Faults - linear scale')
+ylabel('Mean square error')
 title(['GAUSSIAN DENSITY. Mean error vs fault number - ', num2str(length(maximimumFaultProbabilities)), ' different fault amounts'])
-legend('Simulated data', '5th degree fitting')
+legend('Simulated data', 'Exponential fitting')
 
 subplot(2,1,2)
 hold on
 scatter(meanFaults(:,2), meanError(:,2), 'x')
 plot(ParabolicCurve)
+xlim([0, max(meanFaults(:,2)) + 10]);
+xlabel('Faults - linear scale')
+ylabel('Mean square error')
 title(['PARABOLIC DENSITY. Mean error vs fault number - ', num2str(length(maximimumFaultProbabilities)), ' different fault amounts'])
-legend('Simulated data', '5th degree fitting')
+legend('Simulated data', 'Exponential fitting')
+
+figure(2)
+subplot(2,1,1)
+hold on
+scatter(meanFaults(:,1), meanError(:,1), 'x')
+plot(GaussianCurve)
+xlim([min(meanFaults(:,1)), max(meanFaults(:,1))]);
+set(gca, 'xscale', 'log')
+xlabel('Faults - log scale')
+ylabel('Mean square error')
+title(['GAUSSIAN DENSITY. Mean error vs fault number - ', num2str(length(maximimumFaultProbabilities)), ' different fault amounts'])
+legend('Simulated data', 'Exponential fitting')
+
+subplot(2,1,2)
+hold on
+scatter(meanFaults(:,2), meanError(:,2), 'x')
+plot(ParabolicCurve)
+xlim([min(meanFaults(:,2)), max(meanFaults(:,2))]);
+set(gca, 'xscale', 'log')
+xlabel('Faults - log scale')
+ylabel('Mean square error')
+title(['PARABOLIC DENSITY. Mean error vs fault number - ', num2str(length(maximimumFaultProbabilities)), ' different fault amounts'])
+legend('Simulated data', 'Exponential fitting')
