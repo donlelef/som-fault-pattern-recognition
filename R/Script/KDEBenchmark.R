@@ -14,7 +14,7 @@ library(KDEBenchmark)
 ray = 50
 sigma1 = 1
 sigma2 = 1
-N_BAND = 100
+N_BAND = 10
 maximumFaultProbability = 0.05
 lowerBandwidthLimit = 3
 upperBandwidthLimit = 20
@@ -26,8 +26,7 @@ bandwidth = seq(from = lowerBandwidthLimit, to = upperBandwidthLimit, length.out
 error = vector(mode = "numeric", length = length(bandwidth))
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
-x1 = x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
-# trueFunction = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)$pdf
+# trueFunction = gaussianDensity(ray = ray, mu = mu, sigma = sigma)$pdf
 trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
 
 # Repeat the simulation for several values of bandwidth

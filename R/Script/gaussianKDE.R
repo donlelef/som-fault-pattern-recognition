@@ -22,8 +22,7 @@ maximumFaultProbability = 0.1
 bandwidth = 4
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
-x1 = x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
-list = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)
+list = gaussianDensity(ray = ray, mu = mu, sigma = sigma)
 Z = list$pdf
 grid = list$grid
 

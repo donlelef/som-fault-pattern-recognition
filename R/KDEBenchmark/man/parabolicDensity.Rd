@@ -2,7 +2,7 @@
 % Please edit documentation in R/parabolicDensity.R
 \name{parabolicDensity}
 \alias{parabolicDensity}
-\title{Return a bivariate parabolic density}
+\title{Return a parabolic density}
 \usage{
 parabolicDensity(coefficient, ray)
 }
@@ -16,7 +16,7 @@ list with 2 elemets: the values of the probability function "pdf" and the
 grid "grid" where it has been computed.
 }
 \description{
-Computes a bivariate parabolic probability density and return a list containing
+Computes a parabolic probability density and return a list containing
 the grid used to compute the probability and a matrix with the values of the
 probability function. The center of the paraboloid is the one of the wafer.
 }

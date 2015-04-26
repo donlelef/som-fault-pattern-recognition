@@ -4,12 +4,10 @@
 \alias{gaussianDensity}
 \title{Return a bivariate gaussian density}
 \usage{
-gaussianDensity(x1, x2, mu, sigma)
+gaussianDensity(ray, mu, sigma)
 }
 \arguments{
-\item{x1:}{sampling points on the x axes}
-
-\item{x2:}{sampling points on the x axes}
+\item{ray:}{half the number of column of the square matrix returned}
 
 \item{mu:}{a vector containing the mean of the gaussian density}
 

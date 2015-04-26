@@ -16,9 +16,9 @@ maximumFaultProbability = 0.01
 bandwidth = 50
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
-x1 = x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
-Z = (1/(pi*ray^2))*matrix(data = 1, nrow = 2*ray, ncol = 2*ray)
-grid = mesh(x1, x2)
+list = uniformDensity(ray)
+Z = list$pdf
+grid = list$grid
 
 # Fill a simulated wafer with good and bad chips according to the just computed density.
 faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability)

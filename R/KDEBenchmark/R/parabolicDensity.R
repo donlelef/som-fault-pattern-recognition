@@ -1,8 +1,8 @@
-#' Computes a bivariate parabolic probability density and return a list containing
+#' Computes a parabolic probability density and return a list containing
 #' the grid used to compute the probability and a matrix with the values of the 
 #' probability function. The center of the paraboloid is the one of the wafer.
 #' 
-#' @title Return a bivariate parabolic density
+#' @title Return a parabolic density
 #' @import cubature
 #' @param coefficient: the coefficient a in the formula z = a(x^2 + y^2)
 #' @param ray: the ray of the circular wafer
