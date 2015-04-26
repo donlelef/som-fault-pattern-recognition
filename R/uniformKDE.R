@@ -1,31 +1,24 @@
-# This script computes a bidimensional parabolic distribution and plots it.
+# This script cumputes a bidimensional gaussian distribution and plots it.
 # This probability function is assumed to represent the probability of a fault
 # to happen on the chip in the coordinates (x1, x2).
 # After that, a map is created where random faults are simulated. The value
 # FALSE in the map means 'no fault' and TRUE means 'fault', whereas NA indicates 
 # a point out of the circular wafer.
-# The KDE algorithm is lauched and the original function is predicted form the 
-# positions of the defects on the wafer
-# Five plot show the difference between the real function and the extimated one.
 
 # Import required libraries
-library(mvtnorm)  # Needed for dmvnorm()
-library(plot3D)   # Needed for surf3D()
+library(plot3D)   # Needed for mesh()
 library(KernSmooth) # Needed for bkde2D
 library(KDEBenchmark) 
 
 # Initial parameters
 ray = 30
-mu = c(ray, ray)
-sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
-maximumFaultProbability = 0.1
-bandwidth = 4
+maximumFaultProbability = 0.01
+bandwidth = 50
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
 x1 = x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
-list = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)
-Z = list$pdf
-grid = list$grid
+Z = (1/(pi*ray^2))*matrix(data = 1, nrow = 2*ray, ncol = 2*ray)
+grid = mesh(x1, x2)
 
 # Fill a simulated wafer with good and bad chips according to the just computed density.
 faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability)
@@ -43,9 +36,8 @@ Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
 surf3D(x = grid$x, y = grid$y, z = Z,  
        xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Bivariate Normal Distribution", sub = bquote(bold(mu[1])==.(mu[1])~
-                                                              ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
-                                                              ", "~sigma[xy]==.(sigma[2,1])))
+       colkey = FALSE, main = "Uniform distribution"
+)
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
@@ -57,11 +49,10 @@ plotMatrix(title = "Simulated fault map", matrix = faultMap, colorMap = heat.col
 grid = mesh(estimation$x1, estimation$x2)
 extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
 surf3D(x = grid$x, y = grid$y, z = extimatedFunction,
-       xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
+       xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)), zlim = c(0, max(extimatedFunction, na.rm = TRUE)),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Extimated function", sub = bquote(bold(mu[1])==.(mu[1])~
-                                                   ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
-                                                   ", "~sigma[xy]==.(sigma[2,1])))
+       colkey = FALSE, main = "Extimated function"
+)
 
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors

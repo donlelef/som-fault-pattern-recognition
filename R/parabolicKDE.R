@@ -1,12 +1,15 @@
-# This script cumputes a bidimensional gaussian distribution and plots it.
+# This script computes a bidimensional parabolic distribution and plots it.
 # This probability function is assumed to represent the probability of a fault
 # to happen on the chip in the coordinates (x1, x2).
 # After that, a map is created where random faults are simulated. The value
 # FALSE in the map means 'no fault' and TRUE means 'fault', whereas NA indicates 
 # a point out of the circular wafer.
+# The KDE algorithm is lauched and the original function is predicted form the 
+# positions of the defects on the wafer
+# Five plot show the difference between the real function and the extimated one.
 
 # Import required libraries
-library(plot3D)   # Needed for mesh()
+library(plot3D)   # Needed for surf3D()
 library(KernSmooth) # Needed for KDE
 library(KDEBenchmark) 
 
@@ -21,11 +24,11 @@ Z = list$pdf
 grid = list$grid
 
 # Fill the fault map
-faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
+faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability, faultValue = TRUE, notFaultValue = FALSE)
 faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = NA)
 
 # Compute the fault number
-faultNumber = faultNumber(faultMap = faultMap, faultValue = 1)
+faultNumber = faultNumber(faultMap = faultMap, faultValue = TRUE)
 
 # Perform the KDE
 faultIndex = which(faultMap == 1, arr.ind = TRUE)
@@ -49,7 +52,7 @@ plotMatrix(title = "Fault map", matrix = faultMap, colorMap = heat.colors(2),
 grid = mesh(estimation$x1, estimation$x2)
 extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
 surf3D(x = grid$x, y = grid$y, z = estimation$fhat,
-       xlim = c(min(estimation$x1),max(estimation$x1)), ylim = c(min(estimation$x2), max(estimation$x2)),
+       xlim = c(min(estimation$x1), max(estimation$x1)), ylim = c(min(estimation$x2), max(estimation$x2)),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
        main = "Extimated function")
 

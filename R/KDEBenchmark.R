@@ -1,8 +1,8 @@
-# This script cumputes a bidimensional gaussian distribution, uses it as a
+# This script cumputes a bidimensional probability distribution, uses it as a
 # probability function to create a faultMap, and then tries to estimate
 # the original distribution from the faults on the map using KDE algorithm.
 # The benchmark concern the accuracy of the estimation as the bandwidth for
-# the KDE algorithm ranges in the interval [1, 10].
+# the KDE algorithm ranges in a given interval.
 
 # Import required libraries
 library(stats) # Needed for lm
@@ -23,7 +23,7 @@ upperBandwidthLimit = 20
 mu = c(ray, ray)
 sigma = ray*diag(x = c(sigma1, sigma2))
 bandwidth = seq(from = lowerBandwidthLimit, to = upperBandwidthLimit, length.out = N_BAND)
-error = rep_len(x = 0, length.out = length(bandwidth))
+error = vector(mode = "numeric", length = length(bandwidth))
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
 x1 = x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)

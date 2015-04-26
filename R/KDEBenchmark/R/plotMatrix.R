@@ -15,9 +15,10 @@ plotMatrix = function(title = "", matrix, colorMap, ...){
   library(plot3D)
   
   image2D(
-    x = 1:nrow(matrix), y = 1:ncol(matrix), z = matrix, border = "black", 
-    grid(nx=nrow(matrix)), ny = ncol(matrix),
-    colkey = FALSE, NAcol = "white",  col = colorMap,
+    x = 1:nrow(matrix), y = 1:ncol(matrix), z = matrix, border = "gray",
+    zlim = c(0, max(matrix, na.rm = TRUE)),
+    grid(nx=nrow(matrix), ny = ncol(matrix)),
+    colkey = FALSE, NAcol = "black",  col = colorMap,
     main = title, xlab = "", ylab = "", ...    
-  ) # Colkey = FALSE: no color key legend will be added
+  )
 }
