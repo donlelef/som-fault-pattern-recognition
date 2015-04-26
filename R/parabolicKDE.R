@@ -20,12 +20,6 @@ list = parabolicDensity(coefficient = coefficient, ray = ray)
 Z = list$pdf
 grid = list$grid
 
-#3D plot with surf3D()
-surf3D(x = grid$x, y = grid$y,  z = Z,  
-       xlim = c(0,2*ray), ylim = c(0, 2*ray),
-       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Normalized parabolic distribution")
-
 # Fill the fault map
 faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
 faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = NA)
@@ -33,22 +27,37 @@ faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = NA)
 # Compute the fault number
 faultNumber = faultNumber(faultMap = faultMap, faultValue = 1)
 
-# Plot the fault map
-par(pty = "s") # Force a square plot
-image2D(
-  x = 1:nrow(faultMap), y = 1:ncol(faultMap), z = faultMap, border = "black", 
-  grid(nx=nrow(faultMap)), ny = ncol(faultMap),
-  colkey = FALSE, NAcol = "white",  col = heat.colors(2), sub = bquote("faults = "~.(faultNumber))
-) # Colkey = FALSE: no color key legend will be added
-
-# KDE
+# Perform the KDE
 faultIndex = which(faultMap == 1, arr.ind = TRUE)
 estimation = bkde2D(x = faultIndex, bandwidth = 8, range.x = list(c(0,2*ray), c(0, 2*ray)), gridsize = c(2*ray, 2*ray))
+
+# 3D plot of the fault probability density with surf3D()
+Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
+surf3D(x = grid$x, y = grid$y,  z = Z,  
+       xlim = c(0,2*ray), ylim = c(0, 2*ray),
+       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
+       main = "Normalized parabolic distribution"
+)
+
+# Plot the fault map
+par(pty = "s") # Force a square plot
+plotMatrix(title = "Fault map", matrix = faultMap, colorMap = heat.colors(2), 
+           sub = bquote("Number of faults = "~.(faultNumber))
+)
+
+# Plot the extimated function
 grid = mesh(estimation$x1, estimation$x2)
+extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
 surf3D(x = grid$x, y = grid$y, z = estimation$fhat,
        xlim = c(min(estimation$x1),max(estimation$x1)), ylim = c(min(estimation$x2), max(estimation$x2)),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
        main = "Extimated function")
+
+# Plot the true density function and the extimated one as flat matrixes. 
+# Different values are identified by different colors
+par(pty = "s") # Force a square plot
+plotMatrix(title = "Real density function", matrix = Z, colorMap = rainbow(20))
+plotMatrix(title = "Extimated density function", matrix = extimatedFunction, colorMap = rainbow(20))
 
 
 
