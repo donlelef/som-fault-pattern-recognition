@@ -43,7 +43,7 @@ image2D(
 
 # KDE
 faultIndex = which(faultMap == 1, arr.ind = TRUE)
-estimation = bkde2D(faultIndex, bandwidth = 8)
+estimation = bkde2D(x = faultIndex, bandwidth = 8, range.x = list(c(0,2*ray), c(0, 2*ray)), gridsize = c(2*ray, 2*ray))
 grid = mesh(estimation$x1, estimation$x2)
 surf3D(x = grid$x, y = grid$y, z = estimation$fhat,
        xlim = c(min(estimation$x1),max(estimation$x1)), ylim = c(min(estimation$x2), max(estimation$x2)),

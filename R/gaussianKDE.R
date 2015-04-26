@@ -12,14 +12,14 @@ library(KernSmooth) # Needed for bkde2D
 library(KDEBenchmark) 
 
 # Initial parameters
-ray = 50
+ray = 30
 mu = c(ray, ray)
 sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
 maximumFaultProbability = 0.1
+bandwidth = 4
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
-x1 = seq(from = 0, to = 2*ray, length.out = 2*ray)
-x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
+x1 = x2 = seq(from = 0, to = 2*ray, length.out = 2*ray)
 list = gaussianDensity(x1 = x1, x2 = x2, mu = mu, sigma = sigma)
 Z = list$pdf
 grid = list$grid
@@ -33,9 +33,10 @@ faultNumber = faultNumber(faultMap = faultMap, faultValue = TRUE)
 
 # Perform the KDE
 faultIndex = which(faultMap == 1, arr.ind = TRUE)
-estimation = bkde2D(faultIndex, bandwidth = 5, range.x = list(c(0,2*ray), c(0,2*ray)))
+estimation = bkde2D(faultIndex, bandwidth = bandwidth, range.x = list(c(0,2*ray), c(0,2*ray)), gridsize = c(2*ray, 2*ray))
 
 # 3D plot of the fault probability density with surf3D()
+Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
 surf3D(x = grid$x, y = grid$y, z = Z,  
        xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
@@ -45,18 +46,22 @@ surf3D(x = grid$x, y = grid$y, z = Z,
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
-image2D(
-  x = 1:nrow(faultMap), y = 1:ncol(faultMap), z = faultMap, border = "black", 
-  grid(nx=nrow(faultMap)), ny = ncol(faultMap),
-  colkey = FALSE, NAcol = "white",  col = heat.colors(2), sub = bquote("faults = "~.(faultNumber))
-) # Colkey = FALSE: no color key legend will be added
+plotMatrix(title = "Simulated fault map", matrix = faultMap, colorMap = heat.colors(2),
+           sub = bquote("Number of faults = "~.(faultNumber))
+)
 
 # Plot the extimated function
 grid = mesh(estimation$x1, estimation$x2)
-surf3D(x = grid$x, y = grid$y, z = estimation$fhat,
+extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
+surf3D(x = grid$x, y = grid$y, z = extimatedFunction,
        c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
        main = "Extimated function", sub = bquote(bold(mu[1])==.(mu[1])~
                                                    ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
                                                    ", "~sigma[xy]==.(sigma[2,1])))
 
+# Plot the true density function and the extimated one as flat matrixes. 
+# Different values are identified by different colors
+par(pty = "s") # Force a square plot
+plotMatrix(title = "Real density function", matrix = Z, colorMap = rainbow(20))
+plotMatrix(title = "Extimated density function", matrix = extimatedFunction, colorMap = rainbow(20))

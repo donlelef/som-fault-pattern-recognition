@@ -15,7 +15,7 @@ ray = 50
 sigma1 = 1
 sigma2 = 1
 N_BAND = 50
-maximumFaultProbability = 0.1
+maximumFaultProbability = 0.05
 
 # Initializations
 mu = c(ray, ray)

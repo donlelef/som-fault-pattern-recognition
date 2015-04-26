@@ -19,4 +19,6 @@ getNormalizationCoefficient = function(f, lowerLimit, upperLimit, ...){
   
   volume = adaptIntegrate(f, lowerLimit, upperLimit, maxEval = 100000, ...)$integral
   normalizationCoefficient = 1/volume 
+  
+  return(normalizationCoefficient)
 }
