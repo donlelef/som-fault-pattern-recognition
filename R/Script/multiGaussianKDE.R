@@ -1,4 +1,5 @@
-# This script computes a bidimensional parabolic distribution and plots it.
+# This script computes the sum of an arbitrary number of bidimensional 
+# gaussian distribution and plots them.
 # This probability function is assumed to represent the probability of a fault
 # to happen on the chip in the coordinates (x1, x2).
 # After that, a map is created where random faults are simulated. The value
@@ -16,13 +17,15 @@ library(KDEBenchmark)
 
 # Initial parameters
 ray = 30
-mu = c(0, 10)
 sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
+parameterList = list(list(mu = c(ray,ray), sigma = sigma), 
+                     list(mu = c(0,ray), sigma = sigma)
+)
 maximumFaultProbability = 0.1
 bandwidth = 4
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
-list = gaussianDensity(ray = ray, mu = mu, sigma = sigma)
+list = multiGaussianDensity(ray = ray, parameterList = parameterList)
 Z = list$pdf
 grid = list$grid
 
@@ -40,11 +43,10 @@ estimation = bkde2D(faultIndex, bandwidth = bandwidth, range.x = list(c(0,2*ray)
 # 3D plot of the fault probability density with surf3D()
 Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
 surf3D(x = grid$x, y = grid$y, z = Z,  
-       xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
+       xlim = c(min(grid$x),max(grid$x)), ylim = c(min(grid$y), max(grid$y)),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Bivariate Normal Distribution", sub = bquote(bold(mu[1])==.(mu[1])~
-                                                              ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
-                                                              ", "~sigma[xy]==.(sigma[2,1])))
+       main = "Bivariate Normal Distribution"
+)
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
@@ -56,12 +58,10 @@ plotMatrix(title = "Simulated fault map", matrix = faultMap, colorMap = heat.col
 grid = mesh(estimation$x1, estimation$x2)
 extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
 surf3D(x = grid$x, y = grid$y, z = extimatedFunction,
-       xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
+       xlim = c(min(grid$x),max(grid$x)), ylim = c(min(grid$y), max(grid$y)),
        lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Extimated function", sub = bquote(bold(mu[1])==.(mu[1])~
-                                                   ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
-                                                   ", "~sigma[xy]==.(sigma[2,1])))
-
+       main = "Extimated function"
+)
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors
 par(pty = "s") # Force a square plot
