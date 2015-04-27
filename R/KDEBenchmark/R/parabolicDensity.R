@@ -3,7 +3,7 @@
 #' probability function. The center of the paraboloid is the one of the wafer.
 #' 
 #' @title Return a parabolic density
-#' @import cubature
+#' @import plot3D
 #' @param coefficient: the coefficient a in the formula z = a(x^2 + y^2)
 #' @param ray: the ray of the circular wafer
 #' @return list with 2 elemets: the values of the probability function "pdf" and the 
@@ -11,6 +11,9 @@
 
 
 parabolicDensity = function (coefficient, ray) {
+  
+  # import
+  library(plot3D) # required for mesh()
   
   vectorParaboloid = function(x){
     if((x[1]-ray)^2 + (x[2]-ray)^2 < ray^2) {

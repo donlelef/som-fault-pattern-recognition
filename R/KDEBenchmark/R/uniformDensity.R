@@ -3,11 +3,15 @@
 #' probability function.
 #' 
 #' @title Return a uniform density
+#' @import plot3D
 #' @param ray: half the number of column of the square matrix returned
 #' @return a list with 2 elemets: the values of the probability function "pdf" and the 
 #' grid "grid" where it has been computed.
 
 uniformDensity = function (ray) {
+  
+  # import
+  library(plot3D) # required for mesh()
   
   x2 = x1 = seq(from = 0, to = 2*ray, length.out = 2*ray)
   

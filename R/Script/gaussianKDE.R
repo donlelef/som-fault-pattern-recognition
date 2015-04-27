@@ -9,14 +9,12 @@
 # Five plot show the difference between the real function and the extimated one.
 
 # Import required libraries
-library(mvtnorm)  # Needed for dmvnorm()
-library(plot3D)   # Needed for surf3D()
 library(KernSmooth) # Needed for bkde2D
-library(KDEBenchmark) 
+library(KDEBenchmark) # Needed for everything
 
 # Initial parameters
 ray = 30
-mu = c(0, 10)
+mu = c(ray, ray)
 sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
 maximumFaultProbability = 0.1
 bandwidth = 4
@@ -39,12 +37,9 @@ estimation = bkde2D(faultIndex, bandwidth = bandwidth, range.x = list(c(0,2*ray)
 
 # 3D plot of the fault probability density with surf3D()
 Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
-surf3D(x = grid$x, y = grid$y, z = Z,  
-       xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
-       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Bivariate Normal Distribution", sub = bquote(bold(mu[1])==.(mu[1])~
-                                                              ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
-                                                              ", "~sigma[xy]==.(sigma[2,1])))
+plotSurface(x = grid$x, y = grid$y, z = Z, title = "Bivariate Normal Distribution",
+            sub = bquote(bold(mu[1])==.(mu[1])~", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~", "~sigma[xy]==.(sigma[2,1]))
+)
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
@@ -55,12 +50,9 @@ plotMatrix(title = "Simulated fault map", matrix = faultMap, colorMap = heat.col
 # Plot the extimated function
 grid = mesh(estimation$x1, estimation$x2)
 extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
-surf3D(x = grid$x, y = grid$y, z = extimatedFunction,
-       xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
-       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Extimated function", sub = bquote(bold(mu[1])==.(mu[1])~
-                                                   ", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~
-                                                   ", "~sigma[xy]==.(sigma[2,1])))
+plotSurface(x = grid$x, y = grid$y, z = extimatedFunction, title = "Extimated function",
+            sub = bquote(bold(mu[1])==.(mu[1])~", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~", "~sigma[xy]==.(sigma[2,1]))
+)
 
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors

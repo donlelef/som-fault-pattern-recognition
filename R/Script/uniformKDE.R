@@ -6,9 +6,8 @@
 # a point out of the circular wafer.
 
 # Import required libraries
-library(plot3D)   # Needed for mesh()
-library(KernSmooth) # Needed for bkde2D
-library(KDEBenchmark) 
+library(KernSmooth) # Needed for bkde2D()
+library(KDEBenchmark) # Needed for everithing
 
 # Initial parameters
 ray = 30
@@ -33,11 +32,7 @@ estimation = bkde2D(faultIndex, bandwidth = bandwidth, range.x = list(c(0,2*ray)
 
 # 3D plot of the fault probability density with surf3D()
 Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
-surf3D(x = grid$x, y = grid$y, z = Z,  
-       xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)),
-       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       colkey = FALSE, main = "Uniform distribution"
-)
+plotSurface(x = grid$x, y = grid$y, z = Z,  title = "Uniform distribution")
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
@@ -48,11 +43,7 @@ plotMatrix(title = "Simulated fault map", matrix = faultMap, colorMap = heat.col
 # Plot the extimated function
 grid = mesh(estimation$x1, estimation$x2)
 extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
-surf3D(x = grid$x, y = grid$y, z = extimatedFunction,
-       xlim = c(min(x1),max(x1)), ylim = c(min(x2), max(x2)), zlim = c(0, max(extimatedFunction, na.rm = TRUE)),
-       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       colkey = FALSE, main = "Extimated function"
-)
+plotSurface(x = grid$x, y = grid$y, z = extimatedFunction, title = "Extimated function")
 
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors

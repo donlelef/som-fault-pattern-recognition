@@ -8,9 +8,14 @@
 #' probability of a fault
 #' @param faultVaue: the value assigned to a element which is faulty. Default is TRUE
 #' @param notFaultVaue: the value assigned to a element which is faulty. Default is FALSE.
+#' @import stats
 #' @return a matrix of the same dimensions of probabilityFunction.
 
 fillRectangularMap = function(probabilityFunction, maxFaultProbability, faultValue = TRUE, notFaultValue = FALSE){
+  
+  # import
+  library(stats) # required for runif
+  
   faultMap = matrix(data = 0, nrow = nrow(probabilityFunction), ncol = ncol(probabilityFunction))
   for (i in 1:nrow(faultMap)){
     for (j in 1:ncol(faultMap)){

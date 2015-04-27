@@ -15,7 +15,7 @@ plotMatrix = function(title = "", matrix, colorMap, ...){
   library(plot3D)
   
   image2D(
-    x = 1:nrow(matrix), y = 1:ncol(matrix), z = matrix, border = "gray",
+    x = 1:nrow(matrix), y = 1:ncol(matrix), z = matrix, border = "black",
     zlim = c(0, max(matrix, na.rm = TRUE)),
     grid(nx=nrow(matrix), ny = ncol(matrix)),
     colkey = FALSE, NAcol = "black",  col = colorMap,

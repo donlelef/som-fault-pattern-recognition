@@ -10,16 +10,15 @@
 # Five plot show the difference between the real function and the extimated one.
 
 # Import required libraries
-library(mvtnorm)  # Needed for dmvnorm()
-library(plot3D)   # Needed for surf3D()
 library(KernSmooth) # Needed for bkde2D
-library(KDEBenchmark) 
+library(KDEBenchmark) # Needed for everything
 
 # Initial parameters
 ray = 30
-sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
-parameterList = list(list(mu = c(ray,ray), sigma = sigma), 
-                     list(mu = c(0,ray), sigma = sigma)
+sigma1 = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
+sigma2 = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
+parameterList = list(list(mu = c(ray,ray), sigma = sigma2), 
+                     list(mu = c(0,ray), sigma = sigma1)
 )
 maximumFaultProbability = 0.1
 bandwidth = 4
@@ -42,11 +41,7 @@ estimation = bkde2D(faultIndex, bandwidth = bandwidth, range.x = list(c(0,2*ray)
 
 # 3D plot of the fault probability density with surf3D()
 Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
-surf3D(x = grid$x, y = grid$y, z = Z,  
-       xlim = c(min(grid$x),max(grid$x)), ylim = c(min(grid$y), max(grid$y)),
-       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Bivariate Normal Distribution"
-)
+plotSurface(title = "Multiple normal distribution", x = grid$x, y = grid$y, z = Z)
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
@@ -57,11 +52,8 @@ plotMatrix(title = "Simulated fault map", matrix = faultMap, colorMap = heat.col
 # Plot the extimated function
 grid = mesh(estimation$x1, estimation$x2)
 extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
-surf3D(x = grid$x, y = grid$y, z = extimatedFunction,
-       xlim = c(min(grid$x),max(grid$x)), ylim = c(min(grid$y), max(grid$y)),
-       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Extimated function"
-)
+plotSurface(title = "Extimated function", x = grid$x, y = grid$y, z = extimatedFunction)
+
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors
 par(pty = "s") # Force a square plot

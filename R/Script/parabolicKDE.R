@@ -9,9 +9,8 @@
 # Five plot show the difference between the real function and the extimated one.
 
 # Import required libraries
-library(plot3D)   # Needed for surf3D()
 library(KernSmooth) # Needed for KDE
-library(KDEBenchmark) 
+library(KDEBenchmark) # Needed for everything
 
 # Initial parameters
 ray = 30
@@ -36,11 +35,7 @@ estimation = bkde2D(x = faultIndex, bandwidth = 8, range.x = list(c(0,2*ray), c(
 
 # 3D plot of the fault probability density with surf3D()
 Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
-surf3D(x = grid$x, y = grid$y,  z = Z,  
-       xlim = c(0,2*ray), ylim = c(0, 2*ray),
-       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Normalized parabolic distribution"
-)
+plotSurface(title = "Normalized parabolic distribution", x = grid$x, y = grid$y,  z = Z)
 
 # Plot the fault map
 par(pty = "s") # Force a square plot
@@ -51,16 +46,11 @@ plotMatrix(title = "Fault map", matrix = faultMap, colorMap = heat.colors(2),
 # Plot the extimated function
 grid = mesh(estimation$x1, estimation$x2)
 extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
-surf3D(x = grid$x, y = grid$y, z = estimation$fhat,
-       xlim = c(min(estimation$x1), max(estimation$x1)), ylim = c(min(estimation$x2), max(estimation$x2)),
-       lighting = TRUE, phi = 30, theta = 45, bty = "b2",
-       main = "Extimated function")
+plotSurface(x = grid$x, y = grid$y, z = estimation$fhat, title = "Extimated function")
 
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors
 par(pty = "s") # Force a square plot
 plotMatrix(title = "Real density function", matrix = Z, colorMap = rainbow(20))
 plotMatrix(title = "Extimated density function", matrix = extimatedFunction, colorMap = rainbow(20))
-
-
 
