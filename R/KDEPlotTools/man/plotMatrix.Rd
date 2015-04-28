@@ -21,6 +21,7 @@ nothing: just perform the plot
 \description{
 Plot a bidimensional matrix using the given colorMap. The title and other arguments
 may also be passed to te underlying plot function
+The plot is performed in a square region.
 }
 \seealso{
 plot3D

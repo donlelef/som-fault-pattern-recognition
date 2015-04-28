@@ -1,5 +1,6 @@
 #' Plot a bidimensional line plot using the given parameter. 
 #' The title and other arguments may also be passed to te underlying plot function.
+#' The plot is performed in the maximum available region.
 #' @title Plot a function as a line
 #' @import graphics
 #' @export
@@ -17,6 +18,7 @@ modelPlot = function(title = "", x, y, xlim, ylim, ...){
   # import
   library(graphics)
   
+  par(pty = "m")
   plot(x = x, y = y, xlim = xlim, ylim = ylim,
        type = "l", xlab = "", ylab = "", axes = FALSE, ...
   )

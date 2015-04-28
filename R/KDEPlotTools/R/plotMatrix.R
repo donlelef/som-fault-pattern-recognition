@@ -1,5 +1,6 @@
 #' Plot a bidimensional matrix using the given colorMap. The title and other arguments
 #' may also be passed to te underlying plot function
+#' The plot is performed in a square region.
 #' @title Plot a bidimensional matrix
 #' @import plot3D
 #' @export
@@ -15,6 +16,7 @@ plotMatrix = function(title = "", matrix, colorMap, ...){
   # import
   library(plot3D)
   
+  par(pty = "s")
   image2D(
     x = 1:nrow(matrix), y = 1:ncol(matrix), z = matrix, border = "black",
     zlim = c(0, max(matrix, na.rm = TRUE)),

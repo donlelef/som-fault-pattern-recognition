@@ -43,7 +43,6 @@ plotSurface(x = grid$x, y = grid$y, z = Z, title = "Bivariate Normal Distributio
 )
 
 # Plot the fault map
-par(pty = "s") # Force a square plot
 plotMatrix(title = "Simulated fault map", matrix = faultMap, colorMap = heat.colors(2),
            sub = bquote("Number of faults = "~.(faultNumber))
 )
@@ -57,6 +56,5 @@ plotSurface(x = grid$x, y = grid$y, z = extimatedFunction, title = "Extimated fu
 
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors
-par(pty = "s") # Force a square plot
 plotMatrix(title = "Real density function", matrix = Z, colorMap = rainbow(20))
 plotMatrix(title = "Extimated density function", matrix = extimatedFunction, colorMap = rainbow(20))

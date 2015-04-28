@@ -23,6 +23,7 @@ nothing: just perform the plot
 \description{
 Plot a tridimensional surface using the given parameter. The title and other arguments
 may also be passed to te underlying plot function.
+The plot is performed in the maximum available region.
 }
 \seealso{
 plot3D

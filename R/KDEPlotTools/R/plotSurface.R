@@ -1,5 +1,6 @@
 #' Plot a tridimensional surface using the given parameter. The title and other arguments
 #' may also be passed to te underlying plot function.
+#' The plot is performed in the maximum available region.
 #' @title Plot a tidimensional surface
 #' @import plot3D
 #' @export
@@ -16,6 +17,7 @@ plotSurface = function(title = "", x, y, z, ...){
   # import
   library(plot3D)
   
+  par(pty = "m")
   surf3D(x = x, y = y, z = z,  
          xlim = c(min(x),max(x)), ylim = c(min(y), max(y)),
          lighting = TRUE, phi = 30, theta = 45, bty = "b2", 

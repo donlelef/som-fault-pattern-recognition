@@ -1,5 +1,6 @@
 #' Plot a bidimensional scatter plot using the given parameter. 
 #' The title and other arguments may also be passed to te underlying plot function.
+#' #' The plot is performed in the maximum available region.
 #' @title Plot a bidimensional scatter plot
 #' @import plot3D
 #' @export
@@ -15,6 +16,7 @@ scatterPlot = function(title = "", x, y, ...){
   # import
   library(plot3D)
   
+  par(pty = "m")
   scatter2D(x = x, y = y, pch = 4, 
             xlim = c(min(x),max(x)), ylim = c(min(y), max(y)),
             main = title, ...
