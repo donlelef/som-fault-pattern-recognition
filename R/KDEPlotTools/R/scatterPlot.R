@@ -2,6 +2,7 @@
 #' The title and other arguments may also be passed to te underlying plot function.
 #' @title Plot a bidimensional scatter plot
 #' @import plot3D
+#' @export
 #' @param title: the title of the plot
 #' @param x: values on the x axis.
 #' @param y: values on the y axis.

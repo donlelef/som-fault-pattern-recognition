@@ -4,6 +4,7 @@
 #' 
 #' @title Return a uniform density
 #' @import plot3D
+#' @export
 #' @param ray: half the number of column of the square matrix returned
 #' @return a list with 2 elemets: the values of the probability function "pdf" and the 
 #' grid "grid" where it has been computed.

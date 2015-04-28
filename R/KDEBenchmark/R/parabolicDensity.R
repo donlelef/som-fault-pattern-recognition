@@ -4,6 +4,7 @@
 #' 
 #' @title Return a parabolic density
 #' @import plot3D
+#' @export
 #' @param coefficient: the coefficient a in the formula z = a(x^2 + y^2)
 #' @param ray: the ray of the circular wafer
 #' @return list with 2 elemets: the values of the probability function "pdf" and the 

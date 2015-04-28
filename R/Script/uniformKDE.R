@@ -6,8 +6,9 @@
 # a point out of the circular wafer.
 
 # Import required libraries
-library(KernSmooth) # Needed for bkde2D()
-library(KDEBenchmark) # Needed for everithing
+library(KernSmooth) # Needed for bkde2D
+library(KDEPlotTools) # Needed for the plot
+library(KDEBenchmark) # Needed for everything
 
 # Initial parameters
 ray = 30

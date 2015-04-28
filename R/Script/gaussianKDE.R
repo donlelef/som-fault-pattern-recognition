@@ -10,9 +10,8 @@
 
 # Import required libraries
 library(KernSmooth) # Needed for bkde2D
+library(KDEPlotTools) # Needed for the plot
 library(KDEBenchmark) # Needed for everything
-library(KDEPlotTools) # Needed for everything
-
 
 # Initial parameters
 ray = 30

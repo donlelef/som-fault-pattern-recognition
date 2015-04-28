@@ -2,6 +2,7 @@
 #' may also be passed to te underlying plot function
 #' @title Plot a bidimensional matrix
 #' @import plot3D
+#' @export
 #' @param title: the tithe of the plot
 #' @param matrix: the matrix to be plotted
 #' @param colorMap: the colors to be used in the plot. Must be a valid argument for "col".

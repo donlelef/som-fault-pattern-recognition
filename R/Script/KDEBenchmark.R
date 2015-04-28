@@ -5,10 +5,9 @@
 # the KDE algorithm ranges in a given interval.
 
 # Import required libraries
-library(stats) # Needed for lm
-library(KDEPlotTools) # Needed for plots
 library(KernSmooth) # Needed for bkde2D
-library(KDEBenchmark) 
+library(KDEPlotTools) # Needed for the plot
+library(KDEBenchmark) # Needed for everything
 
 # Definition of execution parameters
 ray = 50

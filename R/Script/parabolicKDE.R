@@ -9,7 +9,8 @@
 # Five plot show the difference between the real function and the extimated one.
 
 # Import required libraries
-library(KernSmooth) # Needed for KDE
+library(KernSmooth) # Needed for bkde2D
+library(KDEPlotTools) # Needed for the plot
 library(KDEBenchmark) # Needed for everything
 
 # Initial parameters

@@ -5,6 +5,7 @@
 #' system be equal to 1.
 #' 
 #' @title Return a the normalized sum of bivariate gaussian density
+#' @export
 #' @param ray: half the number of column of the square matrix returned
 #' @param parameterList: a list whose elements shuold be list, too. They are
 #' assumed to contain the mean and the variace matrix of a single bivariate

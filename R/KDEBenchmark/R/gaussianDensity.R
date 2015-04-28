@@ -3,10 +3,11 @@
 #' probability function.
 #' 
 #' @title Return a bivariate gaussian density
+#' @export
 #' @param ray: half the number of column of the square matrix returned
 #' @param mu: a vector containing the mean of the gaussian density
 #' @param sigma: a matrix containing the variance of the gaussian density
-#' @import mvtnorm, plot3D
+#' @import mvtnorm plot3D
 #' @return a list with 2 elemets: the values of the probability function "pdf" and the 
 #' grid "grid" where it has been computed.
 

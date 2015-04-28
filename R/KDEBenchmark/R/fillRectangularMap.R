@@ -3,6 +3,7 @@
 #' higher is the probability that pixel is set to faultValue. The probabilityFuncion
 #' is rescaled so that its maximum value is equal to maxFaultProbability.
 #' @title Create a rectangular fault grid
+#' @export
 #' @param probabilityFunction: a sqare matrix the probability distribution of faults
 #' @param maxFaultProbability: a real positive number which represents the maximum
 #' probability of a fault

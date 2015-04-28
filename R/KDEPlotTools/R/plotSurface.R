@@ -2,6 +2,7 @@
 #' may also be passed to te underlying plot function.
 #' @title Plot a tidimensional surface
 #' @import plot3D
+#' @export
 #' @param title: the tithe of the plot
 #' @param x: values on the x axis.
 #' @param y: values on the y axis.
