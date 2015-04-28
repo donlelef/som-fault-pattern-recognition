@@ -6,8 +6,8 @@
 
 # Import required libraries
 library(stats) # Needed for lm
-library(KernSmooth) # Needed for KDE
-library(plot3D) # Needed to plot the results with scatter2D function
+library(KDEPlotTools) # Needed for plots
+library(KernSmooth) # Needed for bkde2D
 library(KDEBenchmark) 
 
 # Definition of execution parameters
@@ -19,7 +19,7 @@ sigma1 = ray*diag(x = c(1, 1))
 sigma2 = ray*diag(x = c(1, 1)) # only for miltiGaussianDensity
 sigma3 = ray*diag(x = c(1, 1)) # only for miltiGaussianDensity
 N_BAND = 100
-maximumFaultProbability = 0.2
+maximumFaultProbability = 0.05
 lowerBandwidthLimit = 2
 upperBandwidthLimit = 10
 
@@ -59,21 +59,22 @@ for (i in 1 : length(bandwidth)){
 }
 
 # Plot the results
-scatter2D(x = bandwidth, y = error, pch = 4, 
-          xlim = c(min(bandwidth),max(bandwidth)), ylim = c(min(error), max(error)),
-          main = "Average square error vs bandwidth",
-          sub = bquote("Number of simulations:"~.(length(bandwidth))), xlab = "bandwidth",
-          ylab = "error")
+scatterPlot(x = bandwidth, y = error, title =  "Average square error vs bandwidth",
+            sub = bquote("Number of simulations:"~.(length(bandwidth))), 
+            xlab = "bandwidth", ylab = "error"
+)
 
 # Identify polynomial model
 maximumGrade = 8
 newData = seq(from = lowerBandwidthLimit, to = upperBandwidthLimit, length.out = 250)
 for(i in 1 : maximumGrade){
   fit = lm(error~poly(bandwidth, i))
+  prediction = predict(fit, data.frame(bandwidth = newData))
   par(new = TRUE) # plot in the same graphic window
-  plot(x = newData, y = predict(fit, data.frame(bandwidth = newData)),
-       xlim = c(min(bandwidth),max(bandwidth)), ylim = c(min(error), max(error)),
-       type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab = "", axes = FALSE)
+  modelPlot(x = newData, y = prediction,
+            xlim = c(min(bandwidth), max(bandwidth)), ylim = c(min(error), max(error)),
+            col = rainbow(maximumGrade)[i]
+  )
 }
 
 # Find the best model using AIC
@@ -86,15 +87,14 @@ bestFit = lm(error~poly(bandwidth, best))
 modelValues = function(i) x = predict(bestFit, newdata = data.frame(bandwidth = i))
 bestBandwidth = optimize(f = modelValues,interval = c(min(bandwidth),max(bandwidth)), maximum = FALSE)$minimum
 par(new = FALSE) # create a new plot
-scatter2D(x = bandwidth, y = error, pch = 4, 
-          xlim = c(min(bandwidth),max(bandwidth)), ylim = c(min(error), max(error)),
-          main = "Average square error vs bandwidth",
-          sub = bquote("Simulations:"~.(length(bandwidth))~
-                         "  Best grade:"~.(best)~"   Best bandwidth:"~.(bestBandwidth)),
-          xlab = "bandwidth", ylab = "error")
+scatterPlot(x = bandwidth, y = error, title = "Average square error vs bandwidth", 
+            sub = bquote("Simulations:"~.(length(bandwidth))~
+                           "  Best grade:"~.(best)~"   Best bandwidth:"~.(bestBandwidth)),
+            xlab = "bandwidth", ylab = "error")
 par(new = TRUE) # plot in the same graphic window
-plot(x = newData, y = predict(bestFit, newdata =  data.frame(bandwidth = newData)),
-     xlim = c(min(bandwidth),max(bandwidth)), ylim = c(min(error), max(error)),
-     type = "l", col = rainbow(maximumGrade)[i], xlab = "", ylab ="", axes = FALSE)
+prediction = predict(bestFit, newdata =  data.frame(bandwidth = newData))
+modelPlot(x = newData, y = prediction, col = "red",
+          xlim = c(min(bandwidth),max(bandwidth)), ylim = c(min(error), max(error))
+)
 
 # TODO: extract method on the second part of the script
