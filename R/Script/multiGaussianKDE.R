@@ -18,9 +18,10 @@ ray = 30
 sigma1 = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
 sigma2 = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
 parameterList = list(list(mu = c(ray,ray), sigma = sigma2), 
-                     list(mu = c(0,ray), sigma = sigma1)
+                     list(mu = c(10,ray), sigma = sigma1),
+                     list(mu = c(ray,10), sigma = sigma1)                     
 )
-maximumFaultProbability = 0.1
+maximumFaultProbability = 0.05
 bandwidth = 4
 
 # Calcuate f(x) for a large number of possible values for x1 and x2

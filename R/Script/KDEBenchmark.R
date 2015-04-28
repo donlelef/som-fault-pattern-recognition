@@ -12,36 +12,50 @@ library(KDEBenchmark)
 
 # Definition of execution parameters
 ray = 50
-sigma1 = 1
-sigma2 = 1
-N_BAND = 10
-maximumFaultProbability = 0.05
-lowerBandwidthLimit = 3
-upperBandwidthLimit = 20
+mu1 = c(ray, ray)
+mu2 = c(10, ray) # only for miltiGaussianDensity
+mu3 = c(ray, 10) # only for miltiGaussianDensity
+sigma1 = ray*diag(x = c(1, 1))
+sigma2 = ray*diag(x = c(1, 1)) # only for miltiGaussianDensity
+sigma3 = ray*diag(x = c(1, 1)) # only for miltiGaussianDensity
+N_BAND = 100
+maximumFaultProbability = 0.2
+lowerBandwidthLimit = 2
+upperBandwidthLimit = 10
 
 # Initializations
-mu = c(ray, ray)
-sigma = ray*diag(x = c(sigma1, sigma2))
 bandwidth = seq(from = lowerBandwidthLimit, to = upperBandwidthLimit, length.out = N_BAND)
 error = vector(mode = "numeric", length = length(bandwidth))
+parameterList = list(list(mu = mu1, sigma = sigma1), 
+                     list(mu = mu2, sigma = sigma2),
+                     list(mu = mu3, sigma = sigma3)                    
+)
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
-# trueFunction = gaussianDensity(ray = ray, mu = mu, sigma = sigma)$pdf
-trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
+# trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
+# trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
+ trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+
+# Fill a simulated wafer with good and bad chips according to the just computed density.
+faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
+faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = -1)
+
+# KDE: finding the fault position
+faultIndex = which(faultMap == 1, arr.ind = TRUE)
+
+# Consider only the points inside the wafer
+trueFunction = bindCircularMap(rectangularMap = trueFunction, ray = ray, outValue = NA)
 
 # Repeat the simulation for several values of bandwidth
-for (i in 1 : length(bandwidth)){
-  
-  # Fill a simulated wafer with good and bad chips according to the just computed density.
-  faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
-  faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = -1)
-  
+for (i in 1 : length(bandwidth)){  
   # KDE
-  faultIndex = which(faultMap == 1, arr.ind = TRUE)
   estimation = bkde2D(x = faultIndex, bandwidth = bandwidth[i],  range.x = list(c(0,2*ray), c(0,2*ray)), gridsize = c(2*ray, 2*ray))
   
+  # Consider only the points inside the wafer
+  extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
+  
   # Benchmark
-  error[i] = sum((trueFunction - estimation$fhat)^2)
+  error[i] = sum((trueFunction - estimation$fhat)^2, na.rm = TRUE)
 }
 
 # Plot the results

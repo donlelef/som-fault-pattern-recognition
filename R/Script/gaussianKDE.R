@@ -15,9 +15,9 @@ library(KDEBenchmark) # Needed for everything
 # Initial parameters
 ray = 30
 mu = c(ray, ray)
-sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
-maximumFaultProbability = 0.1
-bandwidth = 4
+sigma = ray*matrix(data = c(1, 0, 0, 10), nrow = 2, ncol = 2, byrow = TRUE)
+maximumFaultProbability = 0.05
+bandwidth = 5
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
 list = gaussianDensity(ray = ray, mu = mu, sigma = sigma)

@@ -16,6 +16,7 @@ library(KDEBenchmark) # Needed for everything
 ray = 30
 maximumFaultProbability = 0.1
 coefficient = 1
+bandwidth = 11
 
 #Calcuate f(x) for a large number of possible values for x1 and x2
 list = parabolicDensity(coefficient = coefficient, ray = ray)
@@ -31,7 +32,7 @@ faultNumber = faultNumber(faultMap = faultMap, faultValue = TRUE)
 
 # Perform the KDE
 faultIndex = which(faultMap == 1, arr.ind = TRUE)
-estimation = bkde2D(x = faultIndex, bandwidth = 8, range.x = list(c(0,2*ray), c(0, 2*ray)), gridsize = c(2*ray, 2*ray))
+estimation = bkde2D(x = faultIndex, bandwidth = bandwidth, range.x = list(c(0,2*ray), c(0, 2*ray)), gridsize = c(2*ray, 2*ray))
 
 # 3D plot of the fault probability density with surf3D()
 Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
