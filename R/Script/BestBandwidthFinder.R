@@ -21,14 +21,14 @@ sigma2 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
 sigma3 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
 
 # Definition of execution parameters: amounts of faults
-N_BAND = 20
+N_BAND = 50
 lowerBandwidthLimit = 2
 upperBandwidthLimit = 8
 
 # Definition of execution parameters: bandwidth limits
 N_PROB = 50
 lowerMaximumFaultProbability = 0.01
-upperMaximumFaultProbability = 0.05
+upperMaximumFaultProbability = 0.1
 
 # Initializations
 maximumFaultProbabilities = seq(from = lowerMaximumFaultProbability, to = upperMaximumFaultProbability, length.out = N_PROB)
@@ -114,6 +114,9 @@ scatterPlot(x = faultNumbers, y = fittedBandwidth, title = "Optimal bandwidth vs
 par(new = TRUE) # plot in the same graphic window
 prediction = predict(bestFit, newdata =  data.frame(x = newData))
 modelPlot(x = newData, y = prediction, col = "red",
-          xlim = c(min(faultNumbers),max(faultNumbers)), ylim = c(min(fittedBandwidth), max(fittedBandwidth))
+          xlim = c(min(faultNumbers), max(faultNumbers)), ylim = c(min(fittedBandwidth), max(fittedBandwidth))
 )
 
+# Saving the data
+data = data.frame(faultNumbers = faultNumbers, fittedBandwidth = fittedBandwidth)
+saveRDS(data, "data.rds", ascii=TRUE)
