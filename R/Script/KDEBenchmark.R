@@ -6,8 +6,10 @@
 
 # Import required libraries
 library(KernSmooth) # Needed for bkde2D
+library(KDEModelIdentification) # Needed for model
 library(KDEPlotTools) # Needed for the plot
 library(KDEBenchmark) # Needed for everything
+library(stats) # Needed for lm
 
 # Definition of execution parameters
 ray = 50
@@ -20,7 +22,7 @@ sigma3 = ray*diag(x = c(1, 1)) # only for miltiGaussianDensity
 N_BAND = 100
 maximumFaultProbability = 0.05
 lowerBandwidthLimit = 2
-upperBandwidthLimit = 10
+upperBandwidthLimit = 8
 
 # Initializations
 bandwidth = seq(from = lowerBandwidthLimit, to = upperBandwidthLimit, length.out = N_BAND)
@@ -64,36 +66,29 @@ scatterPlot(x = bandwidth, y = error, title =  "Average square error vs bandwidt
 )
 
 # Identify polynomial model
-maximumGrade = 8
-newData = seq(from = lowerBandwidthLimit, to = upperBandwidthLimit, length.out = 250)
-for(i in 1 : maximumGrade){
-  fit = lm(error~poly(bandwidth, i))
-  prediction = predict(fit, data.frame(bandwidth = newData))
+grades = 1:8
+newData = seq(from = min(bandwidth), to = max(bandwidth), length.out = 250)
+predictions = fitLinearModels(x = bandwidth, y = error, grades = grades, newData = newData)
+
+# And plotting them
+for(i in 1 : length(grades)){
   par(new = TRUE) # plot in the same graphic window
-  modelPlot(x = newData, y = prediction,
+  modelPlot(x = newData, y = predictions[[i]],
             xlim = c(min(bandwidth), max(bandwidth)), ylim = c(min(error), max(error)),
-            col = rainbow(maximumGrade)[i]
+            col = rainbow(length(grades))[i]
   )
 }
 
-# Find the best model using AIC
-polyfit = function(i) x = AIC(lm(error~poly(bandwidth,i)))
-best = as.integer(optimize(f = polyfit, interval = c(1,maximumGrade), maximum = FALSE)$minimum)
-
-# Consider only the best model and find the best bandwidth - 
-# ie. the one which causes the minimun error 
-bestFit = lm(error~poly(bandwidth, best))
-modelValues = function(i) x = predict(bestFit, newdata = data.frame(bandwidth = i))
-bestBandwidth = optimize(f = modelValues,interval = c(min(bandwidth),max(bandwidth)), maximum = FALSE)$minimum
+# Find the best model using AIC 
+bestFit = findBestModel(x = bandwidth, y = error, interval = c(min(grades), max(grades)))
+bestBandwidth = findMinimumFromModel(model = bestFit, interval = c(min(bandwidth), max(bandwidth)))$minimum
 par(new = FALSE) # create a new plot
 scatterPlot(x = bandwidth, y = error, title = "Average square error vs bandwidth", 
             sub = bquote("Simulations:"~.(length(bandwidth))~
-                           "  Best grade:"~.(best)~"   Best bandwidth:"~.(bestBandwidth)),
+                           "  Best rank:"~.(bestFit$rank - 1)~"   Best bandwidth:"~.(bestBandwidth)),
             xlab = "bandwidth", ylab = "error")
 par(new = TRUE) # plot in the same graphic window
-prediction = predict(bestFit, newdata =  data.frame(bandwidth = newData))
+prediction = predict(bestFit, newdata =  data.frame(x = newData))
 modelPlot(x = newData, y = prediction, col = "red",
           xlim = c(min(bandwidth),max(bandwidth)), ylim = c(min(error), max(error))
 )
-
-# TODO: extract method on the second part of the script
