@@ -20,7 +20,7 @@ fillRectangularMap = function(probabilityFunction, maxFaultProbability, faultVal
   faultMap = matrix(data = 0, nrow = nrow(probabilityFunction), ncol = ncol(probabilityFunction))
   for (i in 1:nrow(faultMap)){
     for (j in 1:ncol(faultMap)){
-      if (runif(n = 1, min = 0, max = 1) < (probabilityFunction[i,j]/max(probabilityFunction))*maximumFaultProbability){
+      if (runif(n = 1, min = 0, max = 1) < (probabilityFunction[i,j]/max(probabilityFunction))*maxFaultProbability){
         faultMap[i,j] = faultValue
       }
       else{

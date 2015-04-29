@@ -1,4 +1,4 @@
-Package: KDEModelIdentification
+Package: KDEModel
 Title: Tools to supporte linear model fitting and optimizaton
 Version: 0.1
 Authors@R: c(person(given = "Emanuele", family = "Fabbiani", email = "donlelef@gmail.com", role = c("aut", "cre")), person( given = "Claudio", family = "Peroni", role = "aut"))
