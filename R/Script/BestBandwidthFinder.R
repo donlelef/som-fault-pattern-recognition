@@ -1,8 +1,9 @@
 # This script computes a bidimensional probability distribution, uses it as a
 # probability function to create a faultMap, and then tries to estimate
 # the original distribution from the faults on the map using KDE algorithm.
-# The benchmark concern the accuracy of the estimation as the bandwidth for
-# the KDE algorithm ranges in a given interval.
+# Different bandwidth are used and, for each number of faults, the best one is 
+# saved. After that, the relationship between the amounts of faults and the 
+# best bandwith is represented through a linear model.
 
 # Import required libraries
 library(KernSmooth) # Needed for bkde2D
@@ -12,8 +13,8 @@ library(KDEBenchmark) # Needed for everything
 library(stats) # Needed for lm
 
 # Definition of execution parameters: fault probabilty functions
-ray = 50
-mu1 = c(ray, ray)
+ray = 30
+mu1 = c(ray, 50)
 mu2 = c(10, ray) # only for multiGaussianDensity
 mu3 = c(ray, 10) # only for multiGaussianDensity
 sigma1 = ray*diag(x = c(1, 1))
@@ -22,13 +23,13 @@ sigma3 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
 
 # Definition of execution parameters: amounts of faults
 N_BAND = 50
-lowerBandwidthLimit = 2
-upperBandwidthLimit = 8
+lowerBandwidthLimit = 4
+upperBandwidthLimit = 12
 
 # Definition of execution parameters: bandwidth limits
 N_PROB = 50
-lowerMaximumFaultProbability = 0.01
-upperMaximumFaultProbability = 0.1
+lowerMaximumFaultProbability = 0.02
+upperMaximumFaultProbability = 0.06
 
 # Initializations
 maximumFaultProbabilities = seq(from = lowerMaximumFaultProbability, to = upperMaximumFaultProbability, length.out = N_PROB)
@@ -45,8 +46,8 @@ for(j in 1:length(maximumFaultProbabilities)){
   error = vector(mode = "numeric", length = length(bandwidth))
   
   # Calcuate f(x) for a large number of possible values for x1 and x2
-    trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
-  # trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
+  # trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
+   trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
   # trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
   
   # Fill a simulated wafer with good and bad chips according to the just computed density.
@@ -69,7 +70,7 @@ for(j in 1:length(maximumFaultProbabilities)){
     extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
     
     # Benchmark
-    error[i] = sum((trueFunction - estimation$fhat)^2, na.rm = TRUE)
+    error[i] = meanSquareError(matrix1 = trueFunction, matrix2 = estimation$fhat)
   }
   
   # Identify polynomial model

@@ -20,7 +20,7 @@ sigma1 = ray*diag(x = c(1, 1))
 sigma2 = ray*diag(x = c(1, 1)) # only for miltiGaussianDensity
 sigma3 = ray*diag(x = c(1, 1)) # only for miltiGaussianDensity
 N_BAND = 100
-maximumFaultProbability = 0.05
+maximumFaultProbability = 0.1
 lowerBandwidthLimit = 2
 upperBandwidthLimit = 8
 
@@ -56,7 +56,7 @@ for (i in 1 : length(bandwidth)){
   extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
   
   # Benchmark
-  error[i] = sum((trueFunction - estimation$fhat)^2, na.rm = TRUE)
+  error[i] = meanSquareError(matrix1 = trueFunction, matrix2 = estimation$fhat)
 }
 
 # Plot the results

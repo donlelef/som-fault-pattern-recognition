@@ -15,7 +15,7 @@ library(KDEBenchmark) # Needed for everything
 
 # Initial parameters
 ray = 30
-maximumFaultProbability = 0.1
+maximumFaultProbability = 0.05
 coefficient = 1
 bandwidth = 11
 
