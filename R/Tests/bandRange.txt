@@ -1,0 +1,3 @@
+gaussian: 0.05 - 0.3
+multiGaussian: 0.03 - 0.1
+parabolic: 0.02 - 0.05

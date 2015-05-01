@@ -51,3 +51,4 @@ for(file in files){
             xlim = c(min(faultNumbers), max(faultNumbers)), ylim = c(min(fittedBandwidth), max(fittedBandwidth))
   )
 }
+
