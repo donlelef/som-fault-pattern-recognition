@@ -36,10 +36,10 @@ for(file in files){
 }
 
 plot(x = faults, y = bandCurve, 
-     type = "l", xlab = "faults", ylab = "bandwidth",
-     main = "Best bandwidth va faults"
+     type = "l", xlab = "faults", ylab = "bandwidth", col = "blue",
+     main = "Best bandwidth vs faults"
 )
 
 # Save data
-bestBand = data.frame(faults = faults, bestBand = bestBandwidth)
-saveRDS(object = bestBand, file = "Data/bestBandwidths.RDS", ascii = TRUE)
+bestBand = data.frame(faults = faults, bestBand = bandCurve)
+saveRDS(object = bestBand, file = "Data/bestBandwidths.rds", ascii = TRUE)

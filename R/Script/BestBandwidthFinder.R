@@ -23,13 +23,16 @@ sigma3 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
 
 # Definition of execution parameters: amounts of faults
 N_BAND = 50
-lowerBandwidthLimit = 4
-upperBandwidthLimit = 12
+lowerBandwidthLimit = 2
+upperBandwidthLimit = 8
 
 # Definition of execution parameters: bandwidth limits
+# gaussian: 0.05 - 0.3
+# multiGaussian: 0.03 - 0.1
+# parabolic: 0.02 - 0.06
 N_PROB = 50
-lowerMaximumFaultProbability = 0.02
-upperMaximumFaultProbability = 0.06
+lowerMaximumFaultProbability = 0.03
+upperMaximumFaultProbability = 0.1
 
 # Initializations
 maximumFaultProbabilities = seq(from = lowerMaximumFaultProbability, to = upperMaximumFaultProbability, length.out = N_PROB)
@@ -47,8 +50,8 @@ for(j in 1:length(maximumFaultProbabilities)){
   
   # Calcuate f(x) for a large number of possible values for x1 and x2
   # trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
-   trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
-  # trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+  # trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
+   trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
   
   # Fill a simulated wafer with good and bad chips according to the just computed density.
   faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maximumFaultProbabilities[j], faultValue = 1, notFaultValue = 0)
@@ -70,7 +73,7 @@ for(j in 1:length(maximumFaultProbabilities)){
     extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
     
     # Benchmark
-    error[i] = meanSquareError(matrix1 = trueFunction, matrix2 = estimation$fhat)
+    error[i] = meanSquareError(matrix1 = trueFunction, matrix2 = extimatedFunction)
   }
   
   # Identify polynomial model

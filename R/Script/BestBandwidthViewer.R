@@ -8,7 +8,7 @@ library(stats) # Needed for predict
 
 
 # load the data from file
-files = c("Data/multiGaussianBand.rds", "Data/gaussianBand.rds", "Data/parabolicBand.rds")
+files = c("Data/gaussianBand.rds", "Data/multiGaussianBand.rds", "Data/parabolicBand.rds")
 
 for(file in files){
   

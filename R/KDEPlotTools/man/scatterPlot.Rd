@@ -4,14 +4,19 @@
 \alias{scatterPlot}
 \title{Plot a bidimensional scatter plot}
 \usage{
-scatterPlot(title = "", x, y, ...)
+scatterPlot(title = "", x, y, xlim = c(min(x), max(x)), ylim = c(min(y),
+  max(y)), ...)
 }
 \arguments{
-\item{title:}{the title of the plot}
+\item{title:}{the title of the plot. Default: nothing}
 
 \item{x:}{values on the x axis.}
 
 \item{y:}{values on the y axis.}
+
+\item{xlim:}{vector of limits on the x axis. Default: min and max of x.}
+
+\item{ylim:}{vector of limits on the x axis. Default: min and max of y.}
 
 \item{...:}{other arguments to pass to the lower functions}
 }
