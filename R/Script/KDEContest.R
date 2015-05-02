@@ -1,20 +1,20 @@
-# WORKING, BUT HEAVY REFACTOR NEEDED!!!!!!!!!!!!!!!
+# The script creates an arbitrary number of wafers with a small amount of faults and
+# then performs the Kernel Density Estimation using both KernSmooth and Ks functions.
+# The returned fault probability distribution is compared to the real one and the
+# mean square error is computed. 
 
 # Import required libraries
 library(ks) # needed for kde
 library(KernSmooth) # Needed for bkde2D
-library(KDEBenchmark) # Needed for model
-library(KDEModelIdentification) # Needed for model
+library(KDEBenchmark) # Needed for everything
 library(KDEPlotTools) # Needed for the plot
-library(stats) # Needed for predict
-library(plot3D)
 
 # Initilize test parameters
 tests = 50
 resolution = 50
 gaussianFaultsProbability = seq(from = 0.05, to = 0.2, length.out = resolution)
 parabolicFaultsProbability = seq(from = 0.03, to = 0.1, length.out = resolution)
-multiGaussianFaultsProbability = seq(from = 0.02, to = 0.05, length.out = resolution)
+multiGaussianFaultsProbability = seq(from = 0.02, to = 0.06, length.out = resolution)
 
 # Definition of parameters for fault probability distributions
 ray = 30
@@ -36,17 +36,23 @@ faultNumbers = vector(mode = "numeric", length = tests)
 
 # load the bandwit curve from file
 dataFrame = readRDS(file = "Data/bestBandwidths.rds")
+fittedFaults = dataFrame$faults
 fittedBandwidth = dataFrame$bestBand
 
 for(i in 1:tests){
   
-  # Calcuate the probability distribution
-   trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
+  # Calcuate the probability distribution: choose one!
+  # trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
+  # maxFaultProb = gaussianFaultsProbability[i]
+  
   # trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
-  # trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+  # maxFaultProb = parabolicFaultsProbability[i]
+  
+    trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+    maxFaultProb = multiGaussianFaultsProbability[i]
   
   # Fill a simulated wafer with good and bad chips according to the just computed density.
-  faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = gaussianFaultsProbability[i], faultValue = 1, notFaultValue = 0)
+  faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maxFaultProb, faultValue = 1, notFaultValue = 0)
   faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = -1)
   
   # Find the fault position and their number
@@ -57,14 +63,7 @@ for(i in 1:tests){
   trueFunction = bindCircularMap(rectangularMap = trueFunction, ray = ray, outValue = NA)
   
   # KDE with KernSmooth and with ks
-  if(faultNumbers[i] <= 10){
-    bestBandwidth = min(fittedBandwidth)
-  } else if(faultNumbers[i] >= 60){
-    bestBandwidth = max(fittedBandwidth)
-  } else {
-    bestBandwidth = fittedBandwidth[faultNumbers[i] - 10]
-  }
- 
+  bestBandwidth = bestBandwidth(fittedBandwidth = fittedBandwidth, fittedFaults = fittedFaults, faults = faultNumbers[i]) 
   estimationKern = bkde2D(x = faultIndex, bandwidth = bestBandwidth,  range.x = list(c(0,2*ray), c(0,2*ray)), gridsize = c(2*ray, 2*ray))
   estimationKs = kde(x = faultIndex, gridsize = c(2*ray, 2*ray), xmin = c(0,0), xmax = c(2*ray, 2*ray))
   
@@ -80,37 +79,20 @@ for(i in 1:tests){
 # Comupting difference
 diff = KsError - KernError
 
-# Identify polynomial models
-grades = 1:8
-newData = seq(from = min(faultNumbers), to = max(faultNumbers), length.out = 250)
-predictions = fitLinearModels(x = faultNumbers, y = diff, grades = grades, newData = newData)
-
-# Find the best model using AIC 
-bestFit = findBestModel(x = faultNumbers, y = diff, interval = c(min(grades), max(grades)))
-
 # Scatter plots
 par(new = FALSE) # create a new plot
 scatterPlot(x = faultNumbers, y = KernError, title = "Average square error vs faults", 
-            sub = bquote("Simulations:"~.(length(faultNumbers))), col = "red", 
+            sub = bquote("Simulations:"~.(length(faultNumbers))), col = "blue", 
             xlim = c(min(faultNumbers),max(faultNumbers)), ylim = c(min(KernError, KsError), max(KernError, KsError)),
             xlab = "Fault", ylab = "Error")
 par(new = TRUE) # plot in the same graphic window
 scatterPlot(x = faultNumbers, y = KsError, title = "Average square error vs faults",
             xlim = c(min(faultNumbers),max(faultNumbers)), ylim = c(min(KernError, KsError), max(KernError, KsError)),
-            col = "blue", xlab = "", ylab = "", axes = FALSE)
-
+            col = "red", xlab = "", ylab = "", axes = FALSE)
 
 # Plot difference
-prediction = predict(bestFit, newdata = data.frame(x = newData))
 par(new = FALSE) # create a new plot
-plot(x = newData, y = prediction, main = "Our error vs ks error", type = "l",
-            xlim = c(min(newData),max(newData)), ylim = c(min(prediction), max(prediction)),
-            sub = bquote("Simulations:"~.(length(faultNumbers))), col = "blue", 
-            xlab = "Difference", ylab = "Faults")
-
-
-
-
-
-
-
+barplot(height = diff, xaxs="i", col=ifelse(test = diff>0, yes = "blue", no = "red"),
+        main = "Our error vs ks error", ylim = c(min(diff), max(diff)), 
+        xlab = "", ylab = "Difference", sub = bquote("Simulations:"~.(length(faultNumbers)))
+        )
