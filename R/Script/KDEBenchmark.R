@@ -6,10 +6,10 @@
 
 # Import required libraries
 library(KernSmooth) # Needed for bkde2D
-library(KDEModelIdentification) # Needed for model
+library(KDEModel) # Needed for model
 library(KDEPlotTools) # Needed for the plot
 library(KDEBenchmark) # Needed for everything
-library(stats) # Needed for lm
+library(stats) # Needed for predict
 
 # Definition of execution parameters
 ray = 50
@@ -20,7 +20,7 @@ sigma1 = ray*diag(x = c(1, 1))
 sigma2 = ray*diag(x = c(1, 1)) # only for miltiGaussianDensity
 sigma3 = ray*diag(x = c(1, 1)) # only for miltiGaussianDensity
 N_BAND = 100
-maximumFaultProbability = 0.05
+maximumFaultProbability = 0.1
 lowerBandwidthLimit = 2
 upperBandwidthLimit = 8
 
@@ -33,9 +33,9 @@ parameterList = list(list(mu = mu1, sigma = sigma1),
 )
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
-# trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
+ trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
 # trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
- trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+# trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
 
 # Fill a simulated wafer with good and bad chips according to the just computed density.
 faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)

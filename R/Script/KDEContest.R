@@ -12,7 +12,7 @@ library(KDEPlotTools) # Needed for the plot
 # Initilize test parameters
 tests = 50
 resolution = 50
-gaussianFaultsProbability = seq(from = 0.05, to = 0.2, length.out = resolution)
+gaussianFaultsProbability = seq(from = 0.05, to = 0.3, length.out = resolution)
 parabolicFaultsProbability = seq(from = 0.03, to = 0.1, length.out = resolution)
 multiGaussianFaultsProbability = seq(from = 0.02, to = 0.06, length.out = resolution)
 
@@ -84,7 +84,7 @@ par(new = FALSE) # create a new plot
 scatterPlot(x = faultNumbers, y = KernError, title = "Average square error vs faults", 
             sub = bquote("Simulations:"~.(length(faultNumbers))), col = "blue", 
             xlim = c(min(faultNumbers),max(faultNumbers)), ylim = c(min(KernError, KsError), max(KernError, KsError)),
-            xlab = "Fault", ylab = "Error")
+            xlab = "Faults", ylab = "Error")
 par(new = TRUE) # plot in the same graphic window
 scatterPlot(x = faultNumbers, y = KsError, title = "Average square error vs faults",
             xlim = c(min(faultNumbers),max(faultNumbers)), ylim = c(min(KernError, KsError), max(KernError, KsError)),

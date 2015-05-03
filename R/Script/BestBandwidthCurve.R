@@ -9,7 +9,7 @@ faults = seq(from = minFaults, to = maxFaults, by = 1)
 bandCurve = numeric(length = length(faults))
 
 # Import required libraries
-library(KDEModelIdentification) # Needed for model
+library(KDEModel) # Needed for model
 library(KDEPlotTools) # Needed for the plot
 library(stats) # Needed for predict
 

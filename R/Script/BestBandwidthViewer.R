@@ -2,7 +2,7 @@
 # linear model. The results are shown through a series of scatter plot.
 
 # Import required libraries
-library(KDEModelIdentification) # Needed for model
+library(KDEModel) # Needed for model
 library(KDEPlotTools) # Needed for the plot
 library(stats) # Needed for predict
 
