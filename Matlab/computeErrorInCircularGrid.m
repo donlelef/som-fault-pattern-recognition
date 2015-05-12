@@ -8,7 +8,7 @@ errorEvaluationNumber=0;
 for i=1:length(x)
     for j=1:length(y)
         if((x(i)-ray)^2+(y(j)-ray)^2<ray^2)
-            errorMatrix(i,j)=(extimatedFunction(i,j)-trueFunction(i,j))^2;
+            errorMatrix(i,j)=((extimatedFunction(i,j)-trueFunction(i,j))^2)/trueFunction(i,j);
             errorEvaluationNumber = errorEvaluationNumber+1;
         else
             errorMatrix(i,j)=0;

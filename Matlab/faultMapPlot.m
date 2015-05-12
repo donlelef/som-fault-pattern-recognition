@@ -25,7 +25,7 @@ title('Probability density function')
 % Filling sqare matrix with simbolic values. Fault are deloyed according to
 % the probabilit function.
 faultMap = fillSquareGrid(Z, 2*ray, maximumFaultProbability);
-faultMap = createCircularGrid(faultMap, ray);
+faultMap = createCircularGrid(faultMap, ray, -1);
 faultNumber = length(find(faultMap==1));
 
 % Plotting fault map

@@ -11,8 +11,5 @@ y = x;
 % Computing function
 intensity = coefficient.*((X-ray).^2 + (Y-ray).^2);
 
-% DEBUG
-surf(X,Y,intensity);
-
 end
 

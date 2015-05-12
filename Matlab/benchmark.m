@@ -45,7 +45,7 @@ for i = 1:length(maximimumFaultProbabilities)
         % between the value of the extimeted function and the value of the real
         % one.
         mu = [ray, ray]; 
-        sigma = [varX, 0; 0, varY];
+        sigma = ray.*[varX, 0; 0, varY];
         trueDensity = mvnpdf([X(:), Y(:)], mu, sigma);
         trueDensity = reshape(trueDensity, length(X), length(Y));
         [errorMatrix, errorEvaluationNumber] = computeErrorInCircularGrid(extimatedDensity, trueDensity, X(1,:), Y(:,1), ray);
@@ -81,10 +81,6 @@ for i = 1:length(maximimumFaultProbabilities)
     meanFaults(i,2) = mean(faultNumber(:,2));
     
 end
-
-% Extracting the square root of the errors
-% mean
-%
 
 GaussianCurve = fit(meanFaults(:,1), meanError(:,1), 'exp2', 'Normalize', 'on');
 ParabolicCurve = fit(meanFaults(:,2), meanError(:,2), 'exp2', 'Normalize', 'on');
