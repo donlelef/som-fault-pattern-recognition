@@ -21,12 +21,12 @@ sigma1 = ray*diag(x = c(1, 1))
 sigma2 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
 sigma3 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
 
-# Definition of execution parameters: amounts of faults
+# Definition of execution parameters: bandwidth limits
 N_BAND = 50
 lowerBandwidthLimit = 2
 upperBandwidthLimit = 8
 
-# Definition of execution parameters: bandwidth limits
+# Definition of execution parameters: amounts of faults
 # gaussian: 0.05 - 0.3
 # multiGaussian: 0.03 - 0.1
 # parabolic: 0.02 - 0.06
