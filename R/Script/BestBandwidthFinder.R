@@ -7,7 +7,7 @@
 
 # Import required libraries
 library(KernSmooth) # Needed for bkde2D
-library(KDEModelIdentification) # Needed for model
+library(KDEModel) # Needed for model
 library(KDEPlotTools) # Needed for the plot
 library(KDEBenchmark) # Needed for everything
 library(stats) # Needed for lm
@@ -73,7 +73,7 @@ for(j in 1:length(maximumFaultProbabilities)){
     extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
     
     # Benchmark
-    error[i] = meanSquareError(matrix1 = trueFunction, matrix2 = extimatedFunction)
+    error[i] = chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunction)
   }
   
   # Identify polynomial model

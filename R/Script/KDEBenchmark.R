@@ -22,7 +22,7 @@ sigma3 = ray*diag(x = c(1, 1)) # only for miltiGaussianDensity
 N_BAND = 100
 maximumFaultProbability = 0.1
 lowerBandwidthLimit = 2
-upperBandwidthLimit = 8
+upperBandwidthLimit = 6
 
 # Initializations
 bandwidth = seq(from = lowerBandwidthLimit, to = upperBandwidthLimit, length.out = N_BAND)
@@ -33,9 +33,9 @@ parameterList = list(list(mu = mu1, sigma = sigma1),
 )
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
- trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
+# trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
 # trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
-# trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+ trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
 
 # Fill a simulated wafer with good and bad chips according to the just computed density.
 faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
@@ -56,7 +56,8 @@ for (i in 1 : length(bandwidth)){
   extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
   
   # Benchmark
-  error[i] = meanSquareError(matrix1 = trueFunction, matrix2 = extimatedFunction)
+  error[i] = chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunction, na.rm = TRUE)
+  # error[i] = meanSquareError(matrix1 = trueFunction, matrix2 = extimatedFunction)
 }
 
 # Plot the results

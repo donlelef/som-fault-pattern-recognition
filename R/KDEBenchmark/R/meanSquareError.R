@@ -11,6 +11,6 @@
 meanSquareError = function (matrix1, matrix2, na.rm = TRUE) {
   squareDifference = (matrix1 - matrix2)^2
   notNA = length(which(!is.na(squareDifference)))
-  error = sum((matrix1 - matrix2)^2, na.rm = TRUE)/notNA
+  error = sum(squareDifference, na.rm = na.rm)/notNA
   return(error)
 }

@@ -48,8 +48,8 @@ for(i in 1:tests){
   # trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
   # maxFaultProb = parabolicFaultsProbability[i]
   
-    trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
-    maxFaultProb = multiGaussianFaultsProbability[i]
+  #  trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+  #  maxFaultProb = multiGaussianFaultsProbability[i]
   
   # Fill a simulated wafer with good and bad chips according to the just computed density.
   faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maxFaultProb, faultValue = 1, notFaultValue = 0)
@@ -72,8 +72,8 @@ for(i in 1:tests){
   extimatedFunctionKs = bindCircularMap(rectangularMap = estimationKs$estimate, ray = ray, outValue = NA)
   
   # Benchmark
-  KernError[i] = meanSquareError(matrix1 = trueFunction, matrix2 = extimatedFunctionKern)
-  KsError[i] = meanSquareError(matrix1 = trueFunction, matrix2 = extimatedFunctionKs)
+  KernError[i] = chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunctionKern)
+  KsError[i] = chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunctionKs)
 }
 
 # Comupting difference
