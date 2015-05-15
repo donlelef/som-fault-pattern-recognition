@@ -2,6 +2,7 @@
 
 export(bestBandwidth)
 export(bindCircularMap)
+export(bindDefectNumber)
 export(chiTest)
 export(faultNumber)
 export(fillRectangularMap)
