@@ -37,20 +37,20 @@ estimation = bkde2D(x = faultIndex, bandwidth = bandwidth, range.x = list(c(0,2*
 
 # 3D plot of the fault probability density with surf3D()
 Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
-plotSurface(title = "Normalized parabolic distribution", x = grid$x, y = grid$y,  z = Z)
+surfacePlot(title = "Normalized parabolic distribution", x = grid$x, y = grid$y,  z = Z)
 
 # Plot the fault map
-plotMatrix(title = "Fault map", matrix = faultMap, colorMap = heat.colors(2), 
+matrixPlot(title = "Fault map", matrix = faultMap, colorMap = heat.colors(2), 
            sub = bquote("Number of faults = "~.(faultNumber))
 )
 
 # Plot the extimated function
 grid = mesh(estimation$x1, estimation$x2)
 extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
-plotSurface(x = grid$x, y = grid$y, z = estimation$fhat, title = "Extimated function")
+surfacePlot(x = grid$x, y = grid$y, z = estimation$fhat, title = "Extimated function")
 
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors
-plotMatrix(title = "Real density function", matrix = Z, colorMap = rainbow(20))
-plotMatrix(title = "Extimated density function", matrix = extimatedFunction, colorMap = rainbow(20))
+matrixPlot(title = "Real density function", matrix = Z, colorMap = rainbow(20))
+matrixPlot(title = "Extimated density function", matrix = extimatedFunction, colorMap = rainbow(20))
 

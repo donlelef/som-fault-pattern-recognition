@@ -11,7 +11,7 @@
 #' @return nothing: just perform the plot
 #' @seealso plot3D
 
-plotMatrix = function(title = "", matrix, colorMap, ...){ 
+matrixPlot = function(title = "", matrix, colorMap, ...){ 
  
   # import
   library(plot3D)

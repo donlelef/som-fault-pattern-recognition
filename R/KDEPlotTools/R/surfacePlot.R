@@ -12,7 +12,7 @@
 #' @return nothing: just perform the plot
 #' @seealso plot3D
 
-plotSurface = function(title = "", x, y, z, ...){ 
+surfacePlot = function(title = "", x, y, z, ...){ 
   
   # import
   library(plot3D)
