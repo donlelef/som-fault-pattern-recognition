@@ -18,6 +18,7 @@ library(stats) # Needed for lm
 # Definition of execution parameters: fault probabilty functions
 distributions = 3
 ray = 30
+mu = c(ray, ray)
 mu1 = c(ray, 50)
 mu2 = c(10, ray) # only for multiGaussianDensity
 mu3 = c(ray, 10) # only for multiGaussianDensity
@@ -31,8 +32,6 @@ lowerBandwidthLimit = 2.5
 upperBandwidthLimit = 12
 
 # Definition of execution parameters: amounts of faults
-N_PROB = 50
-maxFaultProbability = 0.5
 minDefectNumber = 10
 maxDefectNumber = 50
 
@@ -50,13 +49,15 @@ for(j in 1:length(faultNumbers)){
   error = vector(mode = "numeric", length = length(bandwidth))
   
   # Calcuate f(x) for a large number of possible values for x1 and x2
-   trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
+   trueFunction = gaussianDensity(ray = ray, mu = mu, sigma = sigma1)$pdf
   # trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
   # trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
   
+  # Bind probability 0 outside the wafer
+  trueFunction = bindCircularMap(rectangularMap = trueFunction, ray = ray, outValue = 0)
+  
   # Fill a simulated wafer with good and bad chips according to the just computed density.
-  faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maxFaultProbability, faultValue = 1, notFaultValue = 0)
-  faultMap = bindDefectNumber(matrix = faultMap, faultValue = 1, notFaultValue = 0, faultNumber = faultNumbers[j])
+  faultMap = bindDefectNumber(probabilityMatrix = trueFunction, faultValue = 1, notFaultValue = 0, faultNumber = faultNumbers[j])
   faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = -1)
   faultNumbers[j] = faultNumber(faultMap = faultMap, faultValue = 1)
   
@@ -78,12 +79,8 @@ for(j in 1:length(faultNumbers)){
     error[i] = chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunction)
   }
   
-  # Identify polynomial model
-  grades = 1:8
-  newData = seq(from = min(bandwidth), to = max(bandwidth), length.out = 250)
-  predictions = fitLinearModels(x = bandwidth, y = error, grades = grades, newData = newData)
-  
-  # Find the best model using AIC 
+  # Identify polynomial model and find the best model using AIC
+  grades = 1:8 
   bestFit = findBestModel(x = bandwidth, y = error, interval = c(min(grades), max(grades)))
   bestBandwidth = findMinimumFromModel(model = bestFit, interval = c(min(bandwidth), max(bandwidth)))$minimum
   fittedBandwidth[j] = bestBandwidth

@@ -77,12 +77,8 @@ for(j in 1:length(maximumFaultProbabilities)){
     error[i] = chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunction)
   }
   
-  # Identify polynomial model
+  # Identify polynomial model and find the best model using AIC
   grades = 1:8
-  newData = seq(from = min(bandwidth), to = max(bandwidth), length.out = 250)
-  predictions = fitLinearModels(x = bandwidth, y = error, grades = grades, newData = newData)
-  
-  # Find the best model using AIC 
   bestFit = findBestModel(x = bandwidth, y = error, interval = c(min(grades), max(grades)))
   bestBandwidth = findMinimumFromModel(model = bestFit, interval = c(min(bandwidth), max(bandwidth)))$minimum
   fittedBandwidth[j] = bestBandwidth

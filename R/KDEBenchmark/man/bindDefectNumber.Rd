@@ -4,10 +4,10 @@
 \alias{bindDefectNumber}
 \title{Create a map with a specified number of faults}
 \usage{
-bindDefectNumber(matrix, faultValue, notFaultValue, faultNumber)
+bindDefectNumber(probabilityMatrix, faultValue, notFaultValue, faultNumber)
 }
 \arguments{
-\item{matrix:}{the matrix filled with faulty and good chips}
+\item{probabilityMatrix:}{the matrix which represent the probability of every chip to be faulty}
 
 \item{faultValue:}{the value which identifies a faulty chip}
 
@@ -19,12 +19,11 @@ bindDefectNumber(matrix, faultValue, notFaultValue, faultNumber)
 a matrix where exactly faultNumber elements are set to faultValue.
 }
 \description{
-Accept a matrix which is assumed to represent the map of faulty and
-good chips on a wafer. The fuction returns the same matrix where only
-the specified number of element is set to the value which represent a
-fauly chip. In other words, this function samples a subset of faulty
-chips and saves the other. This is the reason why it is impossible to
-specify a number of faulty chip greater then the one of the matrix
-passed.
+Accept a matrix which is assumed to represent the probability a single chip
+on the wafer is to be faulty. The fuction returns the a matrix of the same
+dimension of the passed one matrix where only the specified number of element
+is set to the value which represent a fauly chip.
+In other words, this function samples a subset of the chips to be faulty
+and saves the other.
 }
 

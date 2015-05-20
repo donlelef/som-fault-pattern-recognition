@@ -17,7 +17,7 @@ library(KDEBenchmark) # Needed for everything
 ray = 30
 mu = c(ray, ray)
 sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
-maximumFaultProbability = 0.2
+maximumFaultProbability = 0.05
 bandwidth = 6
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
@@ -26,7 +26,7 @@ Z = list$pdf
 grid = list$grid
 
 # Fill a simulated wafer with good and bad chips according to the just computed density.
-faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability)
+faultMap = bindDefectNumber(probabilityMatrix = Z, faultValue = 1, notFaultValue = 0, faultNumber = 50)
 faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray)
 
 # Compute the fault number
