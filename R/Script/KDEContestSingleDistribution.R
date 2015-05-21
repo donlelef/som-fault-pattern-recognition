@@ -10,15 +10,13 @@ library(KDEBenchmark) # Needed for everything
 library(KDEPlotTools) # Needed for the plot
 
 # Initilize test parameters
-tests = 50
-resolution = 50
-gaussianFaultsProbability = seq(from = 0.05, to = 0.3, length.out = resolution)
-parabolicFaultsProbability = seq(from = 0.03, to = 0.1, length.out = resolution)
-multiGaussianFaultsProbability = seq(from = 0.02, to = 0.06, length.out = resolution)
+faultNumber = seq(from = 10, to = 60, by = 1)
+faultNumbers = vector(mode = "numeric", length = length(x = faultNumber))
 
-# Definition of parameters for fault probability distributions
+# Definition of execution parameters: fault probabilty functions
 ray = 30
-mu1 = c(ray, ray)
+mu = c(ray, ray)
+mu1 = c(ray, 50) # only for multiGaussianDensity
 mu2 = c(10, ray) # only for multiGaussianDensity
 mu3 = c(ray, 10) # only for multiGaussianDensity
 sigma1 = ray*diag(x = c(1, 1))
@@ -26,34 +24,34 @@ sigma2 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
 sigma3 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
 parameterList = list(list(mu = mu1, sigma = sigma1), 
                      list(mu = mu2, sigma = sigma2),
-                     list(mu = mu3, sigma = sigma3)
-                     )   # only for multiGaussianDensity
+                     list(mu = mu3, sigma = sigma3)                    
+)
+
+# Calcuate f(x) for a large number of possible values for x1 and x2
+# and fill a list with the three possible distributions
+trueFunction1 = gaussianDensity(ray = ray, mu = mu, sigma = sigma1)$pdf
+trueFunction2 = parabolicDensity(coefficient = 1, ray = ray)$pdf
+trueFunction3 = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+distributionsList = list(trueFunction1, trueFunction2, trueFunction3)
+for(i in 1:length(distributionsList)){
+  distributionsList[[i]] = bindCircularMap(rectangularMap = distributionsList[[i]], ray = ray, outValue = 0)
+}
 
 # Initializations
-KernError = vector(mode = "numeric", length = tests)
-KsError = vector(mode = "numeric", length = tests)
-faultNumbers = vector(mode = "numeric", length = tests)
+KernError = KsError =vector(mode = "numeric", length = length(faultNumber))
 
 # load the bandwit curve from file
-dataFrame = readRDS(file = "Data/bestBandwidths.rds")
+dataFrame = readRDS(file = "Data/bestBandwidths1.rds")
 fittedFaults = dataFrame$faults
 fittedBandwidth = dataFrame$bestBand
 
-for(i in 1:tests){
+for(i in 1:length(faultNumber)){
   
   # Calcuate the probability distribution: choose one!
-  # trueFunction = gaussianDensity(ray = ray, mu = mu1, sigma = sigma1)$pdf
-  # maxFaultProb = gaussianFaultsProbability[i]
-  
-  # trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
-  # maxFaultProb = parabolicFaultsProbability[i]
-  
-  #  trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
-  #  maxFaultProb = multiGaussianFaultsProbability[i]
+  trueFunction = distributionsList[[4]]
   
   # Fill a simulated wafer with good and bad chips according to the just computed density.
-  faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maxFaultProb, faultValue = 1, notFaultValue = 0)
-  faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = -1)
+  faultMap = bindDefectNumber(probabilityMatrix = trueFunction, faultValue = 1, notFaultValue = 0, faultNumber = faultNumber[i])
   
   # Find the fault position and their number
   faultIndex = which(faultMap == 1, arr.ind = TRUE)
@@ -95,4 +93,4 @@ par(new = FALSE) # create a new plot
 barplot(height = diff, xaxs="i", col=ifelse(test = diff>0, yes = "blue", no = "red"),
         main = "Our error vs ks error", ylim = c(min(diff), max(diff)), 
         xlab = "", ylab = "Difference", sub = bquote("Simulations:"~.(length(faultNumbers)))
-        )
+)

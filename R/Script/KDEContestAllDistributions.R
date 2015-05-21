@@ -1,0 +1,98 @@
+# The script creates an arbitrary number of wafers with a small amount of faults and
+# then performs the Kernel Density Estimation using both KernSmooth and Ks functions.
+# The returned fault probability distribution is compared to the real one and the
+# mean square error is computed. 
+
+# Import required libraries
+library(ks) # needed for kde
+library(KernSmooth) # Needed for bkde2D
+library(KDEBenchmark) # Needed for everything
+library(KDEPlotTools) # Needed for the plot
+
+# Initilize test parameters
+faultNumber = seq(from = 10, to = 60, by = 1)
+faultNumbers = vector(mode = "numeric", length = length(x = faultNumber))
+
+# Definition of execution parameters: fault probabilty functions
+ray = 30
+mu = c(ray, ray)
+mu1 = c(ray, 50) # only for multiGaussianDensity
+mu2 = c(10, ray) # only for multiGaussianDensity
+mu3 = c(ray, 10) # only for multiGaussianDensity
+sigma1 = ray*diag(x = c(1, 1))
+sigma2 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
+sigma3 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
+parameterList = list(list(mu = mu1, sigma = sigma1), 
+                     list(mu = mu2, sigma = sigma2),
+                     list(mu = mu3, sigma = sigma3)                    
+)
+
+# Calcuate f(x) for a large number of possible values for x1 and x2
+# and fill a list with the three possible distributions
+trueFunction1 = gaussianDensity(ray = ray, mu = mu, sigma = sigma1)$pdf
+trueFunction2 = parabolicDensity(coefficient = 1, ray = ray)$pdf
+trueFunction3 = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+distributionsList = list(trueFunction1, trueFunction2, trueFunction3)
+for(i in 1:length(distributionsList)){
+  distributionsList[[i]] = bindCircularMap(rectangularMap = distributionsList[[i]], ray = ray, outValue = 0)
+}
+
+# Initializations
+KernError = KsError = vector(mode = "numeric", length = length(faultNumber))
+
+# load the bandwit curve from file
+dataFrame = readRDS(file = "Data/bestBandwidths1.rds")
+fittedFaults = dataFrame$faults
+fittedBandwidth = dataFrame$bestBand
+
+for(j in 1:length(distributionsList)){
+  
+  for(i in 1:length(faultNumber)){
+    
+    # Select the fault probability distribution
+    trueFunction = distributionsList[[j]]
+    
+    # Fill a simulated wafer with good and bad chips according to the just computed density.
+    faultMap = bindDefectNumber(probabilityMatrix = trueFunction, faultValue = 1, notFaultValue = 0, faultNumber = faultNumber[i])
+    
+    # Find the fault position and their number
+    faultIndex = which(faultMap == 1, arr.ind = TRUE)
+    faultNumbers[i] = faultNumber(faultMap = faultMap, faultValue = 1)
+    
+    # Consider only the points inside the wafer
+    trueFunction = bindCircularMap(rectangularMap = trueFunction, ray = ray, outValue = NA)
+    
+    # KDE with KernSmooth and with ks
+    bestBandwidth = bestBandwidth(fittedBandwidth = fittedBandwidth, fittedFaults = fittedFaults, faults = faultNumbers[i]) 
+    estimationKern = bkde2D(x = faultIndex, bandwidth = bestBandwidth,  range.x = list(c(0,2*ray), c(0,2*ray)), gridsize = c(2*ray, 2*ray))
+    estimationKs = kde(x = faultIndex, gridsize = c(2*ray, 2*ray), xmin = c(0,0), xmax = c(2*ray, 2*ray))
+    
+    # Consider only the points inside the wafer
+    extimatedFunctionKern = bindCircularMap(rectangularMap = estimationKern$fhat, ray = ray, outValue = NA)
+    extimatedFunctionKs = bindCircularMap(rectangularMap = estimationKs$estimate, ray = ray, outValue = NA)
+    
+    # Benchmark
+    KernError[i] = KernError[i] + chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunctionKern)
+    KsError[i] = KsError[i] + chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunctionKs)
+  }
+}
+# Comupting difference
+diff = KsError - KernError
+
+# Scatter plots
+par(new = FALSE) # create a new plot
+scatterPlot(x = faultNumbers, y = KernError, title = "Average square error vs faults", 
+            sub = bquote("Simulations:"~.(length(faultNumbers))), col = "blue", 
+            xlim = c(min(faultNumbers),max(faultNumbers)), ylim = c(min(KernError, KsError), max(KernError, KsError)),
+            xlab = "Faults", ylab = "Error")
+par(new = TRUE) # plot in the same graphic window
+scatterPlot(x = faultNumbers, y = KsError, title = "Average square error vs faults",
+            xlim = c(min(faultNumbers),max(faultNumbers)), ylim = c(min(KernError, KsError), max(KernError, KsError)),
+            col = "red", xlab = "", ylab = "", axes = FALSE)
+
+# Plot difference
+par(new = FALSE) # create a new plot
+barplot(height = diff, xaxs="i", col=ifelse(test = diff>0, yes = "blue", no = "red"),
+        main = "Our error vs ks error", ylim = c(min(diff), max(diff)), 
+        xlab = "", ylab = "Difference", sub = bquote("Simulations:"~.(length(faultNumbers)))
+)

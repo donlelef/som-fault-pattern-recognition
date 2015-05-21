@@ -15,9 +15,9 @@ library(KDEBenchmark) # Needed for everything
 
 # Initial parameters
 ray = 30
-maximumFaultProbability = 0.05
+maximumFaultProbability = 0.1
 coefficient = 1
-bandwidth = 11
+bandwidth = 8
 
 #Calcuate f(x) for a large number of possible values for x1 and x2
 list = parabolicDensity(coefficient = coefficient, ray = ray)
