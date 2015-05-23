@@ -4,10 +4,11 @@
 \alias{multiGaussianDensity}
 \title{Return a the normalized sum of bivariate gaussian density}
 \usage{
-multiGaussianDensity(ray, parameterList)
+multiGaussianDensity(axes, parameterList)
 }
 \arguments{
-\item{ray:}{half the number of column of the square matrix returned}
+\item{axes:}{a list of 2 elements: the first is assumed to be the x axes
+and the second the y axes where the function should be evaluated}
 
 \item{parameterList:}{a list whose elements shuold be list, too. They are
 assumed to contain the mean and the variace matrix of a single bivariate

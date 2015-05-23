@@ -11,9 +11,11 @@
 # Import required libraries
 library(KernSmooth) # Needed for bkde2D
 library(KDEPlotTools) # Needed for the plot
-library(KDEBenchmark) # Needed for everything
+library(KDEFaultPattern) # Needed for everything
 
 # Initial parameters
+dieWidth = 2
+dieHeight = 1
 ray = 30
 mu = c(ray, ray)
 sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
@@ -21,23 +23,26 @@ maximumFaultProbability = 0.2
 bandwidth = 4.5
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
-list = gaussianDensity(ray = ray, mu = mu, sigma = sigma)
+grid = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+list = gaussianDensity(axes = grid, mu = mu, sigma = sigma)
 Z = list$pdf
 grid = list$grid
 
 # Fill a simulated wafer with good and bad chips according to the just computed density.
-faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability)
-faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray)
+faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
+faultMap = bindCircularMap(rectangularMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
 
 # Compute the fault number
-faultNumber = faultNumber(faultMap = faultMap, faultValue = TRUE)
+faultNumber = faultNumber(faultMap = faultMap, faultValue = 1)
 
 # Perform the KDE
-faultIndex = which(faultMap == 1, arr.ind = TRUE)
-estimation = bkde2D(faultIndex, bandwidth = bandwidth, range.x = list(c(0,2*ray), c(0,2*ray)), gridsize = c(2*ray, 2*ray))
+faultPositions = findFaultPositions(faultMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, faultValue = 1)
+estimation = bkde2D(faultPositions, bandwidth = bandwidth, 
+                    range.x = list( c(min(grid$x), max(grid$x)), c(min(grid$y), max(grid$y))), 
+                    gridsize = c(nrow(grid$x), ncol(grid$y)))
 
 # 3D plot of the fault probability density with surf3D()
-Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
+Z = bindCircularMap(rectangularMap = Z, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = NA)
 surfacePlot(x = grid$x, y = grid$y, z = Z, title = "Bivariate Normal Distribution",
             sub = bquote(bold(mu[1])==.(mu[1])~", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~", "~sigma[xy]==.(sigma[2,1]))
 )
@@ -49,7 +54,7 @@ matrixPlot(title = "Simulated fault map", matrix = faultMap, colorMap = heat.col
 
 # Plot the extimated function
 grid = mesh(estimation$x1, estimation$x2)
-extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
+extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = NA)
 surfacePlot(x = grid$x, y = grid$y, z = extimatedFunction, title = "Extimated function",
             sub = bquote(bold(mu[1])==.(mu[1])~", "~sigma[1]==.(sigma[1,1])~", "~mu[2]==.(mu[2])~", "~sigma[2]==.(sigma[2,2])~", "~sigma[xy]==.(sigma[2,1]))
 )

@@ -4,19 +4,21 @@
 #' 
 #' @title Return a bivariate gaussian density
 #' @export
-#' @param ray: half the number of column of the square matrix returned
+#' @param axes: a list of 2 elements: the first is assumed to be the x axes
+#' and the second the y axes where the function should be evaluated
 #' @param mu: a vector containing the mean of the gaussian density
 #' @param sigma: a matrix containing the variance of the gaussian density
 #' @import mvtnorm plot3D
 #' @return a list with 2 elemets: the values of the probability function "pdf" and the 
 #' grid "grid" where it has been computed.
 
-gaussianDensity = function (ray, mu, sigma) {
+gaussianDensity = function (axes, mu, sigma) {
   # Import
   library(mvtnorm) # Needed for dmvnorm()
   library(plot3D) # Needed for mesh()
   
-  x2 = x1 = seq(from = 0, to = 2*ray, length.out = 2*ray)  
+  x1 = axes[[1]]
+  x2 = axes[[2]]
   grid = expand.grid(x1, x2) #Creates all possible combinations
   densityVector = dmvnorm(x = grid, mean = mu, sigma = sigma, log = FALSE)
   

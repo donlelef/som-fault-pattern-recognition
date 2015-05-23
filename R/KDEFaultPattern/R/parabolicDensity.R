@@ -5,13 +5,15 @@
 #' @title Return a parabolic density
 #' @import plot3D
 #' @export
+#' @param axes: a list of 2 elements: the first is assumed to be the x axes
+#' and the second the y axes where the function should be evaluated
 #' @param coefficient: the coefficient a in the formula z = a(x^2 + y^2)
 #' @param ray: the ray of the circular wafer
 #' @return list with 2 elemets: the values of the probability function "pdf" and the 
 #' grid "grid" where it has been computed.
 
 
-parabolicDensity = function (coefficient, ray) {
+parabolicDensity = function (coefficient, ray, axes) {
   
   # import
   library(plot3D) # required for mesh()
@@ -24,7 +26,8 @@ parabolicDensity = function (coefficient, ray) {
     }
   }
   
-  x2 = x1 = seq(from = 0, to = 2*ray, length.out = 2*ray)  
+  x1 = axes[[1]]
+  x2 = axes[[2]]
   normalizationCoefficient = getNormalizationCoefficient(f = vectorParaboloid, lowerLimit = c(min(x1), min(x2)), upperLimit = c(max(x1), max(x2)))
   
   grid = mesh(x1,x2)

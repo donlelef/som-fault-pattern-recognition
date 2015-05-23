@@ -4,9 +4,12 @@
 \alias{parabolicDensity}
 \title{Return a parabolic density}
 \usage{
-parabolicDensity(coefficient, ray)
+parabolicDensity(coefficient, ray, axes)
 }
 \arguments{
+\item{axes:}{a list of 2 elements: the first is assumed to be the x axes
+and the second the y axes where the function should be evaluated}
+
 \item{coefficient:}{the coefficient a in the formula z = a(x^2 + y^2)}
 
 \item{ray:}{the ray of the circular wafer}

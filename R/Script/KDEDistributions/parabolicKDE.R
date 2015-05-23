@@ -11,32 +11,37 @@
 # Import required libraries
 library(KernSmooth) # Needed for bkde2D
 library(KDEPlotTools) # Needed for the plot
-library(KDEBenchmark) # Needed for everything
+library(KDEFaultPattern) # Needed for everything
 
 # Initial parameters
+dieWidth = 2
+dieHeight = 1
 ray = 30
 maximumFaultProbability = 0.1
 coefficient = 1
 bandwidth = 8
 
 #Calcuate f(x) for a large number of possible values for x1 and x2
-list = parabolicDensity(coefficient = coefficient, ray = ray)
+grid = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+list = parabolicDensity(axes = grid, coefficient = coefficient, ray = ray)
 Z = list$pdf
 grid = list$grid
 
 # Fill the fault map
-faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability, faultValue = TRUE, notFaultValue = FALSE)
-faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = NA)
+faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
+faultMap = bindCircularMap(rectangularMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
 
 # Compute the fault number
 faultNumber = faultNumber(faultMap = faultMap, faultValue = TRUE)
 
 # Perform the KDE
-faultIndex = which(faultMap == 1, arr.ind = TRUE)
-estimation = bkde2D(x = faultIndex, bandwidth = bandwidth, range.x = list(c(0,2*ray), c(0, 2*ray)), gridsize = c(2*ray, 2*ray))
+faultPositions = findFaultPositions(faultMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, faultValue = 1)
+estimation = bkde2D(faultPositions, bandwidth = bandwidth, 
+                    range.x = list( c(min(grid$x), max(grid$x)), c(min(grid$y), max(grid$y))), 
+                    gridsize = c(nrow(grid$x), ncol(grid$y)))
 
 # 3D plot of the fault probability density with surf3D()
-Z = bindCircularMap(rectangularMap = Z, ray = ray, outValue = NA)
+Z = bindCircularMap(rectangularMap = Z, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
 surfacePlot(title = "Normalized parabolic distribution", x = grid$x, y = grid$y,  z = Z)
 
 # Plot the fault map
@@ -46,8 +51,8 @@ matrixPlot(title = "Fault map", matrix = faultMap, colorMap = heat.colors(2),
 
 # Plot the extimated function
 grid = mesh(estimation$x1, estimation$x2)
-extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
-surfacePlot(x = grid$x, y = grid$y, z = estimation$fhat, title = "Extimated function")
+extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+surfacePlot(x = grid$x, y = grid$y, z = extimatedFunction, title = "Extimated function")
 
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors

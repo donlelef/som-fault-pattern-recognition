@@ -1,7 +1,7 @@
 #' Return the best bandwidth from the vector of the fitted bandwidth and 
 #' the number of faults on the wafer. Another vector should be passed to the function:
 #' it is assumed to contain the amounts of faults every fitted bandwidth was
-#' computed for
+#' computed for.
 #' 
 #' @title Find the best bandwidth.
 #' @export

@@ -4,10 +4,11 @@
 \alias{uniformDensity}
 \title{Return a uniform density}
 \usage{
-uniformDensity(ray)
+uniformDensity(axes)
 }
 \arguments{
-\item{ray:}{half the number of column of the square matrix returned}
+\item{axes:}{a list of 2 elements: the first is assumed to be the x axes
+and the second the y axes where the function should be evaluated}
 }
 \value{
 a list with 2 elemets: the values of the probability function "pdf" and the
