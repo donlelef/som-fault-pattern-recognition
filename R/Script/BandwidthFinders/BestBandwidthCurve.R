@@ -15,7 +15,7 @@ library(stats) # Needed for predict
 
 
 # load the data from file
-files = c("Data/multiGaussianBand.rds", "Data/gaussianBand.rds", "Data/parabolicBand.rds")
+files = c("data.rds")
 
 for(file in files){
   
@@ -42,4 +42,4 @@ plot(x = faults, y = bandCurve,
 
 # Save data
 bestBand = data.frame(faults = faults, bestBand = bandCurve)
-saveRDS(object = bestBand, file = "Data/bestBandwidths.rds", ascii = TRUE)
+saveRDS(object = bestBand, file = "data.rds", ascii = TRUE)

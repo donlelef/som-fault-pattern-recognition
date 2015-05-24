@@ -7,14 +7,16 @@
 library(ks) # needed for kde
 library(KernSmooth) # Needed for bkde2D
 library(KDEBenchmark) # Needed for everything
+library(KDEFaultPattern) # Needed for everything
 library(KDEPlotTools) # Needed for the plot
 
 # Initilize test parameters
-faultNumber = seq(from = 10, to = 60, by = 1)
-faultNumbers = vector(mode = "numeric", length = length(x = faultNumber))
+faultNumbers = seq(from = 10, to = 60, by = 1)
 
 # Definition of execution parameters: fault probabilty functions
 ray = 30
+dieWidth = 1
+dieHeight = 1
 mu = c(ray, ray)
 mu1 = c(ray, 50) # only for multiGaussianDensity
 mu2 = c(10, ray) # only for multiGaussianDensity
@@ -29,45 +31,47 @@ parameterList = list(list(mu = mu1, sigma = sigma1),
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
 # and fill a list with the three possible distributions
-trueFunction1 = gaussianDensity(ray = ray, mu = mu, sigma = sigma1)$pdf
-trueFunction2 = parabolicDensity(coefficient = 1, ray = ray)$pdf
-trueFunction3 = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+grid = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+trueFunction1 = gaussianDensity(axes = grid, mu = mu, sigma = sigma1)$pdf
+trueFunction2 = parabolicDensity(axes = grid, coefficient = 1, ray = ray)$pdf
+trueFunction3 = multiGaussianDensity(axes = grid, parameterList = parameterList)$pdf
 distributionsList = list(trueFunction1, trueFunction2, trueFunction3)
 for(i in 1:length(distributionsList)){
-  distributionsList[[i]] = bindCircularMap(rectangularMap = distributionsList[[i]], ray = ray, outValue = 0)
+  distributionsList[[i]] = bindCircularMap(rectangularMap = distributionsList[[i]], dieWidth = dieWidth, dieHeight = dieHeight,  waferRay = ray, outValue = 0)
 }
 
 # Initializations
-KernError = KsError =vector(mode = "numeric", length = length(faultNumber))
+KernError = KsError = vector(mode = "numeric", length = length(faultNumbers))
 
 # load the bandwit curve from file
-dataFrame = readRDS(file = "Data/bestBandwidths1.rds")
+dataFrame = readRDS(file = "data.rds")
 fittedFaults = dataFrame$faults
 fittedBandwidth = dataFrame$bestBand
 
-for(i in 1:length(faultNumber)){
+for(i in 1:length(faultNumbers)){
   
   # Calcuate the probability distribution: choose one!
-  trueFunction = distributionsList[[4]]
+  trueFunction = distributionsList[[1]]
   
   # Fill a simulated wafer with good and bad chips according to the just computed density.
-  faultMap = bindDefectNumber(probabilityMatrix = trueFunction, faultValue = 1, notFaultValue = 0, faultNumber = faultNumber[i])
+  faultMap = bindDefectNumber(probabilityMatrix = trueFunction, faultValue = 1, notFaultValue = 0, faultNumber = faultNumbers[i])
   
   # Find the fault position and their number
-  faultIndex = which(faultMap == 1, arr.ind = TRUE)
-  faultNumbers[i] = faultNumber(faultMap = faultMap, faultValue = 1)
+  faultPositions = findFaultPositions(faultMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, faultValue = 1)
   
   # Consider only the points inside the wafer
-  trueFunction = bindCircularMap(rectangularMap = trueFunction, ray = ray, outValue = NA)
+  trueFunction = bindCircularMap(rectangularMap = trueFunction, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = NA)
   
   # KDE with KernSmooth and with ks
   bestBandwidth = bestBandwidth(fittedBandwidth = fittedBandwidth, fittedFaults = fittedFaults, faults = faultNumbers[i]) 
-  estimationKern = bkde2D(x = faultIndex, bandwidth = bestBandwidth,  range.x = list(c(0,2*ray), c(0,2*ray)), gridsize = c(2*ray, 2*ray))
-  estimationKs = kde(x = faultIndex, gridsize = c(2*ray, 2*ray), xmin = c(0,0), xmax = c(2*ray, 2*ray))
+  estimationKern = bkde2D(faultPositions, bandwidth = bestBandwidth, 
+                      range.x = list( c(min(grid$x), max(grid$x)), c(min(grid$y), max(grid$y))), 
+                      gridsize = c(length(grid$x), length(grid$y)))
+  estimationKs = kde(x = faultPositions, gridsize = c(length(grid$x), length(grid$y)), xmin = c(min(grid$x), min(grid$y)), xmax = c(max(grid$x), max(grid$y)))
   
   # Consider only the points inside the wafer
-  extimatedFunctionKern = bindCircularMap(rectangularMap = estimationKern$fhat, ray = ray, outValue = NA)
-  extimatedFunctionKs = bindCircularMap(rectangularMap = estimationKs$estimate, ray = ray, outValue = NA)
+  extimatedFunctionKern = bindCircularMap(rectangularMap = estimationKern$fhat, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = NA)
+  extimatedFunctionKs = bindCircularMap(rectangularMap = estimationKs$estimate, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = NA)
   
   # Benchmark
   KernError[i] = chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunctionKern)

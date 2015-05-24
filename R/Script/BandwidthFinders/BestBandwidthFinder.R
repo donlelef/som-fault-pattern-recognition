@@ -10,10 +10,13 @@ library(KernSmooth) # Needed for bkde2D
 library(KDEModel) # Needed for model
 library(KDEPlotTools) # Needed for the plot
 library(KDEBenchmark) # Needed for everything
+library(KDEFaultPattern) # Needed for everything
 library(stats) # Needed for lm
 
 # Definition of execution parameters: fault probabilty functions
 ray = 30
+dieWidth = 1
+dieHeight = 1
 mu = c(ray, ray)
 mu1 = c(ray, 50) # only for multiGaussianDensity
 mu2 = c(10, ray) # only for multiGaussianDensity
@@ -50,28 +53,31 @@ for(j in 1:length(maximumFaultProbabilities)){
   error = vector(mode = "numeric", length = length(bandwidth))
   
   # Calcuate f(x) for a large number of possible values for x1 and x2
-   trueFunction = gaussianDensity(ray = ray, mu = mu, sigma = sigma1)$pdf
-  # trueFunction = parabolicDensity(coefficient = 1, ray = ray)$pdf
-  # trueFunction = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
+  grid = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+   trueFunction = gaussianDensity(axes = grid, mu = mu, sigma = sigma1)$pdf
+  # trueFunction = parabolicDensity(axes = grid, coefficient = 1, ray = ray)$pdf
+  # trueFunction = multiGaussianDensity(axes = grid, parameterList = parameterList)$pdf
   
   # Fill a simulated wafer with good and bad chips according to the just computed density.
   faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maximumFaultProbabilities[j], faultValue = 1, notFaultValue = 0)
-  faultMap = bindCircularMap(rectangularMap = faultMap, ray = ray, outValue = -1)
+  faultMap = bindCircularMap(rectangularMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = -1)
   faultNumbers[j] = faultNumber(faultMap = faultMap, faultValue = 1)
   
   # KDE: finding the fault position
-  faultIndex = which(faultMap == 1, arr.ind = TRUE)
+  faultPositions = findFaultPositions(faultMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, faultValue = 1)
   
   # Consider only the points inside the wafer
-  trueFunction = bindCircularMap(rectangularMap = trueFunction, ray = ray, outValue = NA)
+  trueFunction = bindCircularMap(rectangularMap = trueFunction, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = NA)
   
   # Repeat the simulation for several values of bandwidth
   for (i in 1 : length(bandwidth)){  
     # KDE
-    estimation = bkde2D(x = faultIndex, bandwidth = bandwidth[i],  range.x = list(c(0,2*ray), c(0,2*ray)), gridsize = c(2*ray, 2*ray))
+    estimation = bkde2D(faultPositions, bandwidth = bandwidth[i], 
+                        range.x = list( c(min(grid$x), max(grid$x)), c(min(grid$y), max(grid$y))), 
+                        gridsize = c(length(grid$x), length(grid$y)))
     
     # Consider only the points inside the wafer
-    extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
+    extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = NA)
     
     # Benchmark
     error[i] = chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunction)

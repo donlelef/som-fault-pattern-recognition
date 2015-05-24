@@ -24,7 +24,7 @@ parameterList = list(list(mu = c(ray,50), sigma = sigma2),
                      list(mu = c(10,ray), sigma = sigma1),
                      list(mu = c(ray,10), sigma = sigma1)                     
 )
-maximumFaultProbability = 0.05
+maximumFaultProbability = 0.2
 bandwidth = 4.5
 
 # Calcuate f(x) for a large number of possible values for x1 and x2

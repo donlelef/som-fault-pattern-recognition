@@ -12,12 +12,15 @@
 library(KernSmooth) # Needed for bkde2D
 library(KDEModel) # Needed for model
 library(KDEPlotTools) # Needed for the plot
+library(KDEFaultPattern) # Needed for everything
 library(KDEBenchmark) # Needed for everything
 library(stats) # Needed for lm
 
 # Definition of execution parameters: fault probabilty functions
 weigths = c(1,1,1,1)
 ray = 30
+dieWidth = 1
+dieHeight = 1
 mu = c(ray, ray)
 mu1 = c(ray, 50) # only for multiGaussianDensity
 mu2 = c(10, ray) # only for multiGaussianDensity
@@ -47,18 +50,19 @@ fittedBandwidth = vector(mode = "numeric", length = length(faultNumbers))
 
 # Calcuate f(x) for a large number of possible values for x1 and x2
 # and fill a list with the four possible distributions
-trueFunction1 = gaussianDensity(ray = ray, mu = mu, sigma = sigma1)$pdf
-trueFunction2 = parabolicDensity(coefficient = 1, ray = ray)$pdf
-trueFunction3 = multiGaussianDensity(ray = ray, parameterList = parameterList)$pdf
-trueFunction4 = uniformDensity(ray = ray)$pdf
+grid = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+trueFunction1 = gaussianDensity(axes = grid, mu = mu, sigma = sigma1)$pdf
+trueFunction2 = parabolicDensity(axes = grid, coefficient = 1, ray = ray)$pdf
+trueFunction3 = multiGaussianDensity(axes = grid, parameterList = parameterList)$pdf
+trueFunction4 = uniformDensity(axes = grid)$pdf
 distributionsList = list(trueFunction1, trueFunction2, trueFunction3, trueFunction4)
 for(i in 1:length(distributionsList)){
-  distributionsList[[i]] = bindCircularMap(rectangularMap = distributionsList[[i]], ray = ray, outValue = 0)
+  distributionsList[[i]] = bindCircularMap(rectangularMap = distributionsList[[i]], dieWidth = dieWidth, dieHeight = dieHeight,  waferRay = ray, outValue = 0)
 }
 
 for(j in 1:length(faultNumbers)){
   
-  error = vector(mode = "numeric", length = length(bandwidth))
+  error = rep(x = 0, length.out = length(bandwidth))
     
   for(k in 1:length(distributionsList)){
     # Select a distribution and its weight
@@ -69,24 +73,26 @@ for(j in 1:length(faultNumbers)){
     faultMap = bindDefectNumber(probabilityMatrix = trueFunction, faultValue = 1, notFaultValue = 0, faultNumber = faultNumbers[j])
     
     # KDE: finding the fault position
-    faultIndex = which(faultMap == 1, arr.ind = TRUE)
+    faultPositions = findFaultPositions(faultMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, faultValue = 1)
     
     # Consider only the points inside the wafer
-    trueFunction = bindCircularMap(rectangularMap = trueFunction, ray = ray, outValue = NA)
+    trueFunction = bindCircularMap(rectangularMap = trueFunction, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = NA)
     
     # Repeat the simulation for several values of bandwidth
     for (i in 1 : length(bandwidth)){  
       # KDE
-      estimation = bkde2D(x = faultIndex, bandwidth = bandwidth[i],  range.x = list(c(0,2*ray), c(0,2*ray)), gridsize = c(2*ray, 2*ray))
+      estimation = bkde2D(faultPositions, bandwidth = bandwidth[i], 
+                          range.x = list( c(min(grid$x), max(grid$x)), c(min(grid$y), max(grid$y))), 
+                          gridsize = c(length(grid$x), length(grid$y)))
       
       # Consider only the points inside the wafer
-      extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, ray = ray, outValue = NA)
+      extimatedFunction = bindCircularMap(rectangularMap = estimation$fhat, dieWidth = dieWidth, dieHeight = dieHeight,  waferRay = ray, outValue = NA)
       
       # Benchmark
       error[i] = error[i] + selectedWeight*chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunction)
     }
   }
-  # Identify polynomial model and find the best model using AIC
+  # Identify polynomial model, find the best model using AIC and thus saving the best bandwidth
   grades = 1:8 
   bestFit = findBestModel(x = bandwidth, y = error, interval = c(min(grades), max(grades)))
   bestBandwidth = findMinimumFromModel(model = bestFit, interval = c(min(bandwidth), max(bandwidth)))$minimum
