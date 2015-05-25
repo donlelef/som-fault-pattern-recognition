@@ -1,5 +1,5 @@
 library(RUnit)
-library(KDEBenchmark)
+library(KDEFaultPattern)
 
 test.bindDefectNumber = function(){
   
