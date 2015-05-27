@@ -1,7 +1,10 @@
 # Initilize parameter and create the four fault probability distributions
 
 # Import required libraries
-library(KDEFaultPattern) # Needed for everything
+library(KDEFaultPattern) 
+library(KDEModel)
+library(KDEPlotTools)
+library(KDEBenchmark)
 
 # Definition of execution parameters: fault probabilty functions
 ray = 30

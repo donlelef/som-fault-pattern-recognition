@@ -21,8 +21,8 @@ for(file in files){
   
   # load data from file
   dataFrame = readRDS(file = file)
-  faultNumbers = dataFrame$faultNumbers
-  fittedBandwidth = dataFrame$fittedBandwidth
+  faultNumbers = dataFrame$faults
+  fittedBandwidth = dataFrame$bestBand
   
   # Identify polynomial model
   grades = 1:8
