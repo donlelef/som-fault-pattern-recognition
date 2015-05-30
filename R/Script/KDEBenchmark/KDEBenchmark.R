@@ -3,6 +3,8 @@
 # the original distribution from the faults on the map using KDE algorithm.
 # The benchmark concern the accuracy of the estimation as the bandwidth for
 # the KDE algorithm ranges in a given interval.
+# The script finds the best bandwidth, ie the one which causes the minumium difference
+# between the real probability function and the extimated one.
 
 # Import required libraries
 library(KDEModel) # Needed for model
@@ -12,39 +14,24 @@ library(KDEFaultPattern) # Needed for everything
 library(KernSmooth) # Needed for bkde2D
 library(stats) # Needed for predict
 
+# initialize parameters
+source(file = "Script//initializer.R")
+
 # Definition of execution parameters
-ray = 30
-dieWidth = 2
-dieHeight = 1
-mu1 = c(ray, ray)
-mu2 = c(10, ray) # only for multiGaussianDensity
-mu3 = c(ray, 10) # only for multiGaussianDensity
-sigma1 = ray*diag(x = c(1, 1))
-sigma2 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
-sigma3 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
 N_BAND = 100
-maximumFaultProbability = 0.3
+faultNumber = 10
 lowerBandwidthLimit = 2
 upperBandwidthLimit = 6
 
 # Initializations
 bandwidth = seq(from = lowerBandwidthLimit, to = upperBandwidthLimit, length.out = N_BAND)
 error = vector(mode = "numeric", length = length(bandwidth))
-parameterList = list(list(mu = mu1, sigma = sigma1), 
-                     list(mu = mu2, sigma = sigma2),
-                     list(mu = mu3, sigma = sigma3)                    
-)
 
-# Calcuate f(x) for a large number of possible values for x1 and x2
-grid = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
- trueFunction = gaussianDensity(axes = grid, mu = mu1, sigma = sigma1)$pdf
-# trueFunction = parabolicDensity(axes = axes, coefficient = 1, ray = ray)$pdf
-# trueFunction = multiGaussianDensity(axes = axes, parameterList = parameterList)$pdf
-
-# Fill a simulated wafer with good and bad chips according to the just computed density.
-faultMap = fillRectangularMap(probabilityFunction = trueFunction, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
-faultMap = bindCircularMap(rectangularMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
-
+# Fill a map of faulty and good chips according to one of the possible distributions
+# and the chosen amounts of faults
+trueFunction = distributionsList$gaussian
+faultMap = bindDefectNumber(probabilityMatrix = trueFunction, faultValue = 1, notFaultValue = 0, faultNumber = faultNumber)
+  
 # KDE: finding the fault position
 faultPositions = findFaultPositions(faultMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, faultValue = 1)
 
@@ -71,12 +58,12 @@ scatterPlot(x = bandwidth, y = error, title =  "Average square error vs bandwidt
             xlab = "bandwidth", ylab = "error"
 )
 
-# Identify polynomial model
+# Identify polynomial models and fit date according to them
 grades = 1:8
 newData = seq(from = min(bandwidth), to = max(bandwidth), length.out = 250)
 predictions = fitLinearModels(x = bandwidth, y = error, grades = grades, newData = newData)
 
-# And plotting them
+# Plot all the models upon the data scatter plot
 for(i in 1 : length(grades)){
   par(new = TRUE) # plot in the same graphic window
   modelPlot(x = newData, y = predictions[[i]],
@@ -93,6 +80,8 @@ scatterPlot(x = bandwidth, y = error, title = "Average square error vs bandwidth
             sub = bquote("Simulations:"~.(length(bandwidth))~
                            "  Best rank:"~.(bestFit$rank - 1)~"   Best bandwidth:"~.(bestBandwidth)),
             xlab = "bandwidth", ylab = "error")
+
+# Plot the best model on the data
 par(new = TRUE) # plot in the same graphic window
 prediction = predict(bestFit, newdata =  data.frame(x = newData))
 modelPlot(x = newData, y = prediction, col = "red",

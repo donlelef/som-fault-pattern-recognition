@@ -1,3 +1,5 @@
+# NOT TO BE USED: replace with MaxLikelihoodBandwidth
+
 # This script computes a bidimensional probability distribution, uses it as a
 # probability function to create a faultMap, and then tries to estimate
 # the original distribution from the faults on the map using KDE algorithm.

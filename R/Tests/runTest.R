@@ -1,4 +1,7 @@
 library(RUnit)
+library(KDEFaultPattern)
+library(KDEBenchmark)
+library(SOMWaferClassification)
 
 test.suite <- defineTestSuite(name = "KDETests",
                               dirs = file.path("Tests/tests"),

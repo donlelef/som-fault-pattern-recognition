@@ -1,6 +1,3 @@
-library(RUnit)
-library(KDEFaultPattern)
-
 test.waferGenerator = function(){
   
   # Define execution parameters

@@ -1,9 +1,9 @@
 # This script computes the sum of an arbitrary number of bidimensional 
-# gaussian distribution and plots them.
+# gaussian distributions and plots them.
 # This probability function is assumed to represent the probability of a fault
 # to happen on the chip in the coordinates (x1, x2).
 # After that, a map is created where random faults are simulated. The value
-# FALSE in the map means 'no fault' and TRUE means 'fault', whereas NA indicates 
+# 0 in the map means 'no fault' and 1 means 'fault', whereas NA indicates 
 # a point out of the circular wafer.
 # The KDE algorithm is lauched and the original function is predicted form the 
 # positions of the defects on the wafer
@@ -24,21 +24,18 @@ parameterList = list(list(mu = c(ray,50), sigma = sigma2),
                      list(mu = c(10,ray), sigma = sigma1),
                      list(mu = c(ray,10), sigma = sigma1)                     
 )
-maximumFaultProbability = 0.2
+faultNumber = 35
 bandwidth = 4.5
 
-# Calcuate f(x) for a large number of possible values for x1 and x2
+# Create fault probability function
 axes = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
 list = multiGaussianDensity(axes = axes, parameterList = parameterList)
-Z = list$pdf
+trueFunction = list$pdf
 grid = list$grid
 
-# Fill a simulated wafer with good and bad chips according to the just computed density.
-faultMap = fillRectangularMap(probabilityFunction = Z, maxFaultProbability = maximumFaultProbability, faultValue = 1, notFaultValue = 0)
-faultMap = bindCircularMap(rectangularMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
-
-# Compute the fault number
-faultNumber = faultNumber(faultMap = faultMap, faultValue = TRUE)
+# Fill a simulated wafer with good and bad chips according to the just computed density
+# and the chosen amount of faults.
+faultMap = bindDefectNumber(probabilityMatrix = trueFunction, faultValue = 1, notFaultValue = 0, faultNumber = faultNumber)
 
 # Perform the KDE
 faultPositions = findFaultPositions(faultMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, faultValue = 1)
@@ -47,10 +44,11 @@ estimation = bkde2D(faultPositions, bandwidth = bandwidth,
                     gridsize = c(nrow(grid$x), ncol(grid$y)))
 
 # 3D plot of the fault probability density with surf3D()
-Z = bindCircularMap(rectangularMap = Z, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
-surfacePlot(title = "Multiple normal distribution", x = grid$x, y = grid$y, z = Z)
+trueFunction = bindCircularMap(rectangularMap = trueFunction, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+surfacePlot(title = "Multiple normal distribution", x = grid$x, y = grid$y, z = trueFunction)
 
 # Plot the fault map
+faultMap = bindCircularMap(rectangularMap = faultMap, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = NA)
 matrixPlot(title = "Simulated fault map", matrix = faultMap, colorMap = heat.colors(2),
            sub = bquote("Number of faults = "~.(faultNumber))
 )
@@ -62,5 +60,5 @@ surfacePlot(title = "Extimated function", x = grid$x, y = grid$y, z = extimatedF
 
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors
-matrixPlot(title = "Real density function", matrix = Z, colorMap = rainbow(20))
+matrixPlot(title = "Real density function", matrix = trueFunction, colorMap = rainbow(20))
 matrixPlot(title = "Extimated density function", matrix = extimatedFunction, colorMap = rainbow(20))

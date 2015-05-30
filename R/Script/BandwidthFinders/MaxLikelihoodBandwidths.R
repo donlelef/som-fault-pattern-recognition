@@ -1,6 +1,7 @@
 # This script computes three different bidimensional probability distribution, uses it as a
-# probability function to create a faultMap, and then tries to estimate
-# the original distributions from the faults on the map using KDE algorithm.
+# probability function to create a fault filled with good and bad chips,
+# and then tries to estimate the original distributions from the faults 
+# on the map using KDE algorithm.
 # Different bandwidth are used and, for each number of faults, the best one is 
 # saved. The best bandwidth is the one which causes the minimum error, defined as
 # the sum of the extimation errors on the different distribution. The weight of the
@@ -16,18 +17,9 @@ library(KDEFaultPattern) # Needed for everything
 library(KDEBenchmark) # Needed for everything
 library(stats) # Needed for lm
 
-# Definition of execution parameters: fault probabilty functions
+# Initialize wafer parameters and distibutions
+source(file = "Script//initializer.R")
 weigths = c(1,1,1,1)
-ray = 30
-dieWidth = 1
-dieHeight = 1
-mu = c(ray, ray)
-mu1 = c(ray, 50) # only for multiGaussianDensity
-mu2 = c(10, ray) # only for multiGaussianDensity
-mu3 = c(ray, 10) # only for multiGaussianDensity
-sigma1 = ray*diag(x = c(1, 1))
-sigma2 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
-sigma3 = ray*diag(x = c(1, 1)) # only for multiGaussianDensity
 
 # Definition of execution parameters: bandwidth limits
 N_BAND = 50
@@ -41,24 +33,8 @@ maxDefectNumber = 60
 # Initializations
 weigths = weigths/sum(weigths)
 bandwidth = seq(from = lowerBandwidthLimit, to = upperBandwidthLimit, length.out = N_BAND)
-parameterList = list(list(mu = mu1, sigma = sigma1), 
-                     list(mu = mu2, sigma = sigma2),
-                     list(mu = mu3, sigma = sigma3)                    
-)
 faultNumbers = seq(from = minDefectNumber, to = maxDefectNumber, by = 1)
 fittedBandwidth = vector(mode = "numeric", length = length(faultNumbers))
-
-# Calcuate f(x) for a large number of possible values for x1 and x2
-# and fill a list with the four possible distributions
-grid = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
-trueFunction1 = gaussianDensity(axes = grid, mu = mu, sigma = sigma1)$pdf
-trueFunction2 = parabolicDensity(axes = grid, coefficient = 1, ray = ray)$pdf
-trueFunction3 = multiGaussianDensity(axes = grid, parameterList = parameterList)$pdf
-trueFunction4 = uniformDensity(axes = grid)$pdf
-distributionsList = list(trueFunction1, trueFunction2, trueFunction3, trueFunction4)
-for(i in 1:length(distributionsList)){
-  distributionsList[[i]] = bindCircularMap(rectangularMap = distributionsList[[i]], dieWidth = dieWidth, dieHeight = dieHeight,  waferRay = ray, outValue = 0)
-}
 
 for(j in 1:length(faultNumbers)){
   
@@ -92,7 +68,9 @@ for(j in 1:length(faultNumbers)){
       error[i] = error[i] + selectedWeight*chiTest(trueMatrix = trueFunction, extimatedMatrix = extimatedFunction)
     }
   }
-  # Identify polynomial model, find the best model using AIC and thus saving the best bandwidth
+  
+  # Identify polynomial model, find the best model using AIC and thus 
+  # saving the best bandwidth
   grades = 1:8 
   bestFit = findBestModel(x = bandwidth, y = error, interval = c(min(grades), max(grades)))
   bestBandwidth = findMinimumFromModel(model = bestFit, interval = c(min(bandwidth), max(bandwidth)))$minimum
@@ -105,7 +83,7 @@ scatterPlot(x = faultNumbers, y = fittedBandwidth, title =  "Optimal bandwidth v
             xlab = "Faults", ylab = "Bandwidth"
 )
 
-# Identify polynomial model
+# Identify polynomial model to fit the best bandwidth curve
 grades = 1:8
 newData = seq(from = min(faultNumbers), to = max(faultNumbers), length.out = 250)
 predictions = fitLinearModels(x = faultNumbers, y = fittedBandwidth, grades = grades, newData = newData)

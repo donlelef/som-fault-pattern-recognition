@@ -15,7 +15,7 @@ library(stats) # Needed for predict
 
 
 # load the data from file
-files = c("data.rds")
+files = c("Data//maxLikelihoodBestBandwidths.rds")
 
 for(file in files){
   
@@ -35,6 +35,7 @@ for(file in files){
   bandCurve = bandCurve + predict(bestFit, newdata =  data.frame(x = faults))/length(files)
 }
 
+par(new = FALSE)
 plot(x = faults, y = bandCurve, 
      type = "l", xlab = "faults", ylab = "bandwidth", col = "blue",
      main = "Best bandwidth vs faults"

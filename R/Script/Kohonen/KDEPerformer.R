@@ -15,7 +15,7 @@ waferData = unique.data.frame(x = waferData)
 waferNames = unique(x = waferData$wafer)
 
 # Initializations
-distributions = matrix(data = 0, nrow = length(waferNames), ncol = length(trueFunction1))
+distributions = matrix(data = 0, nrow = length(waferNames), ncol = length(distributionsList[[1]]))
 row = 1
 
 # Perform KDE
@@ -31,9 +31,13 @@ for(wafer in waferNames){
                      gridsize = c(length(grid$x), length(grid$y)), 
                      xmin = c(min(grid$x), min(grid$y)), 
                      xmax = c(max(grid$x), max(grid$y)))
-  extimatedFunction = bindCircularMap(rectangularMap = estimation$estimate, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = 0)
   
+  # Plot every single wafer 
+  extimatedFunction = bindCircularMap(rectangularMap = estimation$estimate, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = NA)
   matrixPlot(title = "Extimated density function", matrix = extimatedFunction, colorMap = rainbow(20))
+  
+  # Preparing distributions for SOM
+  extimatedFunction = bindCircularMap(rectangularMap = estimation$estimate, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, outValue = 0)
   distributions[row, ] = as.vector(extimatedFunction)
   row = row + 1
 
@@ -43,11 +47,10 @@ waferSom = som(data = distributions, grid = somgrid(xdim = 2, ydim = 2, topo = "
 
 oldPar = par()
 par(mfrow=c(2,2), mar = c(1,1,1,1))
-matrixPlot(title = "", matrix = matrix(data = waferSom$codes[1, ], nrow = nrow(trueFunction1), ncol = ncol(trueFunction1)), colorMap = rainbow(20))
-matrixPlot(title = "", matrix = matrix(data = waferSom$codes[2, ], nrow = nrow(trueFunction1), ncol = ncol(trueFunction1)), colorMap = rainbow(20))
-matrixPlot(title = "", matrix = matrix(data = waferSom$codes[3, ], nrow = nrow(trueFunction1), ncol = ncol(trueFunction1)), colorMap = rainbow(20))
-matrixPlot(title = "", matrix = matrix(data = waferSom$codes[4, ], nrow = nrow(trueFunction1), ncol = ncol(trueFunction1)), colorMap = rainbow(20))
+for(i in 1:nrow(waferSom$codes)){
+  wafer = matrix(data = waferSom$codes[i, ], nrow = nrow(distributionsList[[1]]), ncol = ncol(distributionsList[[1]]))
+  wafer = bindCircularMap(rectangularMap = wafer, waferRay = ray, dieWidth = dieWidth, dieHeight = dieHeight, outValue = NA)
+  matrixPlot(title = "", matrix = wafer, colorMap = rainbow(20))  
+}
 par(oldPar)
-
-
 

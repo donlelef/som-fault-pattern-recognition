@@ -1,6 +1,3 @@
-library(RUnit)
-library(KDEFaultPattern)
-
 test.bindDefectNumber = function(){
   
   probabilityMatrix = matrix(data = c(1,0,0,1,1,1,0,0,1), nrow = 3, ncol = 3)
