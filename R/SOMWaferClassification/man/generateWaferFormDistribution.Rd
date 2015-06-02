@@ -4,8 +4,8 @@
 \alias{generateWaferFormDistribution}
 \title{Generate a set of faulty wafer}
 \usage{
-generateWaferFormDistribution(distributionsList, waferPerDistribution, dieWidth,
-  dieHeight)
+generateWaferFormDistribution(distributionsList, waferPerDistribution,
+  defectsRange, dieWidth, dieHeight)
 }
 \arguments{
 \item{distributionsList:}{a list of matrix. Every element of the matrix is assumed
@@ -15,7 +15,7 @@ to represent the probability the chip in that position is faulty.}
 be generated for every distribution. The length of this vector should match the one
 of the distributionsList passed as an argument}
 
-\item{defectAmountRange:}{a vector containing the higher and the
+\item{defectsRange:}{a vector containing the higher and the
 lower number of defects in a wafer}
 
 \item{dieWidth:}{the width of a single chip}

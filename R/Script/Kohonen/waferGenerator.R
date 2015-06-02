@@ -9,9 +9,10 @@ library(SOMWaferClassification)
 source(file = "Script//initializer.R")
 
 # Define execution parameters
-waferPerDistribution = c(5, 5, 5, 5)
+waferPerDistribution = c(10, 10, 10, 10)
 minFaults = 20
 maxFaults = 60
+set.seed(11) # for reproducibility
 
 # Generate Wafer
 data = generateWaferFormDistribution(distributionsList = distributionsList, 
@@ -21,4 +22,4 @@ data = generateWaferFormDistribution(distributionsList = distributionsList,
                                      dieHeight = dieHeight)
 
 # Saving the data
-saveRDS(data, "simulatedWafers.rds", ascii=TRUE)
+saveRDS(data, "simulatedWafers2.rds", ascii=TRUE)
