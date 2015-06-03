@@ -21,8 +21,8 @@ kohonenCodesPlot = function(kohonenObject, colorMap, dieWidth, dieHeight, waferR
   grid = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = waferRay)
   
   oldPar = par()
-  square = floor(sqrt(length(kohonenObject$codes)))
-  par(mfrow=c(2,2), mar = c(1,1,1,1))
+  square = floor(sqrt(nrow(kohonenObject$codes)))
+  par(mfrow=c(square, square), mar = c(1,1,1,1))
   for(i in 1:nrow(kohonenObject$codes)){
     wafer = matrix(data = kohonenObject$codes[i, ], nrow = length(grid$y), ncol = length(grid$x))
     wafer = bindCircularMap(rectangularMap = wafer, waferRay = waferRay, dieWidth = dieWidth, dieHeight = dieHeight, outValue = NA)

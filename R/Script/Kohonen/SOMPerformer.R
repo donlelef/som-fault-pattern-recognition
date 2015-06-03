@@ -11,13 +11,13 @@ library(SOMWaferClassification)
 seed = 11 # for reproducibility
 
 # Load data
-waferData = readRDS(file = "simulatedWafers.rds")
+waferData = readRDS(file = "Data//simulatedWafers.rds")
 waferData = unique.data.frame(x = waferData)
 
 # Perfarm KDE
 distributions = KDEOnWafer(dataFrame = waferData,
            dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, 
-           plotDistributions = FALSE)
+           plotDistributions = TRUE)
 
 # Plot the real distributions
 oldPar = par()
@@ -52,4 +52,22 @@ plot(x = waferSom, type = "changes", palette.name = rainbow)
 plot(x = waferSom, type = "quality", palette.name = rainbow)
 par(oldPar)
 
+# Map a new data set using the trained network
+waferPerDistribution = c(spot = 5, ring = 4, threeSpot = 3, uniform = 2)
+defectsRange = c(30, 60)
+newDataFrame = generateWaferFormDistribution(distributionsList = distributionsList, 
+                                        waferPerDistribution = waferPerDistribution, 
+                                        defectsRange = defectsRange, 
+                                        dieWidth = dieWidth, dieHeight = dieHeight)
+newDataDistributions = KDEOnWafer(dataFrame = newDataFrame,
+                                     dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, 
+                                     plotDistributions = TRUE)
 
+newSom = map(x = waferSom, newdata = newDataDistributions)
+classifiedWafer = c(spot = sum(newSom$unit.classif == 4), 
+                    ring = sum(newSom$unit.classif == 1), 
+                    threeSpot = sum(newSom$unit.classif == 2),
+                    uniform = sum(newSom$unit.classif == 3))
+
+pie(x = waferPerDistribution, labels = names(x = waferPerDistribution), col = rainbow(4), main = "Generated wafer distribution")
+pie(x = waferPerDistribution, labels = names(x = classifiedWafer), col = rainbow(4), main = "SOM classification for wafer distribution")
