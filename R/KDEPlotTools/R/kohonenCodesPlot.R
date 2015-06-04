@@ -12,7 +12,7 @@
 #' @return nothing: just perform the plot
 #' @seealso plot.kohonen
 
-kohonenCodesPlot = function(kohonenObject, colorMap, dieWidth, dieHeight, waferRay, ...){ 
+kohonenCodesPlot = function(kohonenObject, dieWidth, dieHeight, waferRay, colorMap = rainbow(20), ...){ 
   
   # import
   library(kohonen)
@@ -26,7 +26,7 @@ kohonenCodesPlot = function(kohonenObject, colorMap, dieWidth, dieHeight, waferR
   for(i in 1:nrow(kohonenObject$codes)){
     wafer = matrix(data = kohonenObject$codes[i, ], nrow = length(grid$y), ncol = length(grid$x))
     wafer = bindCircularMap(rectangularMap = wafer, waferRay = waferRay, dieWidth = dieWidth, dieHeight = dieHeight, outValue = NA)
-    matrixPlot(matrix = wafer, colorMap = rainbow(20), ...)
+    matrixPlot(matrix = wafer, colorMap = colorMap, ...)
   }
   par(oldPar)
 }

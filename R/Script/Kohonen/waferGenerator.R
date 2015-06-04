@@ -9,9 +9,9 @@ library(SOMWaferClassification)
 source(file = "Script//initializer.R")
 
 # Define execution parameters
-waferPerDistribution = c(10, 10, 10, 10)
-minFaults = 20
-maxFaults = 60
+waferPerDistribution = c(20, 20, 20, 20)
+minFaults = 100
+maxFaults = 150
 set.seed(11) # for reproducibility
 
 # Generate Wafer

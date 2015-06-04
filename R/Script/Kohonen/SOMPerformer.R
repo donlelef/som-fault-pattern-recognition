@@ -11,38 +11,38 @@ library(SOMWaferClassification)
 seed = 11 # for reproducibility
 
 # Load data
-waferData = readRDS(file = "Data//simulatedWafers.rds")
+waferData = readRDS(file = "Data//simulatedWafersLong.rds")
 waferData = unique.data.frame(x = waferData)
 
 # Perfarm KDE
 distributions = KDEOnWafer(dataFrame = waferData,
            dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, 
-           plotDistributions = TRUE)
+           plotDistributions = TRUE, colorMap = palette)
 
 # Plot the real distributions
 oldPar = par()
 par(new = FALSE, mfrow=c(2,2), mar = c(1,1,1,1))
 for(distribution in distributionsList){
   distribution = bindCircularMap(rectangularMap = distribution, waferRay = ray, dieWidth = dieWidth, dieHeight = dieHeight, outValue = NA)
-  matrixPlot(title = "", matrix = distribution, colorMap = rainbow(20))
+  matrixPlot(title = "", matrix = distribution, colorMap = palette)
 }
 par(oldPar)
 
-# Plot the SOM code vector after one iteration
+# Plot the SOM code vector after 1 iteration
 set.seed(seed)
 waferSom = som(data = distributions, grid = somgrid(xdim = 2, ydim = 2, topo = "rectangular"), rlen = 1)
-kohonenCodesPlot(kohonenObject = waferSom, colorMap = rainbow(20), dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+kohonenCodesPlot(kohonenObject = waferSom, colorMap = palette, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
 
-# Plot the SOM code vector after one iteration
+# Plot the SOM code vector after 10 iteration
 set.seed(seed)
 waferSom = som(data = distributions, grid = somgrid(xdim = 2, ydim = 2, topo = "rectangular"), rlen = 10)
-kohonenCodesPlot(kohonenObject = waferSom, colorMap = rainbow(20), dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+kohonenCodesPlot(kohonenObject = waferSom, colorMap = palette, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
 
 
-# Plot the SOM code vector after one iteration
+# Plot the SOM code vector after 100 iteration
 set.seed(seed)
 waferSom = som(data = distributions, grid = somgrid(xdim = 2, ydim = 2, topo = "rectangular"), rlen = 100) 
-kohonenCodesPlot(kohonenObject = waferSom, colorMap = rainbow(20), dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+kohonenCodesPlot(kohonenObject = waferSom, colorMap = palette, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
 
 
 # Plot the training process

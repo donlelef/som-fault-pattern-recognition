@@ -5,6 +5,10 @@ library(KDEFaultPattern)
 library(KDEModel)
 library(KDEPlotTools)
 library(KDEBenchmark)
+library(RColorBrewer)
+
+# Plot paramenters
+palette = rev(brewer.pal(11, "RdYlBu"))
 
 # Definition of execution parameters: fault probabilty functions
 ray = 30

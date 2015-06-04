@@ -11,12 +11,14 @@
 #' @param dieHeigth: the heigth of the single die
 #' @param waferRay: the ray of the wafer
 #' @param plotDistributions: a boolean flag. If TRUE, all the computed distributions are
-#' plotted. 
+#' plotted.
+#' @param colorMap: the color map of the plot, if plotDistributions is TRUE. 
+#' Must be a valid argument for "col". 
 #' @import KDEFaultPattern ks
 #' @return a matrix where any row represent the smoothed fault probability function
 #' on a wafer.
 
-KDEOnWafer = function (dataFrame, dieWidth, dieHeight, waferRay, plotDistributions = TRUE) {
+KDEOnWafer = function (dataFrame, dieWidth, dieHeight, waferRay, plotDistributions = TRUE, colorMap = rainbow(20)) {
   
   #Import
   library(ks)
@@ -42,8 +44,7 @@ KDEOnWafer = function (dataFrame, dieWidth, dieHeight, waferRay, plotDistributio
     if(plotDistributions){
       extimatedFunction = bindCircularMap(rectangularMap = estimation$estimate, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = waferRay, outValue = NA)
       title = paste("Extimated density function - ", wafer)
-      matrixPlot(title = title, matrix = extimatedFunction, colorMap = rainbow(20))
-      
+      matrixPlot(title = title, matrix = extimatedFunction, colorMap = colorMap)
     }
 
     # Preparing distributions for SOM

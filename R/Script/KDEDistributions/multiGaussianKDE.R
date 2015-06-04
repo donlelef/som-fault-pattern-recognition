@@ -13,6 +13,7 @@
 library(KernSmooth) # Needed for bkde2D
 library(KDEPlotTools) # Needed for the plot
 library(KDEFaultPattern) # Needed for everything
+library(RColorBrewer) # Needed for plot
 
 # Initial parameters
 ray = 30
@@ -26,6 +27,7 @@ parameterList = list(list(mu = c(ray,50), sigma = sigma2),
 )
 faultNumber = 35
 bandwidth = 4.5
+palette = rev(brewer.pal(11, "RdYlBu"))
 
 # Create fault probability function
 axes = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
@@ -60,5 +62,5 @@ surfacePlot(title = "Extimated function", x = grid$x, y = grid$y, z = extimatedF
 
 # Plot the true density function and the extimated one as flat matrixes. 
 # Different values are identified by different colors
-matrixPlot(title = "Real density function", matrix = trueFunction, colorMap = rainbow(20))
-matrixPlot(title = "Extimated density function", matrix = extimatedFunction, colorMap = rainbow(20))
+matrixPlot(title = "Real density function", matrix = trueFunction, colorMap = palette)
+matrixPlot(title = "Extimated density function", matrix = extimatedFunction, colorMap = palette)

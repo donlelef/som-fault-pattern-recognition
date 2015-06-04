@@ -4,7 +4,8 @@
 \alias{KDEOnWafer}
 \title{Load a data.frame of faults into a matrix}
 \usage{
-KDEOnWafer(dataFrame, dieWidth, dieHeight, waferRay, plotDistributions = TRUE)
+KDEOnWafer(dataFrame, dieWidth, dieHeight, waferRay, plotDistributions = TRUE,
+  colorMap = rainbow(20))
 }
 \arguments{
 \item{dayaFrame:}{a data.frame containin all the faults. The format should be the
@@ -18,6 +19,9 @@ one specified in the description}
 
 \item{plotDistributions:}{a boolean flag. If TRUE, all the computed distributions are
 plotted.}
+
+\item{colorMap:}{the color map of the plot, if plotDistributions is TRUE.
+Must be a valid argument for "col".}
 }
 \value{
 a matrix where any row represent the smoothed fault probability function

@@ -4,7 +4,8 @@
 \alias{kohonenCodesPlot}
 \title{Plot a bidimensional matrix}
 \usage{
-kohonenCodesPlot(kohonenObject, colorMap, dieWidth, dieHeight, waferRay, ...)
+kohonenCodesPlot(kohonenObject, dieWidth, dieHeight, waferRay,
+  colorMap = rainbow(20), ...)
 }
 \arguments{
 \item{kohonenObject:}{the kohonen class object to plot}
