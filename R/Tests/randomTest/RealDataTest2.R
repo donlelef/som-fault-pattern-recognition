@@ -1,13 +1,12 @@
 # Test for loading data from file
 
-library(gdata)
 library(ks)
 library(KDEPlotTools)
 library(KDEFaultPattern)
 library(RColorBrewer)
 library(STMWrapper)
 
-# dataFrame = read.xls(xls = "STMData/LOTTO1_RIDOTTISSIMO.xlsx", verbose = TRUE)
+dataFrame = readExcel(xlsToRead = "STMData/LOTTO1_RIDOTTISSIMO.xlsx", saveOnRDS = TRUE)
 wafers = unique(dataFrame$WAFER)
 
 for(wafer in wafers){
