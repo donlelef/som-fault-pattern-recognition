@@ -15,9 +15,9 @@ library(KDEFaultPattern) # Needed for everything
 library(RColorBrewer) # Needed for plot
 
 # Initial parameters
-dieWidth = 2
+dieWidth = 1
 dieHeight = 1
-ray = 30
+ray = 5
 mu = c(ray, ray)
 sigma = ray*matrix(data = c(1, 0, 0, 1), nrow = 2, ncol = 2, byrow = TRUE)
 faultNumber = 35

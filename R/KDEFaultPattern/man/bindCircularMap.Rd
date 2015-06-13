@@ -4,10 +4,15 @@
 \alias{bindCircularMap}
 \title{Create a circular fault grid}
 \usage{
-bindCircularMap(rectangularMap, dieWidth, dieHeight, waferRay, outValue = NA)
+bindCircularMap(rectangularMap, dieWidth, dieHeight, alignmentX = 0,
+  alignmentY = 0, waferRay, outValue = NA)
 }
 \arguments{
 \item{rectangularMap:}{a sqare matrix}
+
+\item{alignmentX:}{the x coordinate of the center of the (0,0) chip}
+
+\item{alignmentY:}{the y coordinate of the center of the (0,0) chip}
 
 \item{dieWidth:}{the width of a chip}
 
@@ -25,6 +30,6 @@ Creates a circular grid from a square one by inserting the value outValue in
 every pixel which is not whitin the circle of given ray. The width and the height
 of the pixel may be specified. Every pixel is identified as a point placed in the
 center of its spatial extension. ie: if a chip's dimensions are 2x1, it is represent
-as a poin in (1;0.5).
+as a point in (1;0.5).
 }
 
