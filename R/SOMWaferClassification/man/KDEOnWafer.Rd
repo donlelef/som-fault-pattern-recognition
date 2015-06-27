@@ -4,8 +4,8 @@
 \alias{KDEOnWafer}
 \title{Load a data.frame of faults into a matrix}
 \usage{
-KDEOnWafer(dataFrame, dieWidth, dieHeight, waferRay, plotDistributions = TRUE,
-  colorMap = rainbow(20))
+KDEOnWafer(dataFrame, dieWidth, dieHeight, waferRay, grid,
+  plotDistributions = TRUE, colorMap = rainbow(20))
 }
 \arguments{
 \item{dayaFrame:}{a data.frame containin all the faults. The format should be the
@@ -13,9 +13,13 @@ one specified in the description}
 
 \item{dieWidth:}{the width of the single die}
 
-\item{dieHeigth:}{the heigth of the single die}
+\item{dieHeigth:}{the heigth of the single die.}
 
-\item{waferRay:}{the ray of the wafer}
+\item{waferRay:}{the ray of the wafer.}
+
+\item{grid:}{a list where the x element represents the array of the x coordinates
+of the chips' centers on the x axes, while the y element represents the array of the y coordinates
+of the chips' centers on the x axes.}
 
 \item{plotDistributions:}{a boolean flag. If TRUE, all the computed distributions are
 plotted.}

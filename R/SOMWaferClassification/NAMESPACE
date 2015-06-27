@@ -3,4 +3,5 @@
 export(KDEOnWafer)
 export(generateWaferFormDistribution)
 import(KDEFaultPattern)
+import(KDEPlotTools)
 import(ks)

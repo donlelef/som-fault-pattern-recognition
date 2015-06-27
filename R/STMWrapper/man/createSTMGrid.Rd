@@ -4,8 +4,8 @@
 \alias{createSTMGrid}
 \title{Generate the grid of chip centers}
 \usage{
-createSTMGrid(waferRay, dieWidth, dieHeigth, originalDieCenterX,
-  originalDieCenterY)
+createSTMGrid(waferRay, dieWidth, dieHeigth, originalDieCenterX = 0,
+  originalDieCenterY = 0)
 }
 \arguments{
 \item{dieWidth:}{the width of a chip}
@@ -14,9 +14,9 @@ createSTMGrid(waferRay, dieWidth, dieHeigth, originalDieCenterX,
 
 \item{waferRay:}{the ray of the wafer}
 
-\item{originalDieCenterX:}{the x coordinate of the (0,0) chip}
+\item{originalDieCenterX:}{the x coordinate of the (0,0) chip. Default is 0.}
 
-\item{originalDieCentery:}{the y coordinate of the (0,0) chip}
+\item{originalDieCentery:}{the y coordinate of the (0,0) chip  Default is 0.}
 }
 \value{
 a list made of the x axes and the y axes.

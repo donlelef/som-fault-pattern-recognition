@@ -5,7 +5,7 @@
 \title{Plot a bidimensional matrix}
 \usage{
 kohonenCodesPlot(kohonenObject, dieWidth, dieHeight, waferRay,
-  colorMap = rainbow(20), ...)
+  colorMap = rainbow(20), grid, ...)
 }
 \arguments{
 \item{kohonenObject:}{the kohonen class object to plot}
@@ -17,6 +17,10 @@ kohonenCodesPlot(kohonenObject, dieWidth, dieHeight, waferRay,
 \item{dieHeigth:}{the heigth of the single die}
 
 \item{waferRay:}{the ray of the wafer}
+
+\item{grid:}{a list where the x element represents the array of the x coordinates
+of the chips' centers on the x axes, while the y element represents the array of the y coordinates
+of the chips' centers on the x axes.}
 
 \item{...:}{other arguments to pass to the lower functions}
 }

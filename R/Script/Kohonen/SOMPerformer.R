@@ -15,7 +15,8 @@ waferData = readRDS(file = "Data//simulatedWafersLong.rds")
 waferData = unique.data.frame(x = waferData)
 
 # Perfarm KDE
-distributions = KDEOnWafer(dataFrame = waferData,
+gird = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+distributions = KDEOnWafer(dataFrame = waferData, grid = grid,
            dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, 
            plotDistributions = TRUE, colorMap = palette)
 
@@ -31,18 +32,18 @@ par(oldPar)
 # Plot the SOM code vector after 1 iteration
 set.seed(seed)
 waferSom = som(data = distributions, grid = somgrid(xdim = 2, ydim = 2, topo = "rectangular"), rlen = 1)
-kohonenCodesPlot(kohonenObject = waferSom, colorMap = palette, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+kohonenCodesPlot(kohonenObject = waferSom, colorMap = palette, grid = grid, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
 
 # Plot the SOM code vector after 10 iteration
 set.seed(seed)
 waferSom = som(data = distributions, grid = somgrid(xdim = 2, ydim = 2, topo = "rectangular"), rlen = 10)
-kohonenCodesPlot(kohonenObject = waferSom, colorMap = palette, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+kohonenCodesPlot(kohonenObject = waferSom, colorMap = palette, grid = grid, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
 
 
 # Plot the SOM code vector after 100 iteration
 set.seed(seed)
 waferSom = som(data = distributions, grid = somgrid(xdim = 2, ydim = 2, topo = "rectangular"), rlen = 100) 
-kohonenCodesPlot(kohonenObject = waferSom, colorMap = palette, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
+kohonenCodesPlot(kohonenObject = waferSom, colorMap = palette, grid = grid, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray)
 
 
 # Plot the training process
@@ -59,7 +60,7 @@ newDataFrame = generateWaferFormDistribution(distributionsList = distributionsLi
                                         waferPerDistribution = waferPerDistribution, 
                                         defectsRange = defectsRange, 
                                         dieWidth = dieWidth, dieHeight = dieHeight)
-newDataDistributions = KDEOnWafer(dataFrame = newDataFrame,
+newDataDistributions = KDEOnWafer(dataFrame = newDataFrame, grid = grid,
                                      dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, 
                                      plotDistributions = TRUE, colorMap = palette)
 
@@ -71,3 +72,4 @@ classifiedWafer = c(spot = sum(newSom$unit.classif == 1),
 
 pie(x = waferPerDistribution, labels = names(x = waferPerDistribution), col = rainbow(4), main = "Generated wafer distribution")
 pie(x = classifiedWafer, labels = names(x = classifiedWafer), col = rainbow(4), main = "SOM classification for wafer distribution")
+

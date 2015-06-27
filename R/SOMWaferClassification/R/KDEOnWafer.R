@@ -8,25 +8,28 @@
 #' @param dayaFrame: a data.frame containin all the faults. The format should be the
 #' one specified in the description
 #' @param dieWidth: the width of the single die
-#' @param dieHeigth: the heigth of the single die
-#' @param waferRay: the ray of the wafer
+#' @param dieHeigth: the heigth of the single die.
+#' @param waferRay: the ray of the wafer.
+#' @param grid: a list where the x element represents the array of the x coordinates 
+#' of the chips' centers on the x axes, while the y element represents the array of the y coordinates 
+#' of the chips' centers on the x axes.
 #' @param plotDistributions: a boolean flag. If TRUE, all the computed distributions are
 #' plotted.
 #' @param colorMap: the color map of the plot, if plotDistributions is TRUE. 
 #' Must be a valid argument for "col". 
-#' @import KDEFaultPattern ks
+#' @import KDEFaultPattern ks KDEPlotTools
 #' @return a matrix where any row represent the smoothed fault probability function
 #' on a wafer.
 
-KDEOnWafer = function (dataFrame, dieWidth, dieHeight, waferRay, plotDistributions = TRUE, colorMap = rainbow(20)) {
+KDEOnWafer = function (dataFrame, dieWidth, dieHeight, waferRay, grid, plotDistributions = TRUE, colorMap = rainbow(20)) {
   
   #Import
   library(ks)
   library(KDEFaultPattern)
+  library(KDEPlotTools)
   
   # Initializations
   waferNames = unique(dataFrame$wafer)
-  grid = prepareWaferGrid(dieWidth = dieWidth, dieHeight = dieHeight, waferRay = waferRay)
   distributions = matrix(data = 0, nrow = length(waferNames), ncol = length(grid$x)*length(grid$y))
   row = 1
   

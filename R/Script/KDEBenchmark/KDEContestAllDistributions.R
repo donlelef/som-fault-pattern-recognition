@@ -19,7 +19,7 @@ faultNumbers = seq(from = 10, to = 60, by = 1)
 KernError = KsError = vector(mode = "numeric", length = length(faultNumbers))
 
 # load the bandwit curve from file
-dataFrame = readRDS(file = "Data//maxLikelihoodBestBandwidths.rds")
+dataFrame = readRDS(file = "Data//TemporaryData/maxLikelihoodBestBandwidths.rds")
 fittedFaults = dataFrame$faults
 fittedBandwidth = dataFrame$bestBand
 

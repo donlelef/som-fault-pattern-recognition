@@ -8,7 +8,7 @@
 #' @param grid: the positions of all the centers of the chips in the wafer
 #' @param originalDieCenterX: the x coordinate of the (0,0) chip
 #' @param originalDieCentery: the y coordinate of the (0,0) chip 
-#' @return a matrix whose rows are logical coordinats. The origin is the left corner of the wafer.
+#' @return a matrix whose rows are logical coordinates. The origin is the left lower corner of the wafer.
 
 
 shiftReference = function(logicalCoords, originalDieCenterX, originalDieCenterY, grid){

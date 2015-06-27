@@ -3,7 +3,7 @@
 export(createSTMGrid)
 export(fillMatrixFromIndex)
 export(getCoordsFromLogical)
-export(getLogicalFaultCoords)
+export(getLogicalCoordsFromData)
 export(readExcel)
 export(shiftReference)
 import(gdata)

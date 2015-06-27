@@ -15,7 +15,7 @@ library(stats) # Needed for predict
 
 
 # load the data from file
-files = c("Data//maxLikelihoodBestBandwidths.rds")
+files = c("Data//TemporaryData/maxLikelihoodBestBandwidths.rds")
 
 for(file in files){
   

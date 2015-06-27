@@ -17,7 +17,7 @@ ie: the fist chip is 0, the following 1, the previous -1, ...}
 \item{originalDieCentery:}{the y coordinate of the (0,0) chip}
 }
 \value{
-a matrix whose rows are logical coordinats. The origin is the left corner of the wafer.
+a matrix whose rows are logical coordinates. The origin is the left lower corner of the wafer.
 }
 \description{
 This function turns logical coordinates in the absolute position
