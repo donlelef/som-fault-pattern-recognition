@@ -52,3 +52,14 @@ plot(x = waferSom, type = "changes", palette.name = rainbow)
 plot(x = waferSom, type = "quality", palette.name = rainbow)
 plot(x = waferSom, type = "count", palette.name = rainbow)
 par(oldPar)
+
+# Map each wafer to the correct unit
+for(waferID in unique(waferData$wafers)){
+  thisWaferDisribution = KDEOnWafer(dataFrame = waferData[waferData$wafers == waferID, ], grid = grid, 
+                                    dieWidth = dieWidth, dieHeight = dieHeight, waferRay = waferRay, 
+                                    plotDistributions = FALSE)
+  classification = map(x = waferSom, newdata = thisWaferDisribution)$unit.classif
+  colors = rep(x = "white", times = nrow(waferSom$codes))
+  colors[classification] = "red"
+  plot(x = waferSom, type = "mapping", classif = classification, main = paste("Wafer mapping", waferID, sep = " "), bgcol = colors)
+}

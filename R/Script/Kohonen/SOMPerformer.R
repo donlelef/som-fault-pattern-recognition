@@ -70,9 +70,22 @@ classifiedWafer = c(spot = sum(newSom$unit.classif == 1),
                     threeSpot = sum(newSom$unit.classif == 2),
                     uniform = sum(newSom$unit.classif == 3))
 
+# Plot mapping with pchs
 plot(x = waferSom, type = "mapping", classif = newSom$unit.classif, pchs = newSom$unit.classif)
 legend(x = "topright", legend = names(waferPerDistribution), pch = unique(newSom$unit.classif))
 
+# Plot mapping with pie chart
 pie(x = waferPerDistribution, labels = names(x = waferPerDistribution), col = rainbow(4), main = "Generated wafer distribution")
 pie(x = classifiedWafer, labels = names(x = classifiedWafer), col = rainbow(4), main = "SOM classification for wafer distribution")
+
+# Plot mapping with one hot
+for(waferID in unique(newDataFrame$wafer)){
+  thisWaferDistribution = KDEOnWafer(dataFrame = newDataFrame[newDataFrame$wafer == waferID, ], grid = grid, 
+                                    dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, 
+                                    plotDistributions = FALSE)
+  classification = map(x = waferSom, newdata = thisWaferDistribution)$unit.classif
+  colors = rep(x = "white", times = nrow(waferSom$codes))
+  colors[classification] = "red"
+  plot(x = waferSom, type = "mapping", classif = classification, main = paste("Wafer mapping", waferID, sep = " "), bgcol = colors)
+}
 
