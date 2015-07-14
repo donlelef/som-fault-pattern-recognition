@@ -11,7 +11,7 @@ library(SOMWaferClassification)
 seed = 12 # for reproducibility
 
 # Load data
-waferData = readRDS(file = "Data//simulatedWafersLong.rds")
+waferData = readRDS(file = "Data//TemporaryData/simulatedWafersLong.rds")
 waferData = unique.data.frame(x = waferData)
 
 # Perfarm KDE
@@ -69,6 +69,9 @@ classifiedWafer = c(spot = sum(newSom$unit.classif == 1),
                     ring = sum(newSom$unit.classif == 4), 
                     threeSpot = sum(newSom$unit.classif == 2),
                     uniform = sum(newSom$unit.classif == 3))
+
+plot(x = waferSom, type = "mapping", classif = newSom$unit.classif, pchs = newSom$unit.classif)
+legend(x = "topright", legend = names(waferPerDistribution), pch = unique(newSom$unit.classif))
 
 pie(x = waferPerDistribution, labels = names(x = waferPerDistribution), col = rainbow(4), main = "Generated wafer distribution")
 pie(x = classifiedWafer, labels = names(x = classifiedWafer), col = rainbow(4), main = "SOM classification for wafer distribution")
