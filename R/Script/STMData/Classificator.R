@@ -32,3 +32,4 @@ waferSom = som(data = distributions, grid = somgrid(xdim = 3, ydim = 3, topo = "
 kohonenCodesPlot(kohonenObject = waferSom, colorMap = palette, grid = grid, dieWidth = dieWidth, dieHeight = dieHeight, waferRay = waferRay)
 
 recapFrame = writeClassificationRecap(faultPositionDataFrame = waferData, waferRay = waferRay, dieWidth = dieWidth, dieHeight = dieHeight, splitID = TRUE)
+saveRDS(object = recapFrame, file = "Data/STMData/clusteringRecap.rds", ascii = TRUE)

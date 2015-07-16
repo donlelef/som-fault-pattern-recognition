@@ -7,7 +7,7 @@ goodOther = 111
 
 contingencyMatrix = matrix(c(badEquipment, goodEquipment, badOther, goodOther), nrow = 2, ncol = 2, byrow = FALSE)
 
-chisq.test(contingencyMatrix)
+chisq.test(contingencyMatrix, correct = FALSE)$statistic
 
 # Useless
 # determinant = det(contingencyMatrix)
