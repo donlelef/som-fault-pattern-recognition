@@ -19,7 +19,6 @@
 chiSquareTest = function(productionSteps, waferClustering, operation, cluster, equipment, threshold = mean(waferClustering$faults)){
   
   contingencyMatrix = createContingencyMatrix(productionSteps, waferClustering, operation, cluster, equipment, threshold)
-  print(contingencyMatrix)
   if(all(contingencyMatrix[ , 1] == 0)){
     return("No wafer for the selected equipment") 
   }
