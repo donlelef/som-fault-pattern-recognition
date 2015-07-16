@@ -79,13 +79,13 @@ pie(x = waferPerDistribution, labels = names(x = waferPerDistribution), col = ra
 pie(x = classifiedWafer, labels = names(x = classifiedWafer), col = rainbow(4), main = "SOM classification for wafer distribution")
 
 # Plot mapping with one hot
+i = 1
 for(waferID in unique(newDataFrame$wafer)){
-  thisWaferDistribution = KDEOnWafer(dataFrame = newDataFrame[newDataFrame$wafer == waferID, ], grid = grid, 
-                                    dieWidth = dieWidth, dieHeight = dieHeight, waferRay = ray, 
-                                    plotDistributions = FALSE)
+  thisWaferDistribution = matrix(newDataDistributions[i, ], nrow = 1)
   classification = map(x = waferSom, newdata = thisWaferDistribution)$unit.classif
   colors = rep(x = "white", times = nrow(waferSom$codes))
   colors[classification] = "red"
   plot(x = waferSom, type = "mapping", classif = classification, main = paste("Wafer mapping", waferID, sep = " "), bgcol = colors)
+  i = i + 1
 }
 

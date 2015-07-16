@@ -36,7 +36,7 @@ KDEOnWafer = function (dataFrame, dieWidth, dieHeight, waferRay, grid, plotDistr
   # Perform KDE
   for(wafer in waferNames){
     
-    thisWaferDefects = dataFrame[dataFrame$wafer == wafer, ]
+    thisWaferDefects = dataFrame[dataFrame[1] == wafer, ]
     faultPositions = as.matrix.data.frame(thisWaferDefects[ , 2:3])
     estimation = kde(x = faultPositions, 
                      gridsize = c(length(grid$x), length(grid$y)), 

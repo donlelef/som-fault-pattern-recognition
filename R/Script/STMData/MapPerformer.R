@@ -54,12 +54,28 @@ plot(x = waferSom, type = "count", palette.name = rainbow)
 par(oldPar)
 
 # Map each wafer to the correct unit
+# and save the data in vectors
+lot = wafer = layer = vector(mode = "character")
+faults = cluster = vector(mode = "numeric")
+i = 1
 for(waferID in unique(waferData$wafers)){
-  thisWaferDisribution = KDEOnWafer(dataFrame = waferData[waferData$wafers == waferID, ], grid = grid, 
-                                    dieWidth = dieWidth, dieHeight = dieHeight, waferRay = waferRay, 
-                                    plotDistributions = FALSE)
-  classification = map(x = waferSom, newdata = thisWaferDisribution)$unit.classif
+  thisWaferData = waferData[waferData$wafers == waferID, ]
+  thisWaferDistribution = matrix(distributions[i, ], nrow = 1)
+  thisWaferClassification = map(x = waferSom, newdata = thisWaferDistribution)$unit.classif
+  splittedID = unlist(strsplit(x = waferID, split = "[/]"))
+  lot = c(lot, splittedID[1])
+  wafer = c(wafer, splittedID[2])
+  layer = c(layer, splittedID[3])
+  faults = c(faults, nrow(thisWaferData))
+  cluster = c(cluster, thisWaferClassification)
   colors = rep(x = "white", times = nrow(waferSom$codes))
-  colors[classification] = "red"
-  plot(x = waferSom, type = "mapping", classif = classification, main = paste("Wafer mapping", waferID, sep = " "), bgcol = colors)
+  colors[thisWaferClassification] = "red"
+  plot(x = waferSom, type = "mapping", classif = thisWaferClassification, main = paste("Wafer mapping", waferID, sep = " "), bgcol = colors)
+  i = i + 1
 }
+
+# Save the data of each wafer in a file
+waferRecap = data.frame(lot = lot, wafer = wafer, layer = layer, faults = faults, cluster = cluster)
+
+
+

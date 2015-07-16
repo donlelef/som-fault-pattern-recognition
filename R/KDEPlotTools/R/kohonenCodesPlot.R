@@ -23,8 +23,17 @@ kohonenCodesPlot = function(kohonenObject, dieWidth, dieHeight, waferRay, colorM
   
   oldPar = par()
   square = floor(sqrt(nrow(kohonenObject$codes)))
-  par(mfrow=c(square, square), mar = c(1,1,1,1))
-  for(i in 1:nrow(kohonenObject$codes)){
+  
+  layout = matrix(nrow = square, ncol = square) # order the cluster as in plot.kohonen
+  for(i in 1:square){
+    for(j in 1:square){
+      layout[i, j] = square * (square - i) + j
+    }
+  }
+  
+  par(new = FALSE, mar = c(1,1,1,1))
+  layout(layout)
+  for(i in 1:nrow(kohonenObject$codes)){  
     wafer = matrix(data = kohonenObject$codes[i, ], nrow = length(grid$x), ncol = length(grid$y))
     wafer = bindCircularMap(rectangularMap = wafer, waferRay = waferRay, dieWidth = dieWidth, dieHeight = dieHeight, outValue = NA)
     matrixPlot(matrix = wafer, colorMap = colorMap, ...)

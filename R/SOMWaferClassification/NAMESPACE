@@ -2,6 +2,9 @@
 
 export(KDEOnWafer)
 export(generateWaferFormDistribution)
+export(writeClassificationRecap)
 import(KDEFaultPattern)
 import(KDEPlotTools)
+import(STMWrapper)
+import(kohonen)
 import(ks)
