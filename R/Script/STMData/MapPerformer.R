@@ -52,30 +52,3 @@ plot(x = waferSom, type = "changes", palette.name = rainbow)
 plot(x = waferSom, type = "quality", palette.name = rainbow)
 plot(x = waferSom, type = "count", palette.name = rainbow)
 par(oldPar)
-
-# Map each wafer to the correct unit
-# and save the data in vectors
-lot = wafer = layer = vector(mode = "character")
-faults = cluster = vector(mode = "numeric")
-i = 1
-for(waferID in unique(waferData$wafers)){
-  thisWaferData = waferData[waferData$wafers == waferID, ]
-  thisWaferDistribution = matrix(distributions[i, ], nrow = 1)
-  thisWaferClassification = map(x = waferSom, newdata = thisWaferDistribution)$unit.classif
-  splittedID = unlist(strsplit(x = waferID, split = "[/]"))
-  lot = c(lot, splittedID[1])
-  wafer = c(wafer, splittedID[2])
-  layer = c(layer, splittedID[3])
-  faults = c(faults, nrow(thisWaferData))
-  cluster = c(cluster, thisWaferClassification)
-  colors = rep(x = "white", times = nrow(waferSom$codes))
-  colors[thisWaferClassification] = "red"
-  plot(x = waferSom, type = "mapping", classif = thisWaferClassification, main = paste("Wafer mapping", waferID, sep = " "), bgcol = colors)
-  i = i + 1
-}
-
-# Save the data of each wafer in a file
-waferRecap = data.frame(lot = lot, wafer = wafer, layer = layer, faults = faults, cluster = cluster)
-
-
-

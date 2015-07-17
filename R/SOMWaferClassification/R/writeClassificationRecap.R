@@ -8,11 +8,12 @@
 #' @param waferRay: the ray of the wafer.
 #' @param splitID: logical flag. If set to TRUE, the wafer ID is assumed to contain three tokens, separed by "/".
 #' The name is split and in the returned data.frame the single parts are provided.
+#' @param seed: the seed to be set for the inizialization of the som maps. Default is random.
 #' @return A data frame containing the name of the wafer, the number of faulty chips and the cluster.
 #' @import kohonen KDEFaultPattern STMWrapper
 #' @export
 
-writeClassificationRecap = function(faultPositionDataFrame, waferRay, dieWidth, dieHeight, splitID = TRUE){
+writeClassificationRecap = function(faultPositionDataFrame, waferRay, dieWidth, dieHeight, splitID = TRUE, seed = as.integer(runif(n = 1, min = 0, max = 100))){
   
   # Import
   library(kohonen)
@@ -23,6 +24,7 @@ writeClassificationRecap = function(faultPositionDataFrame, waferRay, dieWidth, 
   waferData = unique.data.frame(x = faultPositionDataFrame)
   
   # Perfarm KDE
+  set.seed(seed)
   grid = createSTMGrid(waferRay = waferRay, dieWidth = dieWidth, dieHeight = dieHeight)
   distributions = KDEOnWafer(dataFrame = waferData, grid = grid, 
                              dieWidth = dieWidth, dieHeight = dieHeight, waferRay = waferRay, 
@@ -32,7 +34,8 @@ writeClassificationRecap = function(faultPositionDataFrame, waferRay, dieWidth, 
   waferSom = som(data = distributions, grid = somgrid(xdim = 3, ydim = 3, topo = "rectangular"), rlen = 100) 
   
   # Map each wafer to the correct unit
-  # and save the data in vectors
+  # and save the data in vectors 
+  # TODO: move to another function
   lot = wafer = layer = ids =vector(mode = "character")
   faults = cluster = vector(mode = "numeric")
   i = 1

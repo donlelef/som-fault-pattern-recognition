@@ -65,7 +65,7 @@ for(i in 1:nrow(wafersID)){
 }
 
 KDEData = data.frame(wafers = waferNames, faultX = faultX, faultY = faultY)
-saveRDS(object = KDEData, file = "lotto1KDE.rds", ascii = TRUE)
+# saveRDS(object = KDEData, file = "lotto1KDE.rds", ascii = TRUE)
 
 
 
