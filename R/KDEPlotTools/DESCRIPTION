@@ -1,9 +1,0 @@
-Package: KDEPlotTools
-Title: Set of plotting functions related with KDEBenchmark.
-Version: 0.3
-Authors@R: c(person(given = "Emanuele", family = "Fabbiani", email = "donlelef@gmail.com", role = c("aut", "cre")), person( given = "Claudio", family = "Peroni", role = "aut"))
-Description: This package lets you plot effective surface, scatter plot and matrix plot. Its main purpose is to present the result of the functions in KDEBenchmark package.
-Depends: R (>= 3.1.3)
-License: GPL 3.0
-LazyData: true
-

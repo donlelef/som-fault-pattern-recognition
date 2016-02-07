@@ -1,8 +1,0 @@
-Package: SOMWaferClassification
-Title: Tool to perform unsupervised classification of faulty silicon wafer.
-Version: 0.2
-Authors@R: c(person(given = "Emanuele", family = "Fabbiani", email = "donlelef@gmail.com", role = c("aut", "cre")), person( given = "Claudio", family = "Peroni", role = "aut"))
-Description: This package provides functions to generate training sets of faulty chips, perform SOM algorithm and plot the results.
-Depends: R (>= 3.1.3)
-License: GPL 3.0
-LazyData: true
