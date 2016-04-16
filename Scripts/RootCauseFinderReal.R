@@ -13,6 +13,7 @@ source(file = "Scripts/Initializer.R")
 # dataFrame = data.frame(read.csv2(file = "Data/STM_Defect.csv"), stringsAsFactors = FALSE)
 historyFrame = read.csv2(file = "Data/History.csv", as.is = TRUE)
 historyFrame = unique(historyFrame[, c("LOT", "EQUIPMENT", "OPER", "QTY_OUT", "EVENT_TIME"), drop = FALSE] )
+historyFrame = historyFrame[complete.cases(historyFrame), ]
 colnames(historyFrame) = c("LOT", "EQUIPMENT", "OPERATION", "QUANTITY", "TIME")
 historyFrame$TIME = parse_date_time(historyFrame$TIME, orders = c("m!/d!/Y H!:M!"))
 
@@ -34,21 +35,27 @@ clusterHistory = historyFrame[historyFrame$LOT %in% unique(clusterClassification
 clusterHistory = clusterHistory[order(clusterHistory$TIME), ]
 clusterBadWafers = badWafers[badWafers$ID %in% clusterClassificationFrame$ID & badWafers$CLUSTER == selectedCluster, ]
 
-for (operation in clusterHistory$OPERATION) {
+res = data.frame()
+for (operation in unique(clusterHistory$OPERATION)) {
   opHist = clusterHistory[clusterHistory$OPERATION == operation, ]
   
   for (equipment in unique(opHist$EQUIPMENT)) {
     thisEqWafers = opHist[opHist$EQUIPMENT == equipment, ]
     otherEqWafers = opHist[opHist$EQUIPMENT != equipment, ]
     
-    # Compute contingency table
-    badEquipment = nrow(badWafers[badWafers$ID %in% thisEqWafers$LOT, ])
-    goodEquipment = sum(unique.data.frame(thisEqWafers[, 1:4])$QUANTITY) - badEquipment
-    badOther = nrow(badWafers[badWafers$ID %in% otherEqWafers$LOT, ])
-    goodOther = sum(unique.data.frame(otherEqWafers[, 1:4])$QUANTITY) - badOther
-    
-    contingencyMatrix = matrix(c(badEquipment, goodEquipment, badOther, goodOther), nrow = 2, ncol = 2, byrow = FALSE)
-    
+    if(nrow(otherEqWafers) > 0){
+      badEquipment = nrow(clusterBadWafers[clusterBadWafers$ID %in% thisEqWafers$LOT, ])
+      goodEquipment = sum(unique.data.frame(thisEqWafers[, 1:4])$QUANTITY) - badEquipment
+      badOther = nrow(clusterBadWafers[clusterBadWafers$ID %in% otherEqWafers$LOT, ])
+      goodOther = sum(unique.data.frame(otherEqWafers[, 1:4])$QUANTITY) - badOther
+      
+      if(badEquipment / (goodEquipment + badEquipment) > badOther / (goodOther + badOther)){
+        contingencyMatrix = matrix(c(badEquipment, goodEquipment, badOther, goodOther), nrow = 2, ncol = 2, byrow = FALSE)
+        testValue = chisq.test(x = contingencyMatrix, correct = FALSE)
+        res = rbind(res, data.frame(OPERATION = operation, EQUIPMENT = equipment, VALUE = testValue$statistic, stringsAsFactors = FALSE))  
+      }
+    }
   }
 }
+res = res[order(res$VALUE, decreasing = TRUE), ]
 
