@@ -4,7 +4,7 @@
 source(file = "Scripts/Initializer.R")
 
 # Load data
-dataFrame = read.csv2(file = "Data/Temporary Data/LOTTO1_DEF.csv")
+dataFrame = read.csv2(file = "Data/STM_Defect.csv")
 KDEFrame = getKDEData(dataFrame = dataFrame)
 features = getWaferFeatures(dataFrame = dataFrame)
 
@@ -29,4 +29,5 @@ for(i in 1:length(ids)){
 }
 
 classificationFrame = classificationFrame(trainedSomObject = waferSom, KDEFrame = KDEFrame)
+# write.csv2(x = classificationFrame, file = "Data/Classification.csv", row.names = FALSE)
 print(classificationFrame)
