@@ -1,10 +1,10 @@
 #' This function returns a data.frame with the clustering of the data passed as an argument.
 #' @title Writes data.frame with clustering data.
-#' @param trainedSomObject : a kohonen object trained with the wafer in the KDEFrame
-#' @param KDEFrame : a data frame with three columns: the wafer Id in the first column and the X-Y
+#' @param trainedSomObject a kohonen object trained with the wafer in the KDEFrame
+#' @param KDEFrame a data frame with three columns: the wafer Id in the first column and the X-Y
 #' coordiantes of the faults in the other two columns
-#' @param KDEIds : name of the columns which are to contain the token form the ID column od KDEFrame
-#' @return A data frame containing the name of the wafer, the number of faulty chips and the cluster.
+#' @param KDEIds names of the columns which contain the token from the ID column of KDEFrame
+#' @return A data frame containing a column for each element of KDEIds, the number of faulty chips (FAULTS) and the cluster (CLUSTER).
 #' @export
 #' @import STMDataMining
 

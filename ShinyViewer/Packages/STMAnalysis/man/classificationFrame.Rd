@@ -8,15 +8,15 @@ classificationFrame(trainedSomObject, KDEFrame, KDEIds = c("LOT", "WAFER",
   "LAYER"))
 }
 \arguments{
-\item{trainedSomObject}{: a kohonen object trained with the wafer in the KDEFrame}
+\item{trainedSomObject}{a kohonen object trained with the wafer in the KDEFrame}
 
-\item{KDEFrame}{: a data frame with three columns: the wafer Id in the first column and the X-Y
+\item{KDEFrame}{a data frame with three columns: the wafer Id in the first column and the X-Y
 coordiantes of the faults in the other two columns}
 
-\item{KDEIds}{: name of the columns which are to contain the token form the ID column od KDEFrame}
+\item{KDEIds}{names of the columns which contain the token from the ID column of KDEFrame}
 }
 \value{
-A data frame containing the name of the wafer, the number of faulty chips and the cluster.
+A data frame containing a column for each element of KDEIds, the number of faulty chips (FAULTS) and the cluster (CLUSTER).
 }
 \description{
 This function returns a data.frame with the clustering of the data passed as an argument.

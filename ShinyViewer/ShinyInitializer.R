@@ -8,7 +8,7 @@ for (package in requiredPackages) {
 }
 
 packageDirectory = "Packages/"
-requiredCustomPackage = c("STMFaultPattern", "STMPlotTools", "STMWaferClassification", "STMWrapper", "STMDataMining", "STMAnalysis")
+requiredCustomPackage = c("STMDataMining", "STMWrapper", "STMFaultPattern", "STMPlotTools", "STMAnalysis", "STMRootCauses")
 for (package in requiredCustomPackage) {
   if (!is.element(package, installed.packages()[,1])){
     packagePath = paste(packageDirectory, package, sep = "")
