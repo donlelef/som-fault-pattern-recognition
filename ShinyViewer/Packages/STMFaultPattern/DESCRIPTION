@@ -2,7 +2,12 @@ Package: STMFaultPattern
 Title: Manage virtual wafer of good and faulty chips
 Version: 1.2
 Authors@R: c(person(given = "Emanuele", family = "Fabbiani", email = "donlelef@gmail.com", role = c("aut", "cre")), person( given = "Claudio", family = "Peroni", role = "aut"))
-Description: This package lets you fill a square matrix where each element is assumed to represent a chip an a wafer. To better simulate real wafer, it provedes a function to force the elements out of a circle to a given value. Functions are provided to switch from absolute coordinates to matrix indexes.
-Depends: R (>= 3.1.3)
+Description: This package lets you fill a square matrix where each element
+    is assumed to represent a chip an a wafer. To better simulate real wafer, it
+    provedes a function to force the elements out of a circle to a given value.
+    Functions are provided to switch from absolute coordinates to matrix indexes.
+Depends:
+    R (>= 3.1.3)
 License: MIT + file LICENSE
 LazyData: true
+RoxygenNote: 5.0.1

@@ -1,12 +1,9 @@
 # Find the equipment wich is most likely to be responsible of 
 # a particular pattern of faults
-library(lubridate)
-library(ggplot2)
-library(ggthemes)
 
 # params
-selectedCluster = 4
-threshold = 100
+selectedClusters = 1
+threshold = 0
 
 # Import
 source(file = "Scripts/Initializer.R")
@@ -14,28 +11,17 @@ source(file = "Scripts/Initializer.R")
 # Load data
 # dataFrame = data.frame(read.csv2(file = "Data/STM_Defect.csv"), stringsAsFactors = FALSE)
 historyFrame = read.csv2(file = "Data/History.csv", as.is = TRUE)
-historyFrame = unique(historyFrame[, c("LOT", "EQUIPMENT", "OPER", "QTY_OUT", "EVENT_TIME"), drop = FALSE] )
-historyFrame = historyFrame[complete.cases(historyFrame), ]
-colnames(historyFrame) = c("LOT", "EQUIPMENT", "OPERATION", "QUANTITY", "TIME")
-historyFrame$TIME = parse_date_time(historyFrame$TIME, orders = c("m!/d!/Y H!:M!"))
-
+historyFrame = getHistoryData(dataFrame = historyFrame)
 classificationFrame = read.csv2(file = "Data/Classification.csv", as.is = TRUE)
-
-splittedIdsList = strsplit(classificationFrame$ID, "/", fixed = TRUE)
-classificationLots = vector(mode = "character")
-for (idSplitted in splittedIdsList) {
-  classificationLots = c(classificationLots, idSplitted[1])
-}
-classificationFrame$ID = classificationLots
 
 # Divide good and bad wafers
 badWafers = classificationFrame[classificationFrame$FAULTS >= threshold, ]
 
 # Select data for one cluster
-clusterClassificationFrame = classificationFrame[classificationFrame$CLUSTER == selectedCluster, ]
-clusterHistory = historyFrame[historyFrame$LOT %in% unique(clusterClassificationFrame$ID), ]
+clusterClassificationFrame = classificationFrame[classificationFrame$CLUSTER %in% selectedClusters, ]
+clusterHistory = historyFrame[historyFrame$LOT %in% unique(clusterClassificationFrame$LOT), ]
 clusterHistory = clusterHistory[order(clusterHistory$TIME), ]
-clusterBadWafers = badWafers[badWafers$ID %in% clusterClassificationFrame$ID & badWafers$CLUSTER == selectedCluster, ]
+clusterBadWafers = badWafers[badWafers$LOT %in% clusterClassificationFrame$LOT & badWafers$CLUSTER %in% selectedClusters, ]
 
 res = data.frame()
 for (operation in unique(clusterHistory$OPERATION)) {
@@ -46,9 +32,9 @@ for (operation in unique(clusterHistory$OPERATION)) {
     otherEqWafers = opHist[opHist$EQUIPMENT != equipment, ]
     
     if(nrow(otherEqWafers) > 0){
-      badEquipment = nrow(clusterBadWafers[clusterBadWafers$ID %in% thisEqWafers$LOT, ])
+      badEquipment = nrow(clusterBadWafers[clusterBadWafers$LOT %in% thisEqWafers$LOT, ])
       goodEquipment = sum(unique.data.frame(thisEqWafers[, 1:4])$QUANTITY) - badEquipment
-      badOther = nrow(clusterBadWafers[clusterBadWafers$ID %in% otherEqWafers$LOT, ])
+      badOther = nrow(clusterBadWafers[clusterBadWafers$LOT %in% otherEqWafers$LOT, ])
       goodOther = sum(unique.data.frame(otherEqWafers[, 1:4])$QUANTITY) - badOther
       
       if(badEquipment / (goodEquipment + badEquipment) > badOther / (goodOther + badOther)){

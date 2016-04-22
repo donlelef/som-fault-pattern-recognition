@@ -11,7 +11,7 @@
 #' dieWidth: the width of a chip
 #' dieHeight: the height of a chip
 #' waferRay: the ray of the wafer
-#' @import STMFaultPattern ks
+#' @import STMFaultPattern STMWrapper ks
 #' @return a matrix where any row represent the smoothed fault probability function on a wafer.
 
 distributions = function (KDEdataFrame, features) {

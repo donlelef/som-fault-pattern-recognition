@@ -28,6 +28,6 @@ for(i in 1:length(ids)){
 
 }
 
-classificationFrame = classificationFrame(trainedSomObject = waferSom, KDEFrame = KDEFrame)
-# write.csv2(x = classificationFrame, file = "Data/Classification.csv", row.names = FALSE)
-print(classificationFrame)
+classificationData = classificationFrame(trainedSomObject = waferSom, KDEFrame = KDEFrame)
+write.csv2(x = classificationData, file = "Data/Classification.csv", row.names = FALSE)
+print(classificationData)
