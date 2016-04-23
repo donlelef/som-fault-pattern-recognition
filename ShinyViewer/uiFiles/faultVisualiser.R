@@ -12,7 +12,7 @@ fluidPage(
   
   fluidRow(
     column(2, img(src = "Images/statwolf2.png")),
-    column(8, offset = 2, titlePanel(title = "Wafer visualizer"))
+    column(8, offset = 2, titlePanel(title = "Wafer fault visualisation"))
   ),
   
   fluidRow(
@@ -33,8 +33,8 @@ fluidPage(
     sidebarPanel(
       
       h4("START"),
-      helpText("Start the computation. It may take some minutes. Be sure you selected a file in Data manager tab."),
-      actionButton(inputId = "processDataFrame", label = "Process", class = "btn btn-success", icon = icon(name = "play", lib = "font-awesome")),
+      helpText("Start the computation. It may take some minutes. Be sure you selected a defect data file in Data manager tab."),
+      actionButton(inputId = "processDefect", label = "Process", class = "btn btn-success", icon = icon(name = "play", lib = "font-awesome")),
       
       hr(),
       
@@ -66,7 +66,7 @@ fluidPage(
       hr(),
       
       h4("EXPORT"),
-      helpText("Download a csv file with 3 fields for each wafer: an ID, the number of faults and the cluster."),
+      helpText("Download a csv file with 5 fields for each wafer: lot, wafer and layer name, the number of faults and the cluster."),
       downloadButton("downloadClassification", label = "Download Classification", class = "btn btn-primary")
       
       

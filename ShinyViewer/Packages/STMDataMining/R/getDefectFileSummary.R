@@ -1,6 +1,7 @@
-#' This function return a data.frame containing some useful information about the data in a STM file.
+#' This function return a data.frame containing some useful information 
+#' about the data in a STM defect file.
 #'
-#' @title Return summary on a STM data frame.
+#' @title Return summary on a STM defect data frame.
 #' @export
 #' @param dataFrame a data.frame with the supposed format.
 #' @return a data.frame with five columns:
@@ -11,7 +12,7 @@
 #' FAULTS: the total number of faulty chips.
 
 
-getFileSummary = function(dataFrame){
+getDefectFileSummary = function(dataFrame){
 
   lotsNumber = nrow(getUniqueColumns(dataFrame = dataFrame, columns = "LOT"))
   waferNumber = nrow(getUniqueColumns(dataFrame = dataFrame, columns = c("LOT", "WAFER")))

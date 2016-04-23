@@ -5,21 +5,22 @@
 #' QUANTITY: the number of processed wafers
 #' TIME: when the operation happened
 #'
-#' @param dataFrame : a data frame which is supposed to contain at least
+#' @title Return a data.frame whith wafer processing history
+#' @param dataFrame a data frame which is supposed to contain at least
 #' 5 columns, providing required data. Their name should be passed through
 #' the following parameters.   
-#' @param filterEquipment : a vector of strings, containg the names of the 
+#' @param filterEquipment a vector of strings, containg the names of the 
 #' equipments which should be excluded from the history. If an equipment only
 #' partially mathces with one of the elements, it is removed anyway. 
-#' @param lotColumn : the name of the colum of dataFrame containing 
+#' @param lotColumn the name of the colum of dataFrame containing 
 #' the name of the lot
-#' @param equipmentColumn : the name of the colum of dataFrame containing 
+#' @param equipmentColumn the name of the colum of dataFrame containing 
 #' the name of the equipment
-#' @param opColumn : the name of the colum of dataFrame containing 
+#' @param opColumn the name of the colum of dataFrame containing 
 #' the name of the operation
-#' @param quantityColumn : the name of the colum of dataFrame 
+#' @param quantityColumn the name of the colum of dataFrame 
 #' containing the quantity of processed wafers for each operation
-#' @param timeColumn : : the name of the colum of dataFrame containing 
+#' @param timeColumn the name of the colum of dataFrame containing 
 #' the time when the operation has been performed. It is supposed to be
 #' in MM/DD/YYYY HH:MM format.
 #'
@@ -32,7 +33,7 @@ getHistoryData = function(dataFrame, filterEquipment = c("DUMMY"), lotColumn = "
   colnames(historyFrame) = c("LOT", "EQUIPMENT", "OPERATION", "QUANTITY", "TIME")
   historyFrame = historyFrame[complete.cases(historyFrame), ]
   for (toFilter in filterEquipment) {
-    historyFrame = historyFrame[!grepl(toFilter, historyFrame$EQUIPMENT, ignore.case = TRUE), ]
+    historyFrame = historyFrame[historyFrame$EQUIPMENT != toFilter, ]
   }
   historyFrame$TIME = mdy_hm(historyFrame$TIME)
   return(historyFrame)

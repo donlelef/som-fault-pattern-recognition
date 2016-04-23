@@ -1,4 +1,4 @@
-# UI for wafer visualizer
+# UI for data files management
 
 fluidPage(
   
@@ -8,7 +8,6 @@ fluidPage(
     tags$link(rel = "stylesheet", type = "text/css", href = "css/custom.css"),
     tags$link(rel = "stylesheet", type = "text/css", href = "https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css")
   ),
-  
   
   fluidRow(
     column(2, img(src = "Images/statwolf2.png")),
@@ -31,22 +30,23 @@ fluidPage(
   sidebarLayout(
     
     sidebarPanel(
-      h4("LOADING"),
+      h4("LOAD DATA"),
       helpText("Select files to load. No more than 100 MB. Old browsers - including IE 9 and earlier - do not support multiple choice."),
-      fileInput("csvInputFile", "Choose CSV (.csv) file(s):", accept = c(".csv"), multiple = TRUE),
+      fileInput("csvDefectFile", "Choose CSV (.csv) file(s) containing defect data:", accept = c(".csv"), multiple = TRUE),
+      fileInput("csvHistoryFile", "Choose CSV (.csv) file(s) containing history data:", accept = c(".csv"), multiple = TRUE),
       selectInput(inputId = "csvSeparator", label = "Choose separator for csv files: ", 
                   choices = list(";" = ";", "," = ",")),
       selectInput(inputId = "csvDecimal", label = "Choose decimal separator for csv files: ", 
-                  choices = list("," = ",", "." = ".")),
-      hr(),
-      
-      h4("EXPORT"),
-      helpText("Merge all the current file and export in csv format"),
-      downloadButton("downloadMerged", label = "Download data", class = "btn btn-primary")
+                  choices = list("," = ",", "." = "."))
     ),
+    
     mainPanel(
-      tableOutput("selectedFileTable"),
-      dataTableOutput("selectedFileData")
+      h4("Selected Files"),
+      dataTableOutput("fileData"),
+      conditionalPanel("output.defectSummaryPresent", h4("Defect Data Summary")),
+      dataTableOutput("defectFileSummary"),
+      conditionalPanel("output.historySummaryPresent", h4("History Data Summary")),
+      dataTableOutput("historyFileSummary")
     )
   )  
 )

@@ -2,39 +2,34 @@
 % Please edit documentation in R/getHistoryData.R
 \name{getHistoryData}
 \alias{getHistoryData}
-\title{Prepare a data.frame which with 5 colums: 
-LOT: the processed lot
-EQUIPMENT: the equipment which performed the operation
-OPERATION: the stage of the manufactoring
-QUANTITY: the number of processed wafers
-TIME: when the operation happened}
+\title{Return a data.frame whith wafer processing history}
 \usage{
 getHistoryData(dataFrame, filterEquipment = c("DUMMY"), lotColumn = "LOT",
   equipmentColumn = "EQUIPMENT", opColumn = "OPER",
   quantityColumn = "QTY_OUT", timeColumn = "EVENT_TIME")
 }
 \arguments{
-\item{dataFrame}{: a data frame which is supposed to contain at least
+\item{dataFrame}{a data frame which is supposed to contain at least
 5 columns, providing required data. Their name should be passed through
 the following parameters.}
 
-\item{filterEquipment}{: a vector of strings, containg the names of the 
+\item{filterEquipment}{a vector of strings, containg the names of the 
 equipments which should be excluded from the history. If an equipment only
 partially mathces with one of the elements, it is removed anyway.}
 
-\item{lotColumn}{: the name of the colum of dataFrame containing 
+\item{lotColumn}{the name of the colum of dataFrame containing 
 the name of the lot}
 
-\item{equipmentColumn}{: the name of the colum of dataFrame containing 
+\item{equipmentColumn}{the name of the colum of dataFrame containing 
 the name of the equipment}
 
-\item{opColumn}{: the name of the colum of dataFrame containing 
+\item{opColumn}{the name of the colum of dataFrame containing 
 the name of the operation}
 
-\item{quantityColumn}{: the name of the colum of dataFrame 
+\item{quantityColumn}{the name of the colum of dataFrame 
 containing the quantity of processed wafers for each operation}
 
-\item{timeColumn}{: : the name of the colum of dataFrame containing 
+\item{timeColumn}{the name of the colum of dataFrame containing 
 the time when the operation has been performed. It is supposed to be
 in MM/DD/YYYY HH:MM format.}
 }

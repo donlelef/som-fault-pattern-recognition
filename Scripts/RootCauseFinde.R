@@ -24,5 +24,5 @@ rootCauseBarPlot(x = plotData$EQUIPMENT, y = plotData$VALUE, title = "Top Chi Sq
 # view data frame
 # View(res)
 # write.csv2(x = res, file = "Data/RootCauseResult.csv", row.names = FALSE)
-all.equal(read.csv2("Data/RootCauseResult.csv", as.is = TRUE), res)
+
 
