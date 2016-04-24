@@ -41,11 +41,11 @@ fluidPage(
     ),
     
     mainPanel(
-      h4("Selected Files"),
+      tags$h4("Selected Files", class = "center-text"),
       dataTableOutput("fileData"),
-      conditionalPanel("output.defectSummaryPresent", h4("Defect Data Summary")),
+      conditionalPanel("output.defectSummaryPresent", tags$h4("Defect Data Summary", class = "center-text")),
       dataTableOutput("defectFileSummary"),
-      conditionalPanel("output.historySummaryPresent", h4("History Data Summary")),
+      conditionalPanel("output.historySummaryPresent", tags$h4("History Data Summary", class = "center-text")),
       dataTableOutput("historyFileSummary")
     )
   )  
