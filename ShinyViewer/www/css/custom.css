@@ -13,3 +13,7 @@
 .center-text{
   text-align: center;
 }
+
+.space-before{
+	margin-top: 1.5em;
+}

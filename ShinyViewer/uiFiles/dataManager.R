@@ -1,5 +1,4 @@
 # UI for data files management
-
 fluidPage(
   
   tags$head(
@@ -41,12 +40,12 @@ fluidPage(
     ),
     
     mainPanel(
-      tags$h4("Selected Files", class = "center-text"),
-      dataTableOutput("fileData"),
-      conditionalPanel("output.defectSummaryPresent", tags$h4("Defect Data Summary", class = "center-text")),
-      dataTableOutput("defectFileSummary"),
-      conditionalPanel("output.historySummaryPresent", tags$h4("History Data Summary", class = "center-text")),
-      dataTableOutput("historyFileSummary")
+      conditionalPanel("output.fileDataPresent", tags$h4("Selected Files", class = "center-text")), 
+      DT::dataTableOutput("fileData"),
+      conditionalPanel("output.defectSummaryPresent", tags$h4("Defect Data Summary", class = "center-text space-before")),
+      DT::dataTableOutput("defectFileSummary"),
+      conditionalPanel("output.historySummaryPresent", tags$h4("History Data Summary", class = "center-text space-before")),
+      DT::dataTableOutput("historyFileSummary")
     )
-  )  
+  )
 )

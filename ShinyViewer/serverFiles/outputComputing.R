@@ -1,9 +1,13 @@
 # Output for server.R
 
 # Defect file summary
-output$defectFileSummary = renderDataTable({
+output$defectFileSummary = DT::renderDataTable({
   defectSummary()
-}, options = list(searching = FALSE, paging = FALSE, info = FALSE, responsive = TRUE))
+}, extensions = c("Responsive"), options = list(searching = FALSE, 
+                                                paging = FALSE, 
+                                                info = FALSE, 
+                                                processing = FALSE, 
+                                                responsive = TRUE))
 
 output$defectSummaryPresent = reactive({
   !is.null(defectSummary())
@@ -11,9 +15,13 @@ output$defectSummaryPresent = reactive({
 outputOptions(output, 'defectSummaryPresent', suspendWhenHidden = FALSE)
 
 # History file summary
-output$historyFileSummary = renderDataTable({
+output$historyFileSummary = DT::renderDataTable({
   historySummary()
-}, options = list(searching = FALSE, paging = FALSE, info = FALSE, responsive = TRUE))
+}, extensions = c("Responsive"), options = list(searching = FALSE, 
+                                                paging = FALSE, 
+                                                info = FALSE, 
+                                                processing = FALSE, 
+                                                responsive = TRUE))
 
 output$historySummaryPresent = reactive({
   !is.null(historySummary())
@@ -22,7 +30,7 @@ outputOptions(output, 'historySummaryPresent', suspendWhenHidden=FALSE)
 
 
 # Input files summary
-output$fileData = renderDataTable({
+output$fileData = DT::renderDataTable({
   if(!is.null(input$csvDefectFile) || !is.null(input$csvHistoryFile)){
     data = rbind(input$csvDefectFile, input$csvHistoryFile)
     data = data[, 1:3]
@@ -30,7 +38,18 @@ output$fileData = renderDataTable({
     names(data) = c("FILE", "SIZE (KB)", "TYPE")
     return(data)
   }
-}, options = list(searching = FALSE, paging = FALSE, info = FALSE, responsive = TRUE))
+}, extensions = c("Responsive"), options = list(searching = FALSE, 
+                                                paging = FALSE, 
+                                                info = FALSE, 
+                                                processing = FALSE, 
+                                                responsive = TRUE))
+
+output$fileDataPresent = reactive({
+  !is.null(historySummary()) || !is.null(defectSummary())
+})
+outputOptions(output, 'fileDataPresent', suspendWhenHidden=FALSE)
+
+
 
 # Fault map plot
 output$waferMap = renderPlot({
@@ -77,10 +96,14 @@ output$downloadClassification = downloadHandler(
 )
 
 # Root cause output data
-output$rootCauseData = renderDataTable({
+output$rootCauseData = DT::renderDataTable({
   rootCauseFrameTriggered()
-}, options = list(searching = TRUE, paging = TRUE, info = TRUE, responsive = TRUE, 
-                  pageLength = 10, dom = "<'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-4'i><'col-sm-8'p>>"))
+}, extensions = c("Responsive"), options = list(searching = TRUE, 
+                                                paging = TRUE, 
+                                                info = TRUE, 
+                                                responsive = TRUE,
+                                                pageLength = 10, 
+                                                dom = "<'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-4'i><'col-sm-8'p>>"))
 
 # Root cause plot
 output$rootCauseBarPlot = renderPlot({

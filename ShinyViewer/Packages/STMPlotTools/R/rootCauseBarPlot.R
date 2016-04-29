@@ -21,6 +21,7 @@ rootCauseBarPlot = function(x, y, title, xlab = "x", ylab = "y"){
     theme(panel.grid.major.x = element_line(colour = "black", size = 0.5, linetype = "dotted"),
           plot.background = element_rect(fill = "transparent", colour = NA),
           panel.background = element_rect(fill = "transparent", colour = NA),
-          panel.ontop = TRUE) +
+          panel.ontop = TRUE, 
+          plot.title = element_text(size = 22)) +
     scale_fill_gradient(low = "#9999ff", high = "#000066", guide = FALSE)
 }

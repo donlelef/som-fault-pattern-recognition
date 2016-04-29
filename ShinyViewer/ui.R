@@ -1,7 +1,7 @@
 library(shiny)
 
 shinyUI(
-  navbarPage(
+   navbarPage(
     "Wafer fault tool",
     tabPanel("Data manager",
              source(file = "uiFiles/dataManager.R", local = TRUE)[["value"]]

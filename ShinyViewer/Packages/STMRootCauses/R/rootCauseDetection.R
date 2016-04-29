@@ -33,4 +33,6 @@ rootCauseDetection = function(historyFrame, badWafers) {
     }
   }
   res = res[order(res$VALUE, decreasing = TRUE), ]
+  rownames(res) = 1:nrow(res)
+  return(res)
 }
