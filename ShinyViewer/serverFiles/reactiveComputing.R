@@ -104,7 +104,7 @@ waferKDELoader = reactive({
 
 rootCauseResultFrame = reactive({
   if(!is.null(input$clusters) && !is.null(historyData()) && !is.null(classificationFrameLoader())){
-    historyFrame = getHistoryData(dataFrame = historyData(), filterEquipment = input$equipments)
+    historyFrame = getHistoryData(dataFrame = historyData(), filterEquipments = input$equipments, filterOperations = input$operations)
     rootCauseOutput = rootCauseAnalysis(classificationFrameLoader(), historyFrame, input$threshold, as.numeric(input$clusters))
     rootCauseOutput = rootCauseOutput[,1:7]
     colnames(rootCauseOutput) = c("OPERATION", "EQUIPMENT", "VALUE", "BAD", "GOOD", "BAD_OTHER", "GOOD_OTHER")

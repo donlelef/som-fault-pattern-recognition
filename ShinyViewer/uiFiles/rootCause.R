@@ -47,7 +47,9 @@ fluidPage(
       sliderInput(inputId = "threshold", label = "Choose max faults for good wafer: ",
                   min = 0, max = 1000, value = 100, step = 10),
       selectizeInput(inputId = "equipments", label = "Choose equipments to be excluded from the analysis: ", 
-                  choices = "", multiple = TRUE),
+                     choices = "", multiple = TRUE),
+      selectizeInput(inputId = "operations", label = "Choose operations to be excluded from the analysis: ", 
+                     choices = "", multiple = TRUE),
       
       hr(),
       

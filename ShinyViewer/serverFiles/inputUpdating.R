@@ -28,6 +28,11 @@ equipments = reactive({
   equipments = equipments[order(equipments, decreasing = FALSE)]
 })
 
+operations = reactive({
+  operations = unique(as.character(historyData()$OPER))
+  operations = operations[order(operations, decreasing = FALSE)]
+})
+
 observe({
   updateSelectInput(session, "lot", choices = lots())
 })
@@ -46,4 +51,8 @@ observe({
 
 observe({
   updateSelectInput(session, "equipments", choices = equipments())
+})
+
+observe({
+  updateSelectInput(session, "operations", choices = operations())
 })

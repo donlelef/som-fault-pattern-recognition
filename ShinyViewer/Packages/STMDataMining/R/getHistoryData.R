@@ -10,8 +10,9 @@
 #' 5 columns, providing required data. Their name should be passed through
 #' the following parameters.   
 #' @param filterEquipment a vector of strings, containg the names of the 
-#' equipments which should be excluded from the history. If an equipment only
-#' partially mathces with one of the elements, it is removed anyway. 
+#' equipments which should be excluded from the history.
+#' @param filterOperations a vector of strings, containg the names of the 
+#' operations which should be excluded from the history.  
 #' @param lotColumn the name of the colum of dataFrame containing 
 #' the name of the lot
 #' @param equipmentColumn the name of the colum of dataFrame containing 
@@ -28,13 +29,12 @@
 #' @import lubridate
 #' @export
 
-getHistoryData = function(dataFrame, filterEquipment = c("DUMMY"), lotColumn = "LOT", equipmentColumn = "EQUIPMENT", opColumn = "OPER", quantityColumn = "QTY_OUT", timeColumn = "EVENT_TIME"){
+getHistoryData = function(dataFrame, filterEquipments = NULL, filterOperations = NULL, lotColumn = "LOT", equipmentColumn = "EQUIPMENT", opColumn = "OPER", quantityColumn = "QTY_OUT", timeColumn = "EVENT_TIME"){
   historyFrame = unique(dataFrame[, c(lotColumn, equipmentColumn, opColumn, quantityColumn, timeColumn), drop = FALSE] )
   colnames(historyFrame) = c("LOT", "EQUIPMENT", "OPERATION", "QUANTITY", "TIME")
   historyFrame = historyFrame[complete.cases(historyFrame), ]
-  for (toFilter in filterEquipment) {
-    historyFrame = historyFrame[historyFrame$EQUIPMENT != toFilter, ]
-  }
+  historyFrame = historyFrame[!(historyFrame$EQUIPMENT %in% as.character(filterEquipments)), ]
+  historyFrame = historyFrame[!(historyFrame$OPERATION %in% as.character(filterOperations)), ]
   historyFrame$TIME = mdy_hm(historyFrame$TIME)
   return(historyFrame)
 }

@@ -102,13 +102,15 @@ output$rootCauseData = DT::renderDataTable({
                                                 paging = TRUE, 
                                                 info = TRUE, 
                                                 responsive = TRUE,
-                                                pageLength = 10, 
-                                                dom = "<'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-4'i><'col-sm-8'p>>"))
+                                                processing = FALSE,
+                                                lengthChange = FALSE,
+                                                pageLength = 10)) 
 
 # Root cause plot
 output$rootCauseBarPlot = renderPlot({
-  if(!is.null(rootCauseFrameTriggered())){
-    plotFrame = rootCauseFrameTriggered()[1:10, ]
+  selectedRows = input$rootCauseData_rows_current
+  if(!is.null(rootCauseFrameTriggered()) && !is.null(selectedRows)){
+    plotFrame = rootCauseFrameTriggered()[as.numeric(selectedRows), ]
     rootCauseBarPlot(x = factor(plotFrame$EQUIPMENT, levels = rev(plotFrame$EQUIPMENT)), y = plotFrame$VALUE, title = "Chi square values for selected equipments", xlab = "EQUIPMENT", ylab = "VALUE")
   }
 })
