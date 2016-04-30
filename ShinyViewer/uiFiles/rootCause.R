@@ -2,13 +2,7 @@
 
 fluidPage(
   
-  tags$head(
-    tags$title("Wafer visualizer"),
-    tags$link(rel = "stylesheet", type = "text/css", href = "css/bootstrap.css"),
-    tags$link(rel = "stylesheet", type = "text/css", href = "css/custom.css"),
-    tags$link(rel = "stylesheet", type = "text/css", href = "https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css")
-  ),
-  
+  tags$head(tags$title("Wafer visualizer")),
   
   fluidRow(
     column(2, img(src = "Images/statwolf2.png")),
@@ -61,7 +55,7 @@ fluidPage(
     
     mainPanel(
       plotOutput("rootCauseBarPlot"),
-      dataTableOutput("rootCauseData")
+      DT::dataTableOutput("rootCauseData")
     )
   )
   

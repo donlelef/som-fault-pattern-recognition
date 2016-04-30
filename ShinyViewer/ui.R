@@ -11,6 +11,9 @@ shinyUI(
     ), 
     tabPanel("Root cause detection",
              source(file = "uiFiles/rootCause.R", local = TRUE)[["value"]]
-    )
+    ),
+    includeCSS("www/css/bootstrap.css"), 
+    includeCSS("www/css/custom.css"),
+    includeCSS("www/css/font-awesome.min.css")
   )
 )

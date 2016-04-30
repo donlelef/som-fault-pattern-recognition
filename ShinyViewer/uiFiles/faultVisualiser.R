@@ -2,13 +2,7 @@
 
 fluidPage(
   
-  tags$head(
-    tags$title("Wafer visualizer"),
-    tags$link(rel = "stylesheet", type = "text/css", href = "css/bootstrap.css"),
-    tags$link(rel = "stylesheet", type = "text/css", href = "css/custom.css"),
-    tags$link(rel = "stylesheet", type = "text/css", href = "https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css")
-  ),
-  
+  tags$head(tags$title("Wafer visualizer")),
   
   fluidRow(
     column(2, img(src = "Images/statwolf2.png")),
@@ -26,7 +20,7 @@ fluidPage(
                             )
            )
     )
-  ), 
+  ),
   
   sidebarLayout(
     
@@ -68,8 +62,6 @@ fluidPage(
       h4("EXPORT"),
       helpText("Download a csv file with 5 fields for each wafer: lot, wafer and layer name, the number of faults and the cluster."),
       downloadButton("downloadClassification", label = "Download Classification", class = "btn btn-primary")
-      
-      
     ),
     
     mainPanel(
@@ -83,5 +75,4 @@ fluidPage(
       )
     )
   )
-  
 )
