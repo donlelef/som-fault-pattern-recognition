@@ -1,4 +1,6 @@
 library(shiny)
+source("ShinyInitializer.R")
+source("serverFiles/options.R")
 
 shinyUI(
    navbarPage(
